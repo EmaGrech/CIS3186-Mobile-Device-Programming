@@ -14,7 +14,7 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 
-//loading collection
+//loading all collection
 export const getDocsFromFirestore = async (collName) => {
     const coll = collection(db, collName);
     const snapshot = await getDocs(coll);
@@ -23,6 +23,42 @@ export const getDocsFromFirestore = async (collName) => {
         data.push({ ...doc.data(), id: doc.id });
     });
     return data;
+};
+
+//getting info from specific documents
+export const getProductDetails = async (productID) => {
+    const productDoc = doc(db, 'Product Details', productID);
+    const productSnapshot = await getDoc(productDoc);
+    
+    return { ...productSnapshot.data(), id: productSnapshot.id };
+};
+
+export const getCart = async (cartID) => {
+    const cartDoc = doc(db, 'Cart', cartID);
+    const cartSnapshot = await getDoc(cartDoc);
+    
+    return { ...cartSnapshot.data(), id: cartSnapshot.id };
+};
+
+export const getChat = async (chatID) => {
+    const chatDoc = doc(db, 'Chat', chatID);
+    const chatSnapshot = await getDoc(chatDoc);
+
+    return { ...chatSnapshot.data(), id: chatSnapshot.id };
+};
+
+export const getPurchaseHistory = async (purchaseID) => {
+    const purchaseDoc = doc(db, 'Purchase History', purchaseID);
+    const purchaseSnapshot = await getDoc(purchaseDoc);
+  
+    return { ...purchaseSnapshot.data(), id: purchaseSnapshot.id };
+};
+
+export const getUser = async (userID) => {
+    const userDoc = doc(db, 'Users', userID);
+    const userSnapshot = await getDoc(userDoc);
+
+    return { ...userSnapshot.data(), id: userSnapshot.id };
 };
 
 //adding a new document to a collection
