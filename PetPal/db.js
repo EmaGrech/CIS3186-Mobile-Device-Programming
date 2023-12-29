@@ -8,7 +8,7 @@ const firebaseConfig = {
     storageBucket: "petpal-3f19d.appspot.com",
     messagingSenderId: "41137584387",
     appId: "1:41137584387:web:03d810aa41373ce3aad136"
-  };
+};
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
