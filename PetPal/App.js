@@ -4,6 +4,8 @@ import { StatusBar } from "expo-status-bar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import HomeScreen from "./screens/HomeScreen";
+import ListScreen from "./screens/ListScreen";
+import InfoScreen from "./screens/InfoScreen";
 
 const Tab = createBottomTabNavigator();
 
