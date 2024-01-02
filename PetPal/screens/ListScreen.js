@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity} from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { getDocsFromFirestore } from "./db";
+import { getDocsFromFirestore } from "../db";
 
 //rn only fetches EVERY PRODUCT (need to filter according to product type)
 const ListScreen = () => {
