@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
-import { getProductDetails } from './db';
+import { getProductDetails } from '../db';
 
 const InfoScreen = ({ route }) => {
   const { itemID } = route.params;
