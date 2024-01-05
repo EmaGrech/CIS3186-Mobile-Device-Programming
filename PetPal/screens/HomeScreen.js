@@ -1,7 +1,17 @@
-import { Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-function HomeScreen() {
-  return <Text>This is the home screen</Text>;
+function HomeScreen({ navigation }) {
+  const goToListScreen = () => {
+    navigation.navigate("List");
+  };
+  
+  return (
+    <View>
+      <TouchableOpacity onPress={goToListScreen}>
+        <Text>List Screen</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 export default HomeScreen;
