@@ -14,7 +14,7 @@ const Stack = createStackNavigator();
 
 function CustomAppBar({ navigation }) {
   return (
-    <Appbar.Header style={{ backgroundColor: "#A9D3FF" }}>
+    <Appbar.Header style={{ backgroundColor: "#A9D3FF", elevation: 2 }}>
       <Appbar.Content title="PetPal" color="black" />
       <Appbar.Action
         icon="account"
@@ -32,7 +32,12 @@ function CustomAppBar({ navigation }) {
 
 function BottomNavigation() {
   return (
-    <Tab.Navigator initialRouteName="Home">
+    <Tab.Navigator
+      initialRouteName="Home"
+      sceneContainerStyle={{
+        backgroundColor: "#f2f4ff",
+      }}
+    >
       <Tab.Screen
         name="Cart"
         component={HomeScreen}
@@ -101,7 +106,12 @@ export default function App() {
     <SafeAreaProvider>
       <StatusBar style="auto" />
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerStyle: { elevation: 2 },
+            cardStyle: { backgroundColor: "#f2f4ff" },
+          }}
+        >
           <Stack.Screen
             name="Initial"
             title="PetPal"
@@ -109,6 +119,7 @@ export default function App() {
             component={BottomNavigation}
           />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          {/* Add all other screens here */}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
