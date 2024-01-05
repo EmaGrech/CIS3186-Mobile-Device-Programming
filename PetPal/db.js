@@ -103,12 +103,12 @@ const typeConversion = (data, expected) => {
 
 //FETCHING SPECIFIC DOCUMENTS//
 //getting info from specific documents
-export const getProductDetails = async (productID) => {
-    const productDoc = doc(db, 'Product_Details', productID);
-    const productSnapshot = await getDoc(productDoc);
+export const getDocument = async (collName, docID) => {
+    const docRef = doc(db, collName, docID);
+    const docSnapshot = await getDoc(docRef);
     
-    const docData = productSnapshot.data();
-    const typeMappings = setFieldType['Product_Details'];
+    const docData = docSnapshot.data();
+    const typeMappings = setFieldType[collName];
 
     const converted = Object.entries(docData).reduce((result, [key, value]) => {
         const expected = typeMappings[key]; 
@@ -116,38 +116,30 @@ export const getProductDetails = async (productID) => {
     return result;
     }, {});
 
-    return { ...converted, id: productSnapshot.id };
+    return { ...converted, id: docSnapshot.id };
 };
+
+export const getProductDetails = async (productID) => {
+    return getDocument('Product_Details', productID);
+  };
+  
+  export const getCart = async (cartID) => {
+    return getDocument('Cart', cartID);
+  };
+  
+  export const getChat = async (chatID) => {
+    return getDocument('Chat', chatID);
+  };
+  
+  export const getPurchaseHistory = async (purchaseID) => {
+    return getDocument('Purchase_History', purchaseID);
+  };
+  
+  export const getUser = async (userID) => {
+    return getDocument('Users', userID);
+  };  
 
 /*
-export const getCart = async (cartID) => {
-    const cartDoc = doc(db, 'Cart', cartID);
-    const cartSnapshot = await getDoc(cartDoc);
-    
-    return { ...cartSnapshot.data(), id: cartSnapshot.id };
-};
-
-export const getChat = async (chatID) => {
-    const chatDoc = doc(db, 'Chat', chatID);
-    const chatSnapshot = await getDoc(chatDoc);
-
-    return { ...chatSnapshot.data(), id: chatSnapshot.id };
-};
-
-export const getPurchaseHistory = async (purchaseID) => {
-    const purchaseDoc = doc(db, 'Purchase_History', purchaseID);
-    const purchaseSnapshot = await getDoc(purchaseDoc);
-  
-    return { ...purchaseSnapshot.data(), id: purchaseSnapshot.id };
-};
-
-export const getUser = async (userID) => {
-    const userDoc = doc(db, 'Users', userID);
-    const userSnapshot = await getDoc(userDoc);
-
-    return { ...userSnapshot.data(), id: userSnapshot.id };
-};
-
 //adding a new document to a collection
 export const toAddtoCollection = async (collName, data, docName) => {
     const coll = collection(db, collName);
