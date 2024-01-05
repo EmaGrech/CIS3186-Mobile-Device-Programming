@@ -12,7 +12,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = () => (
-  <Stack.Navigator initialRouteName="Home">
+  <Stack.Navigator initialRouteName="Home" headerMode="none">
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="List" component={ListScreen} />
     <Stack.Screen name="Info" component={InfoScreen} />
@@ -27,7 +27,7 @@ export default function App() {
         <Tab.Navigator>
           <Tab.Screen
             name="Home"
-            component={HomeScreen}
+            component={HomeStack}
             options={{
               tabBarIcon: ({ focused, color, size }) =>
                 focused == true ? (
