@@ -1,80 +1,27 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack"
 import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Login, Signup, Welcome } from "./screens";
+import AppNavigation from "./screens/AppNavigation";
 
-import HomeScreen from "./screens/HomeScreen";
-
-const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function App() {
+  
   return (
-    <>
-      <StatusBar style="auto" />
-      <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="shopping"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="shopping-outline"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-          <Tab.Screen
-            name="Cart"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="cart"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="cart-variant"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-          <Tab.Screen
-            name="Account"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="account"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="account-outline"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-        </Tab.Navigator>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName='Welcome'>
+        <Stack.Screen name="Welcome"component={Welcome}
+          options={{headerShown: false}}/>
+
+        <Stack.Screen name="Login" component={Login}
+          options={{headerShown: false}}/>
+
+        <Stack.Screen name="Signup" component={Signup}
+          options={{headerShown: false}}/>
+
+        <Stack.Screen name="AppNavigation" component={AppNavigation} options={{headerShown:false}}/>
+      </Stack.Navigator>
       </NavigationContainer>
-    </>
   );
 }
