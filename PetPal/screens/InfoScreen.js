@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image } from 'react-native';
-import { getProductDetails } from '../db';
+import { getDocument } from '../db';
 
 const InfoScreen = ({ route }) => {
   const { itemID } = route.params;
@@ -9,7 +9,7 @@ const InfoScreen = ({ route }) => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const details = await getProductDetails(itemID);
+        const details = await getDocument( 'Product_Details', itemID);
         setProductDetails(details);
         console.log('Fetched Product Details:', details);
       } catch (error) {
