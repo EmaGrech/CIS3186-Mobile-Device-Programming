@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { getProductDetails } from '../db';
 
 const InfoScreen = ({ route }) => {
@@ -8,22 +8,27 @@ const InfoScreen = ({ route }) => {
 
   useEffect(() => {
     const fetchProductDetails = async () => {
-      const details = await getProductDetails(itemID);
-      setProductDetails(details);
+      try {
+        const details = await getProductDetails(itemID);
+        setProductDetails(details);
+        console.log('Fetched Product Details:', details);
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
     };
 
     fetchProductDetails();
   }, [itemID]);
-
-  const { 'Product Name': productName, description, Image: image, price, stock } = productDetails;
+  
+  const { Product_Name: productName, Description, Image: image, Price, Stock } = productDetails || {};
 
   return (
     <View>
       <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       <Text>{productName}</Text>
-      <Text>{`Description: ${description}`}</Text>
-      <Text>{`Price: $${price}`}</Text>
-      <Text>{`Stock: ${stock}`}</Text>
+      <Text>{`Description: ${Description}`}</Text>
+      <Text>{`Price: $${Price}`}</Text>
+      <Text>{`Stock: ${Stock}`}</Text>
     </View>
   );
 };
