@@ -44,7 +44,7 @@ export const getCollFromFirestore = async (collName) => {
 
 //CONVERTING FIELD TYPES// 
 //defining field types
-const setFieldType = {
+export const setFieldType = {
     'Users': 
     {
         Username: 'string',
@@ -139,93 +139,35 @@ export const getProductDetails = async (productID) => {
     return getDocument('Users', userID);
   };  
 
-/*
-//adding a new document to a collection
-export const toAddtoCollection = async (collName, data, docName) => {
+
+//CREATING NEW DATABASE ENTRIES//
+//collecting information according to collection
+export const toAddtoCollection = async (collName, data) => {
     const coll = collection(db, collName);
-    const docRef = docName ? doc(coll, docName) : await addDoc(coll, data);
+    const docRef = await addDoc(coll, data);
+    
     //redirecting to the correct collection
-    switch (collName) {
-        case 'Cart':
-          await newCart(docRef.id); break;
-        case 'Chat':
-          await newChat(docRef.id); break;
-        case 'Product_Details':
-          await newProduct(docRef.id); break;
-        case 'Purchase_History':
-          await newPurchase(docRef.id); break;
-        case 'Users':
-          await newUser(docRef.id); break;
-      }
+    const collFields = {
+        'Cart': ['Order_ID', 'Product_ID', 'Total'],
+        'Chat': ['Message', 'Recipient_ID', 'Sender_ID', 'Timestamp'],
+        'Product_Details': ['Category', 'Description', 'Image', 'Price', 'Product_Name', 'Seller_ID', 'Stock'],
+        'Purchase_History': ['Date_of_Purchase', 'Order_ID'],
+        'Users': ['Account_Type', 'Email', 'Password', 'Profile_Picture', 'Username'],
+    };
+
+    const fields = collFields[collName];
+    setNewDocument(docRef, data, fields);
 };
 
-//creating the new object's fields and filling them in
-const newCart = async (docID, data) => {
-    const cartColl = collection(db, 'Cart');
-    const docRef = doc(cartColl, docID);
-    await setDoc(docRef, 
-        { 
-            'Order_ID': data.orderID,
-            'Produc_ ID': data.productID,
-            'Total': data.total,   
-        }
-    );
+//adding a new document to a collection
+const setNewDocument = async (docRef, data, fields) => {
+    const updateData = {};
+    fields.forEach(field => updateData[field] = data[field]);
+    await setDoc(docRef, updateData);
 };
 
-const newChat = async (docID, data) => {
-    const chatColl = collection(db, 'Chat');
-    const docRef = doc(chatColl, docID);
-    await setDoc(docRef, 
-        { 
-            'Message': data.message,
-            'Recipient_ID': data.recipientID,
-            'Sender_ID': data.senderID,
-            'Timestamp': data.timestamp,  
-        }
-    );
-};
-
-const newProduct = async (docID, data) => {
-    const productColl = collection(db, 'Product_Details');
-    const docRef = doc(productColl, docID);
-    await setDoc(docRef, 
-        { 
-            'Category': data.category,
-            'Description': data.description,
-            'Image': data.image,
-            'Price': data.price,
-            'Product_Name': data.productName,
-            'Seller_ID': data.sellerID,
-            'Stock': data.stock,
-        }
-    );
-};
-
-const newPurchase = async (docID, data) => {
-    const purchaseColl = collection(db, 'Purchase_History');
-    const docRef = doc(purchaseColl, docID);
-    await setDoc(docRef, 
-        { 
-            'Date_of_Purchase': data.dateOfPurchase,
-            'Order_ID': data.orderID,  
-        }
-    );
-};
-
-const newUser = async (docID, data) => {
-    const usersColl = collection(db, 'Users');
-    const docRef = doc(usersColl, docID);
-    await setDoc(docRef, 
-        { 
-            'Account_Type': data.accountType,
-            'Email': data.email,
-            'Password': data.password,
-            'Profile_Picture': data.profilePicture,
-            'Username': data.username,
-        }
-    );
-};
-
+/*
+//DELETION//
 //deleting a document from any collection
 export const toDelete = async (collName, id) => {
     const coll = collection(db, collName);
