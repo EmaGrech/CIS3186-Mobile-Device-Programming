@@ -7,6 +7,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HomeScreen from "./screens/HomeScreen";
 import ListScreen from "./screens/ListScreen";
 import InfoScreen from "./screens/InfoScreen";
+import FormScreen from "./screens/FormScreen";
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -16,6 +18,7 @@ const HomeStack = () => (
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="List" component={ListScreen} />
     <Stack.Screen name="Info" component={InfoScreen} />
+    <Stack.Screen name="Form" component={FormScreen} />
   </Stack.Navigator>
 );
 
