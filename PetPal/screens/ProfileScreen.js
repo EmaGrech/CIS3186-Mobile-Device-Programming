@@ -3,7 +3,7 @@ import { getUserProfile } from "../FirebaseConfig";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 
-function ProfileScreen({ route }) {
+function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
@@ -58,7 +58,7 @@ function ProfileScreen({ route }) {
             buttonColor="#323232"
             style={{ marginVertical: 20, marginHorizontal: 6 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => console.log("Go to edit screen")}
+            onPress={() => navigation.navigate("EditProfile")}
           >
             Edit Details
           </Button>
