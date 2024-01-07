@@ -1,80 +1,48 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-import { StatusBar } from "expo-status-bar";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider } from 'react-redux';
 
-import HomeScreen from "./screens/HomeScreen";
+import HomeScreen from './screens/HomeScreen';
+import SearchScreen from './screens/SearchScreen';
+import PickUpScreen from './screens/PickUpScreen';
+import ReceiptScreen from './screens/ReceiptScreen';
+import CartScreen from './screens/CartScreen';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import OrderScreen from './screens/OrderScreen';
 
-const Tab = createBottomTabNavigator();
+import store from './store';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <>
-      <StatusBar style="auto" />
+    <Provider store={store}>
       <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="shopping"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="shopping-outline"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-          <Tab.Screen
-            name="Cart"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="cart"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="cart-variant"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-          <Tab.Screen
-            name="Account"
-            component={HomeScreen}
-            options={{
-              tabBarIcon: ({ focused, color, size }) =>
-                focused == true ? (
-                  <MaterialCommunityIcons
-                    name="account"
-                    color={color}
-                    size={size}
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="account-outline"
-                    color={color}
-                    size={size}
-                  />
-                ),
-            }}
-          />
-        </Tab.Navigator>
+        <Stack.Navigator>
+          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Search" component={SearchScreen} />
+          <Stack.Screen name="PickUp" component={PickUpScreen} />
+          <Stack.Screen name="Receipt" component={ReceiptScreen} />
+          <Stack.Screen name="Cart" component={CartScreen} />
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Order" component={OrderScreen} options={{ headerShown: false }} />
+        </Stack.Navigator>
       </NavigationContainer>
-    </>
+      <StatusBar style="auto" />
+    </Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+});
