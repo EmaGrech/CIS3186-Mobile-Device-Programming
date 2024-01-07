@@ -15,16 +15,38 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ola.mysiukk.PetPal",
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.20353727286-7faesrdfkk0gj34hqh669d2bqmacg5h8"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.ola.mysiukk.PetPal"
+    },
+
+    "plugins": [
+      "@react-native-google-signin/google-signin"
+    ],
+
+    "web": {
+      "favicon": "./assets/favicon.png"},
+
+    "extra": {
+      "eas": {
+        "projectId": "a8cae4de-b689-4276-bbf6-160a0218542b"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "scheme": "com.ola.mysiukk.PetPal"
   }
 }

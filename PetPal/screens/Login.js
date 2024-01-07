@@ -1,14 +1,58 @@
 import { View, Text, Image , Pressable, TextInput, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from '../components/Button';
-import { StyleSheet } from 'react-native';
+import { StyleSheet} from 'react-native';
 import HorizontalLineWithText from '../components/HorizontalLine';
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation }) => {
     const [isPasswordShown, setIsPasswordShown] = useState(false);
+    const [userInfo, setUserInfo] = useState(null);
+    const [request, response, promptAsync] = Google.useAuthRequest({
+        androidClientId:"20353727286-5laa42lt86imibpkut4av1ni9fg6q9h2.apps.googleusercontent.com",
+        iosClientId:"20353727286-7faesrdfkk0gj34hqh669d2bqmacg5h8.apps.googleusercontent.com",
+        webClientId:"20353727286-t28lu04i456pbogu6sh6fidnmep6as5b.apps.googleusercontent.com"
+    });
 
+    useEffect(() => {
+        handleSignInWithGoogle();
+    },[response])
+
+    async function handleSignInWithGoogle(){
+        const user = await AsyncStorage.getItem("@user");
+        if(!user){
+            if(response?.type === "success"){
+            await getUserInfo(response.authentication.accessToken);}
+        }else{
+            setUserInfo(JSON.parse(user));
+        }
+    }
+
+    const getUserInfo = async(token) => {
+        if(!token) return;
+        try{
+            const response = await fetch("https://www.googleapis.com/oauth2/v1/userinfo",
+            {
+                headers: {Authorization: `Bearer ${token}`},
+            });
+
+            const user = await response.json();
+            await AsyncStorage.setItem("@user", JSON.stringify(user));
+            setUserInfo(user);
+        }catch(error){
+            Alert.alert("Oops, something went wrong");
+        console.log(error);}
+    }
+
+    const clearLocalStorage = () => {
+        AsyncStorage.removeItem("@user");}
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logoContainer}>
@@ -84,8 +128,9 @@ const Login = ({ navigation }) => {
             <HorizontalLineWithText text="or"/>
             </View>
             <View style={styles.singleSignOnButton}>
-                <Button title="Use Single Sign On"></Button>
+                <Button title="Use Single Sign On" onPress={promptAsync}></Button>
             </View>
+            <Text>{JSON.stringify(userInfo)}</Text>
     </SafeAreaView>
     );
 };
