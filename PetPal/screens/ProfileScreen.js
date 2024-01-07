@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { getUserProfile } from "../FirebaseConfig";
 import { StyleSheet, View, Text, Image } from "react-native";
+import { Button } from "react-native-paper";
 
-function ProfileScreen() {
+function ProfileScreen({ route }) {
+  // personalProfile is used to determine whether the user is
+  // viewing their own profile or someone else's
+  const { id, personalProfile } = route.params;
   const [user, setUser] = useState([]);
 
   const getDataFromFirestore = async () => {
     try {
-      // using dummy account for now
-      const data = await getUserProfile("1");
+      const data = await getUserProfile(JSON.stringify(id));
       setUser(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -30,18 +33,57 @@ function ProfileScreen() {
           <Text style={styles.itemText}>{user.Description}</Text>
         </View>
       </View>
-      {user.Account_Type !== "User" && (
+      {user.Account_Type !== "Consumer" && (
         <>
           <Text style={styles.header}>Activities / Services</Text>
           {/* <HorizontalLineWithText text={"Activities / Services"} /> */}
           <View style={styles.activityList}>
-            {user.Activities.map((activity, index) => (
-              <View key={index} style={styles.listItem}>
-                <Text>{activity}</Text>
-              </View>
-            ))}
+            {user.Activities != null ? (
+              user.Activities.map((activity, index) => (
+                <View key={index} style={styles.listItem}>
+                  <Text>{activity}</Text>
+                </View>
+              ))
+            ) : (
+              <Text>No Activities have been set</Text>
+            )}
           </View>
         </>
+      )}
+
+      {personalProfile ? (
+        <View style={styles.btnContainer}>
+          <Button
+            mode="contained"
+            buttonColor="#323232"
+            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            labelStyle={{ fontSize: 16 }}
+            onPress={() => console.log("Go to edit screen")}
+          >
+            Edit Details
+          </Button>
+          <Button
+            mode="contained"
+            buttonColor="#323232"
+            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            labelStyle={{ fontSize: 16 }}
+            onPress={() => console.log("Pressed Log Out Btn")}
+          >
+            Log Out
+          </Button>
+        </View>
+      ) : (
+        <View style={styles.centralisedContainer}>
+          <Button
+            mode="contained"
+            buttonColor="#323232"
+            style={{ marginVertical: 15 }}
+            labelStyle={{ fontSize: 16 }}
+            onPress={() => console.log("Pressed Message Btn")}
+          >
+            Message {user.Username}
+          </Button>
+        </View>
       )}
     </View>
   );
@@ -95,6 +137,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 20,
     marginHorizontal: 20,
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
 

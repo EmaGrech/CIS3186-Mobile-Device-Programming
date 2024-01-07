@@ -2,33 +2,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Appbar } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import HomeScreen from "./screens/HomeScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import CustomAppBar from "./components/CustomAppBar";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-function CustomAppBar({ navigation }) {
-  return (
-    <Appbar.Header style={{ backgroundColor: "#A9D3FF", elevation: 2 }}>
-      <Appbar.Content title="PetPal" color="black" />
-      <Appbar.Action
-        icon="account"
-        color="black"
-        onPress={() => navigation.navigate("Profile")}
-      />
-      <Appbar.Action
-        icon="shopping-search"
-        color="black"
-        onPress={() => console.log("Navigate to Search screen")}
-      />
-    </Appbar.Header>
-  );
-}
 
 function BottomNavigation() {
   return (
