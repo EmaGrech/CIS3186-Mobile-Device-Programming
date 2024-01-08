@@ -1,5 +1,5 @@
 import {initializeApp} from 'firebase/app'
-import {getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc} from 'firebase/firestore'
+import {getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc, updateDoc, serverTimestamp} from 'firebase/firestore'
 
 const firebaseConfig = {
     apiKey: "AIzaSyCsgAil9Eviz-Ra4yujHnk3adAIoBpNHtA",
@@ -166,11 +166,19 @@ const setNewDocument = async (docRef, data, fields) => {
     await setDoc(docRef, updateData);
 };
 
-/*
 //DELETION//
 //deleting a document from any collection
-export const toDelete = async (collName, id) => {
+export const toDelete = async (collName, docID) => {
     const coll = collection(db, collName);
-    const docRef = doc(coll, id);
+    const docRef = doc(coll, docID);
     deleteDoc(docRef);
-};*/
+};
+
+//UPDATING//
+//allows for documents to be edited
+export const toUpdateDocument = async (collName, docID, updatedData) => {
+    const coll = collection(db, collName);
+    const docRef = doc(coll, docID);
+
+    await updateDoc(docRef, updatedData);
+};
