@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
-import { getDocument } from '../db';
+import { View, Text, Image, Button } from 'react-native';
+import { getDocument, toDelete } from '../db';
 
-const InfoScreen = ({ route }) => {
+const InfoScreen = ({ route, navigation }) => {
   const { itemID } = route.params;
   const [productDetails, setProductDetails] = useState(null);
 
@@ -22,6 +22,11 @@ const InfoScreen = ({ route }) => {
   
   const { Product_Name: productName, Description, Image: image, Price, Stock } = productDetails || {};
 
+  const handleDelete = () => {
+    toDelete('Product_Details', itemID);
+    navigation.goBack(); 
+  };
+
   return (
     <View>
       <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
@@ -29,6 +34,7 @@ const InfoScreen = ({ route }) => {
       <Text>{`Description: ${Description}`}</Text>
       <Text>{`Price: $${Price}`}</Text>
       <Text>{`Stock: ${Stock}`}</Text>
+      <Button title="Delete" onPress={handleDelete} />
     </View>
   );
 };
