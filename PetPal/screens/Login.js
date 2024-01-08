@@ -53,6 +53,7 @@ const Login = ({ navigation }) => {
 
     const clearLocalStorage = () => {
         AsyncStorage.removeItem("@user");}
+        
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.logoContainer}>

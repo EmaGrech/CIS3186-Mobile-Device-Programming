@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import HomeScreen from "./HomeScreen";
+import Chat from "./Chat";
 
 const Tab = createBottomTabNavigator();
 
@@ -66,6 +67,26 @@ export default function AppNavigation() {
                 ) : (
                   <MaterialCommunityIcons
                     name="account-outline"
+                    color={color}
+                    size={size}
+                  />
+                ),
+            }}
+          />
+          <Tab.Screen
+            name="Chat"
+            component={Chat}
+            options={{
+              tabBarIcon: ({ focused, color, size }) =>
+                focused == true ? (
+                  <MaterialCommunityIcons
+                    name="chat"
+                    color={color}
+                    size={size}
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="chat-outline"
                     color={color}
                     size={size}
                   />
