@@ -47,7 +47,7 @@ const ListScreen = () => {
           { label: 'Accessories', value: 'Accessories' },
           { label: 'Supplies', value: 'Supplies' },
           { label: 'Food', value: 'Food' },
-          { label: 'Pet Essentials', value: 'Pet Essentials' },
+          { label: 'Toys', value: 'Toys' },
         ]}
         placeholder={{ label: 'All', value: null }}
         value={filter}
