@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
-import { setFieldType, toAddtoCollection } from '../db';
+import React, { useEffect, useState } from 'react';
+import { setFieldType, toAddtoCollection,toUpdateDocument } from '../db';
 import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 
-const FormScreen = ({ collName = "Product_Details" }) => {
-  
+const FormScreen = ({ collName = 'Product_Details', editMode = false, initialData = {} }) => {
   const fieldTypes = setFieldType[collName];
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData((prevData) => ({
+        ...prevData,
+        ...initialData,
+      }));
+    }
+  }, [initialData]);
 
   const [formData, setFormData] = useState(() => {
       const initialData = {};
@@ -21,8 +29,27 @@ const FormScreen = ({ collName = "Product_Details" }) => {
     });
   };
 
+  const validation = () => {
+    const empty = Object.entries(fieldTypes)
+      .filter(([fieldName, fieldType]) => fieldType === 'string' && formData[fieldName] === '')
+      .map(([fieldName]) => fieldName);
+
+    if (empty.length > 0) {
+      Alert.alert(`Please fill in all fields: ${empty.join(', ')}`);
+      return false;
+    }
+
+    return true;
+  };
+
   const submit = () => {
-      toAddtoCollection(collName, formData);
+    if (validation()) {
+      if (editMode) {
+        toUpdateDocument(collName, initialData.id, formData);
+      } else {
+        toAddtoCollection(collName, formData);
+      }
+    }
   };
 
   return (
