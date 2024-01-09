@@ -57,8 +57,10 @@ export const setFieldType = {
     },
     'Purchase_History':
     {
-        Date_of_Purchase: 'string',
-        Order_ID: 'string',
+        order:{
+            Date_of_Purchase: 'timestamp',
+            Items: 'string[]'
+        }   
     },
     'Product_Details': 
     {
@@ -68,13 +70,13 @@ export const setFieldType = {
         Image: 'string',
         Price: 'float',
         Seller_ID: 'string',
-        Stock: 'string',
+        Stock: 'int',
     },
     'Cart':
     {
         Order_ID: 'string',
-        Product_ID: 'string',
-        Total: 'string',
+        Product_ID: 'string[]',
+        Total: 'float',
     },
     'Chat':
     {
@@ -89,14 +91,18 @@ export const setFieldType = {
 const typeConversion = (data, expected) => {
     switch(expected)
     {
+        case 'int':
+            return parseInt(data) || 0;
         case 'float':
-            return parseFloat(data) || 0.0;
+            return parseFloat(data) || 0.00;
         case 'string':
             return String(data);
         case 'string[]':
             return Array.isArray(data) ? data.map(String) : [];
+        case 'timestamp':
+            return data ? data.toDate() : null;
         default:
-            console.warn('Error in typeConversion method');
+        console.warn('Error in typeConversion method');
     }
 }
 
@@ -181,4 +187,42 @@ export const toUpdateDocument = async (collName, docID, updatedData) => {
     const docRef = doc(coll, docID);
 
     await updateDoc(docRef, updatedData);
+};
+
+//COLLECTION SPECIFIC FUNCTIONS//
+//move cart to purchase history
+export const moveCartToPurchaseHistory = async (userID) => {
+    const cartColl = collection(db, 'Cart');
+    const userCartDocRef = doc(cartColl, userID);
+  
+    const cartSnapshot = await getDoc(userCartDocRef);
+    const cartData = cartSnapshot.data();
+  
+    if (cartData) {
+      const purchaseHistoryColl = collection(db, 'Purchase_History');
+      const orderID = cartData.Order_ID; 
+  
+      const orderDocRef = doc(purchaseHistoryColl, orderID);
+      const purchaseTimestamp = {
+        Date_of_Purchase: serverTimestamp(),
+        Items: {}, 
+      };
+  
+      for (const productID of cartData.Product_ID) {
+        const productDetails = await getDocument(Product_Details, productID);
+  
+        if (productDetails) {
+          purchaseTimestamp.Items[productID] = {
+            ...productDetails,
+            Date_of_Purchase: serverTimestamp(),
+          };
+
+          await updateDoc(userCartDocRef, {
+            Product_ID: [...cartData.Product_ID.filter(id => id !== productID)],
+          });
+        }
+      }
+  
+      await setDoc(orderDocRef, purchaseTimestamp);
+    }
 };
