@@ -6,13 +6,14 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
   const fieldTypes = setFieldType[collName];
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && Object.keys(initialData).length > 0) {
       setFormData((prevData) => ({
         ...prevData,
         ...initialData,
       }));
     }
   }, [initialData]);
+  
 
   const [formData, setFormData] = useState(() => {
       const initialData = {};
@@ -53,30 +54,64 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
   };
 
   return (
-    <View>
+    <View style={{ padding: 20 }}>
       {Object.entries(fieldTypes).map(([fieldName, fieldType]) => (
-        <View key={fieldName}>
-          <Text>
-            {fieldName}:
-            {fieldType === 'string' ? (
-              <TextInput
-                value={formData[fieldName]}
-                onChangeText={(text) => currentInputs(fieldName, text)}
-              />
-            ) : fieldType === 'float' ? (
-              <TextInput
-                value={formData[fieldName]}
-                onChangeText={(text) => currentInputs(fieldName, text)}
-                keyboardType="numeric"
-              />
-            ) : null}
-          </Text>
+        <View key={fieldName} style={{ marginBottom: 10 }}>
+          {fieldType === 'string' ? (
+            <TextInput
+              style={styles.input}
+              value={formData[fieldName]}
+              onChangeText={(text) => currentInputs(fieldName, text)}
+              placeholder={`${fieldName}`}
+              placeholderTextColor="gray"
+              multiline={true}
+              mode="outlined"
+            />
+          ) : fieldType === 'float' ? (
+            <TextInput
+              style={[styles.input, { keyboardType: 'numeric' }]}
+              value={formData[fieldName]}
+              onChangeText={(text) => currentInputs(fieldName, text)}
+              placeholder={`${fieldName}`}
+              placeholderTextColor="gray"
+              keyboardType="numeric"
+              mode="outlined"
+            />
+          ) : fieldType === 'int' ? (
+            <TextInput
+              style={[styles.input, { keyboardType: 'numeric' }]}
+              value={formData[fieldName]}
+              onChangeText={(text) => currentInputs(fieldName, text)}
+              placeholder={`${fieldName}`}
+              placeholderTextColor="gray"
+              keyboardType="numeric"
+              mode="outlined"
+            />
+          ) : null}
         </View>
       ))}
-      <TouchableOpacity onPress={submit}>
-        <Text>Save</Text>
+      <TouchableOpacity onPress={submit} style={styles.button}>
+        <Text style={{ color: 'white' }}>Save</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = {
+  input: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 5,
+    height: 40, 
+    marginBottom: 5,
+    borderRadius: 10,
+  },
+  button: {
+    backgroundColor: '#70afe6',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 25,
+  },
+};
+
 export default FormScreen;
