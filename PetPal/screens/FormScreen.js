@@ -60,7 +60,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
         <View key={fieldName} style={{ marginBottom: 10 }}>
           {fieldType === 'string' ? (
             <TextInput
-              style={style.input}
+              style={style.formInput}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -70,7 +70,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
             />
           ) : fieldType === 'float' ? (
             <TextInput
-              style={[style.input, { keyboardType: 'numeric' }]}
+              style={[style.formInput, { keyboardType: 'numeric' }]}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -80,7 +80,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
             />
           ) : fieldType === 'int' ? (
             <TextInput
-              style={[style.input, { keyboardType: 'numeric' }]}
+              style={[style.formInput, { keyboardType: 'numeric' }]}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -91,7 +91,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
           ) : null}
         </View>
       ))}
-      <TouchableOpacity onPress={submit} style={style.button}>
+      <TouchableOpacity onPress={submit} style={style.formButton}>
         <Text style={{ color: 'white' }}>Save</Text>
       </TouchableOpacity>
     </View>
