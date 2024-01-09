@@ -2,12 +2,16 @@ import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 import DropDown from "../components/Dropdown";
 import { UserCategories } from "../Categories";
+import UploadImage from "../components/UploadImage";
 
 function EditProfileScreen({ route }) {
   const user = route.params;
 
   return (
     <View style={styles.root}>
+      <View style={{ alignItems: "center" }}>
+        <UploadImage src={user.Profile_Picture} />
+      </View>
       <DropDown data={UserCategories} />
       {/* <TextInput
           mode="outlined"
