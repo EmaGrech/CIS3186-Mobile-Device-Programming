@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { getCollFromFirestore } from "../db";
+import style from '../style';
 import RNPickerSelect from 'react-native-picker-select';
 
 const ListScreen = () => {
@@ -40,7 +41,7 @@ const ListScreen = () => {
   };
 
   return (
-    <View>
+    <View style={style.container}>
       <RNPickerSelect
         onValueChange={(value) => handleFilter(value)}
         items={[
@@ -58,9 +59,12 @@ const ListScreen = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleSelect(item.id)}>
-            <View>
-              <Image source={{ uri: item.Image }} style={{ width: 100, height: 100 }} />
-              <Text>{item["Product_Name"]}</Text>
+            <View style={style.listItemContainer}>
+              <Image source={{ uri: item.Image }} style={style.image} />
+              <View style={style.textContainer}>
+                <Text style={style.productName} numberOfLines={2}>{item["Product_Name"]}</Text>
+                <Text style={style.price}>{`€${item["Price"].toFixed(2)}`}</Text>
+              </View>
             </View>
           </TouchableOpacity>
         )}
