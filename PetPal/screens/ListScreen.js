@@ -41,7 +41,7 @@ const ListScreen = () => {
   };
 
   return (
-    <View style={style.container}>
+    <View style={style.listContainer}>
       <RNPickerSelect
         onValueChange={(value) => handleFilter(value)}
         items={[
@@ -60,10 +60,10 @@ const ListScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleSelect(item.id)}>
             <View style={style.listItemContainer}>
-              <Image source={{ uri: item.Image }} style={style.image} />
-              <View style={style.textContainer}>
-                <Text style={style.productName} numberOfLines={2}>{item["Product_Name"]}</Text>
-                <Text style={style.price}>{`€${item["Price"].toFixed(2)}`}</Text>
+              <Image source={{ uri: item.Image }} style={style.listImage} />
+              <View style={style.listTextContainer}>
+                <Text style={style.listProductName} numberOfLines={2}>{item["Product_Name"]}</Text>
+                <Text style={style.listPrice}>{`€${item["Price"].toFixed(2)}`}</Text>
               </View>
             </View>
           </TouchableOpacity>
