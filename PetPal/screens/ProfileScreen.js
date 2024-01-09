@@ -3,12 +3,24 @@ import { useEffect, useState } from "react";
 import { getUserProfile } from "../FirebaseConfig";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
+import { signOut } from "firebase/auth";
+import { auth } from "../FirebaseConfig";
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
   const [user, setUser] = useState([]);
+
+  const signOutUser = () => {
+    signOut(auth)
+      .then(() => {
+        navigation.replace("Login");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getDataFromFirestore = async () => {
     try {
@@ -78,7 +90,7 @@ function ProfileScreen({ navigation, route }) {
             buttonColor="#323232"
             style={{ marginVertical: 20, marginHorizontal: 6 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => console.log("Pressed Log Out Btn")}
+            onPress={signOutUser}
           >
             Log Out
           </Button>

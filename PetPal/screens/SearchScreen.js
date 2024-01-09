@@ -114,6 +114,7 @@ const SearchScreen = () => {
   console.log(product);
   const services = [
     //https:/drive.google.com/file/d/1TrdyJ07jDGXfEvg22sz_VVALRu2i1wJA/view?usp=drive_link
+
     {
       id: "0", //check if id is supposed to be a string or num because in the new database it is a number. In mobile prog database, they r strings
       Seller_ID: "9bWfTkhlHBt3WhGo95pe", //they all used to be 1
@@ -127,6 +128,7 @@ const SearchScreen = () => {
       Product_Name: "Hair Remover Brush ",
       Stock: 23,
     },
+
     {
       id: "1",
       Seller_ID: "MBdTsPj8xzUzUb8ck7J2",
@@ -155,7 +157,7 @@ const SearchScreen = () => {
     },
     {
       id: "3",
-      Seller_ID: "",
+      Seller_ID: "SpC8XkujwrTVpJrZRLuXAAdPpcb2",
       Category: "Toys",
       Description:
         "• 4-Layer Track Space Tower :The tower has four layers, providing cats with multiple levels to play and exercise.   \n• Replaceable Feather Head :The feather head can be easily replaced, ensuring that the toy remains durable and entertaining for cats.    \n• Rotating Ball :The ball rotates, making it an interesting and engaging toy for cats to play with.    \n• Self-Entertaining :The toy is designed to be self-entertaining, providing cats with hours of fun and entertainment.",
@@ -166,7 +168,7 @@ const SearchScreen = () => {
       Product_Name: "4-Layer Track Space Tower Cat Toy",
       Stock: 25,
     },
-    /*
+
     {
       id: "4",
       Seller_ID: "SpC8XkujwrTVpJrZRLuXAAdPpcb2",
@@ -179,7 +181,7 @@ const SearchScreen = () => {
       Quantity: 0,
       Product_Name: "Cat Harness Adjustable Vest",
       Stock: 19,
-    }, */
+    },
 
     {
       id: "5",
@@ -194,7 +196,7 @@ const SearchScreen = () => {
       Product_Name: "EPI Biodegradable Pet Garbage Bag Dispenser",
       Stock: 12,
     },
-    /*
+
     {
       id: "6",
       Seller_ID: "SpC8XkujwrTVpJrZRLuXAAdPpcb2",
@@ -206,20 +208,20 @@ const SearchScreen = () => {
       Price: 34.99,
       Quantity: 0,
       Product_Name: "Spring Summer Breathable Dog Lace Princess Plaid Skirt",
-      Stock: 12,
-    }, */
-
+      Stock: 14,
+    },
     /*
     {
       id: "3",
       Seller_ID: "I9tFzfmPLLgxSi9jVBL",
       Category: "Pet Essentials",
-      Description: "Features: Made of long plush, super soft and super warm.  Comfortable touch, 4 cm long plush hair, pets love to sleep on it.  Pure color with cute design, it is a nice looking bed.  Portable and lightweight. Easy to clean and wash.  Non-toxic material with no smell, pets will easily adjust to it.  Specifications: Material: Long Plush  Colors: Pink, Gray, White, Light Gray, Brown  Sizes: S Diameter 40cm  M Diameter 50cm  L Diameter 60cm  XL Diameter 70cm  XXL Diameter 80cm  XXXL Diameter 100cm  Package Included: 1 x Pet Round Bed  Note: Please allow 1-3cm error due to manual measurement and make sure you do not mind before ordering. Please understand that colors may exist chromatic aberration as the different placement of pictures.",
+      Description:
+        "Features: Made of long plush, super soft and super warm.  Comfortable touch, 4 cm long plush hair, pets love to sleep on it.  Pure color with cute design, it is a nice looking bed.  Portable and lightweight. Easy to clean and wash.  Non-toxic material with no smell, pets will easily adjust to it.  Specifications: Material: Long Plush  Colors: Pink, Gray, White, Light Gray, Brown  Sizes: S Diameter 40cm  M Diameter 50cm  L Diameter 60cm  XL Diameter 70cm  XXL Diameter 80cm  XXXL Diameter 100cm  Package Included: 1 x Pet Round Bed  Note: Please allow 1-3cm error due to manual measurement and make sure you do not mind before ordering. Please understand that colors may exist chromatic aberration as the different placement of pictures.",
       Image: "https://cdn-icons-png.flaticon.com/128/4643/4643574.png",
       Price: 45,
       Quantity: 0,
       Product_Name: "Pet Dog Donut Bed",
-      Stock: 8
+      Stock: 8,
     }, */
   ];
 
