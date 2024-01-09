@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, Button } from 'react-native';
+import { View, Text, Image, Button, ScrollView } from 'react-native';
 import { getDocument, toDelete } from '../db';
 
 const InfoScreen = ({ route, navigation }) => {
@@ -28,14 +28,14 @@ const InfoScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View>
+    <ScrollView>
       <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
       <Text>{productName}</Text>
       <Text>{`Description: ${Description}`}</Text>
-      <Text>{`Price: $${Price}`}</Text>
+      <Text>{`Price: €${Price}`}</Text>
       <Text>{`Stock: ${Stock}`}</Text>
       <Button title="Delete" onPress={handleDelete} />
-    </View>
+    </ScrollView>
   );
 };
 
