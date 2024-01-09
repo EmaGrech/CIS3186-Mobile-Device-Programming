@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setFieldType, toAddtoCollection,toUpdateDocument } from '../db';
+import style from '../style';
 import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 
 const FormScreen = ({ collName = 'Product_Details', editMode = false, initialData = {} }) => {
@@ -59,7 +60,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
         <View key={fieldName} style={{ marginBottom: 10 }}>
           {fieldType === 'string' ? (
             <TextInput
-              style={styles.input}
+              style={style.input}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -69,7 +70,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
             />
           ) : fieldType === 'float' ? (
             <TextInput
-              style={[styles.input, { keyboardType: 'numeric' }]}
+              style={[style.input, { keyboardType: 'numeric' }]}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -79,7 +80,7 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
             />
           ) : fieldType === 'int' ? (
             <TextInput
-              style={[styles.input, { keyboardType: 'numeric' }]}
+              style={[style.input, { keyboardType: 'numeric' }]}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
@@ -90,28 +91,11 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
           ) : null}
         </View>
       ))}
-      <TouchableOpacity onPress={submit} style={styles.button}>
+      <TouchableOpacity onPress={submit} style={style.button}>
         <Text style={{ color: 'white' }}>Save</Text>
       </TouchableOpacity>
     </View>
   );
-};
-
-const styles = {
-  input: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    padding: 5,
-    height: 40, 
-    marginBottom: 5,
-    borderRadius: 10,
-  },
-  button: {
-    backgroundColor: '#70afe6',
-    padding: 10,
-    alignItems: 'center',
-    borderRadius: 25,
-  },
 };
 
 export default FormScreen;
