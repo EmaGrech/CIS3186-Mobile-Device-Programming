@@ -2,156 +2,199 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
+  TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   TextInput,
   Pressable,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Button from "../components/Button";
 import React, { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../FirebaseConfig";
+import HorizontalLineWithText from "../components/HorizontalLine";
+
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [loading,setLoading] = useState(false);
-  const [password, setPassword] = useState("");
+  const [Email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [Password, setPassword] = useState("");
+  //password shown added by A
+  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
     setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if(!authUser){
+      if (!authUser) {
         setLoading(false);
+        console.log("User not logged in");
       }
-      if(authUser){
-        navigation.replace("Home");
+      if (authUser) {
+        console.log("User logged in:", authUser);
+        navigation.replace("Discover");
       }
     });
 
     return unsubscribe;
-  },[])
-  
+  }, []);
+
   const login = () => {
-    signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
-      console.log("user credential",userCredential);
-      const user = userCredential.user;
-      console.log("user details",user)
-    })
-  }
+    signInWithEmailAndPassword(auth, Email, Password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("User details:", user);
+        navigation.replace("Discover");
+      })
+      .catch((error) => {
+        console.error("Login failed:", error.code, error.message);
+      });
+  };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        alignItems: "center",
-        padding: 10,
-      }}
-    >
-      {loading ? (
-        <View style={{alignItems:"center",justifyContent:"center",flexDirection:"row",flex:1}}>
-          <Text style={{marginRight:10}}>Loading</Text>
-          <ActivityIndicator size="large" color={"red"}/>
-        </View>
-      ) : (
-        <KeyboardAvoidingView>
-        <View
+    <SafeAreaView style={styles.container}>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("../assets/PetPalLogo.png")}
           style={{
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 100,
+            height: 120,
+            width: 210,
+            resizeMode: "contain",
           }}
-        >
-          <Text style={{ fontSize: 20, color: "#662d91", fontWeight: "bold" }}>
-            Sign In
-          </Text>
+        />
+        <View style={styles.petPalTextContainer}>
+          <Text style={{ fontSize: 15 }}>PetPal</Text>
+        </View>
+      </View>
 
-          <Text style={{ fontSize: 18, marginTop: 8, fontWeight: "600" }}>
-            Sign In to your account
-          </Text>
+      <View style={styles.CreateYourAccountTextContainer}>
+        <Text style={{ fontSize: 30 }}>Welcome Back!</Text>
+      </View>
+
+      <View style={styles.inputContainer}>
+        <View style={styles.inputTextContainer}>
+          <TextInput
+            placeholder="Enter your email"
+            // adding my logic
+            value={Email}
+            onChangeText={(text) => setEmail(text)}
+            // end
+            placeholderTextColor="black"
+            style={{
+              width: "100%",
+            }}
+          />
         </View>
 
-        <View style={{ marginTop: 50 }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <MaterialCommunityIcons
-              name="email-outline"
-              size={24}
-              color="black"
-            />
-            <TextInput
-              placeholder="Email"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              placeholderTextColor="black"
-              style={{
-                fontSize: email ? 18 : 18,
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginLeft: 13,
-                width: 300,
-                marginVertical: 10,
-              }}
-            />
-          </View>
-
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name="key-outline" size={24} color="black" />
-            <TextInput
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry={true}
-              placeholder="Password"
-              placeholderTextColor="black"
-              style={{
-                fontSize: password ? 18 : 18,
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-                marginLeft: 13,
-                width: 300,
-                marginVertical: 20,
-              }}
-            />
-          </View>
-
-          <Pressable
-          onPress={login}
+        <View style={styles.inputTextContainer}>
+          <TextInput
+            // adding my logic
+            value={Password}
+            onChangeText={(text) => setPassword(text)}
+            //end
+            placeholder="Enter your password"
+            placeholderTextColor="black"
+            secureTextEntry={isPasswordShown}
             style={{
-              width: 200,
-              backgroundColor: "#318CE7",
-              padding: 15,
-              borderRadius: 7,
-              marginTop: 50,
-              marginLeft: "auto",
-              marginRight: "auto",
+              width: "100%",
+            }}
+          />
+
+          <TouchableOpacity
+            onPress={() => setIsPasswordShown(!isPasswordShown)}
+            style={{
+              position: "absolute",
+              right: 12,
             }}
           >
-            <Text style={{ fontSize: 18, textAlign: "center", color: "white" }}>
-              Login
-            </Text>
-          </Pressable>
-
-          <Pressable onPress={() => navigation.navigate("Register")} style={{ marginTop: 20 }}>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 17,
-                color: "gray",
-                fontWeight: "500",
-              }}
-            >
-              Don't have a account? Sign Up
-            </Text>
-          </Pressable>
+            {isPasswordShown ? (
+              <Ionicons name="eye-off" size={24} color="black" />
+            ) : (
+              <Ionicons name="eye" size={24} color="black" />
+            )}
+          </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
-      )}
+      </View>
+      <View style={styles.buttonContainer}>
+        <Button title="Continue" onPress={login} />
+      </View>
+      <View style={styles.loginContainer}>
+        <Text style={{ fontSize: 16 }}>Aren't registered yet?</Text>
+        <Pressable onPress={() => navigation.navigate("Register")}>
+          <Text style={styles.loginTextContainer}>Sign Up</Text>
+        </Pressable>
+      </View>
+      <View style={{ top: 60 }}>
+        <HorizontalLineWithText text="or" />
+      </View>
+      <View style={styles.singleSignOnButton}>
+        <Button title="Use Single Sign On"></Button>
+      </View>
     </SafeAreaView>
   );
 };
 
-export default LoginScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoContainer: {
+    position: "absolute",
+    top: 100,
+    left: 240,
+    marginBottom: 60,
+  },
+  petPalTextContainer: {
+    top: -70,
+    left: 40,
+  },
+  CreateYourAccountTextContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  inputContainer: {
+    justifyContent: "center",
+    marginBottom: 20,
+    marginTop: 50,
+    width: "80%",
+  },
+  inputTextContainer: {
+    width: "100%",
+    height: 48,
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingLeft: 22,
+    marginBottom: 10,
+  },
+  buttonContainer: {
+    width: "40%",
+    justifyContent: "center",
+  },
+  loginContainer: {
+    flexDirection: "row",
+    marginTop: 12,
+    justifyContent: "center",
+  },
+  loginTextContainer: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 4,
+  },
+  singleSignOnButton: {
+    top: 130,
+    width: "80%",
+    justifyContent: "center",
+  },
+});
 
-const styles = StyleSheet.create({});
+export default LoginScreen;
