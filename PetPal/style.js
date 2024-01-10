@@ -32,36 +32,24 @@ const styles = StyleSheet.create({
         height: 40,
         marginBottom: 5,
         borderRadius: 10,
+        width: 280,
     },
     formButton: {
         backgroundColor: '#70afe6',
         padding: 10,
         alignItems: 'center',
         borderRadius: 25,
+        width: 100,
     },
-    infoContainer: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 20,
+    formContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    infoImage: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-    },
-    infoProductName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    },
-    infoDescription: {
-    marginBottom: 10,
-    },
-    infoPrice: {
-    marginBottom: 10,
-    },
-    infoStock: {
-    marginBottom: 20,
+    formTitle: {
+        padding: 20,
+        fontSize: 20,
+        fontWeight: 'bold',
     },
 });
 
