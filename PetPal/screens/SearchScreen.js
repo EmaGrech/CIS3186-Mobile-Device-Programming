@@ -315,7 +315,7 @@ const SearchScreen = () => {
       {total === 0 ? null : (
         <Pressable
           style={{
-            backgroundColor: "#088F8F",
+            backgroundColor: "#A9D3FF",
             padding: 10,
             marginBottom: 40,
             margin: 15,
