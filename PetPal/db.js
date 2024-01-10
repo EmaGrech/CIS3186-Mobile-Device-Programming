@@ -1,5 +1,6 @@
 import {initializeApp} from 'firebase/app'
-import {getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc, updateDoc, serverTimestamp} from 'firebase/firestore'
+import {getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc, updateDoc, setDoc, serverTimestamp} from 'firebase/firestore'
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCsgAil9Eviz-Ra4yujHnk3adAIoBpNHtA",
@@ -12,6 +13,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
+const auth = getAuth(app);
+
+export { auth };
 
 //LOADING//
 //loading an entire specified collection 
@@ -49,11 +53,11 @@ export const setFieldType = {
     {
         Username: 'string',
         Password: 'string',
-        Profile_Picture: 'string',
+        Profile_Picture: 'image',
         Email: 'string',
         Description: 'string',
-        Account_Type: 'string',
-        Actvities: 'string[]',
+        Account_Type: 'drop',
+        Actvities: 'drop[]',
     },
     'Purchase_History':
     {
@@ -65,9 +69,9 @@ export const setFieldType = {
     'Product_Details': 
     {
         Product_Name: 'string',
-        Category: 'string',
+        Category: 'drop',
         Description: 'string',
-        Image: 'string',
+        Image: 'image',
         Price: 'float',
         Seller_ID: 'string',
         Stock: 'int',
@@ -96,9 +100,9 @@ const typeConversion = (data, expected) => {
             return parseInt(data) || 0;
         case 'float':
             return parseFloat(data) || 0.00;
-        case 'string':
+        case 'string' || 'image' || 'drop':
             return String(data);
-        case 'string[]':
+        case 'string[]' || 'drop[]':
             return Array.isArray(data) ? data.map(String) : [];
         case 'timestamp':
             return data ? data.toDate() : null;
