@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
-function DropDown({ data }) {
+function DropDown({ data, onValueChange, initialValue }) {
   // adapted from https://www.npmjs.com/package/react-native-element-dropdown
-  const values = [];
-  data.forEach((element) => {
-    values.push({ label: element });
-  });
+  const values = data.map((element) => ({ label: element }));
 
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+
+  useEffect(() => {
+    setValue(initialValue || null);
+  }, [initialValue]);
 
   const renderLabel = () => {
     return (
@@ -41,6 +42,7 @@ function DropDown({ data }) {
         onChange={(item) => {
           setValue(item);
           setIsFocus(false);
+          onValueChange(item?.label);
         }}
       />
     </View>
