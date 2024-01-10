@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 5,
     margin: 5,
+    backgroundColor: "white",
   },
 });
 

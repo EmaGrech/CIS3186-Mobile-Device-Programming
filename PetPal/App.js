@@ -7,6 +7,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 
 import HomeScreen from "./screens/HomeScreen";
+import CartScreen from "./screens/CartScreen";
+import PickUpScreen from "./screens/PickUpScreen";
+import OrderScreen from "./screens/OrderScreen";
+import ReceiptScreen from "./screens/ReceiptScreen";
 import PetItemsScreen from "./screens/PetItemsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CustomAppBar from "./components/CustomAppBar";
@@ -33,7 +37,7 @@ function BottomNavigation() {
     >
       <Tab.Screen
         name="Cart"
-        component={HomeScreen}
+        component={CartScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) =>
             focused == true ? (
@@ -127,7 +131,6 @@ export default function App() {
               options={{ headerShown: false }} // this screen makes use of the custom header
               component={BottomNavigation}
             />
-
             <Stack.Screen name="Profile" component={ProfileScreen} />
             
             <Stack.Screen
@@ -151,7 +154,10 @@ export default function App() {
 
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="PetItems" component={PetItemsScreen} />
-
+            <Stack.Screen name="Cart" component={CartScreen} />
+            <Stack.Screen name="PickUp" component={PickUpScreen} />
+            <Stack.Screen name="Order" component={OrderScreen} />
+            <Stack.Screen name="Receipt" component={ReceiptScreen} />
             {/* Add all other screens here */}
           </Stack.Navigator>
         </NavigationContainer>

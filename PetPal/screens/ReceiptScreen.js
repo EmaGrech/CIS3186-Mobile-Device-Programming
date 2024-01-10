@@ -17,7 +17,7 @@ import {
 } from "../CartReducer";
 import { decrementQty, incrementQty } from "../ProductReducer";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth, db } from "../FirebaseConfig";
 //import CartScreen from './screens/CartScreen';
 
 const ReceiptScreen = () => {
@@ -33,7 +33,7 @@ const ReceiptScreen = () => {
     navigation.navigate("Order");
     dispatch(cleanCart());
     await setDoc(
-      doc(db, "User", `${userUid}`), //changing from users to User
+      doc(db, "Cart", `${userUid}`), //used to be Users also User now will make it Cart
       {
         orders: { ...cart },
         pickUpDetails: route.params,
@@ -185,7 +185,7 @@ const ReceiptScreen = () => {
                     Item Total
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "400" }}>
-                  ${total}      
+                    ${total}
                   </Text>
                 </View>
 
