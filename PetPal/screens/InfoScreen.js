@@ -130,9 +130,9 @@ const InfoScreen = ({ route, navigation }) => {
             </Text>
           </TouchableOpacity>
         )}  
-      <TouchableOpacity style={styles.button} onPress={handleDelete}>
+      {/*<TouchableOpacity style={styles.button} onPress={handleDelete}>
         <Text style={styles.buttonText}>Delete</Text>
-      </TouchableOpacity>    
+      </TouchableOpacity> */}   
       </ScrollView>
   );
 };
