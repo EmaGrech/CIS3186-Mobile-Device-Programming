@@ -71,6 +71,7 @@ export const setFieldType = {
         Price: 'float',
         Seller_ID: 'string',
         Stock: 'int',
+        Quantity: 'int',
     },
     'Cart':
     {
