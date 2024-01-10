@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { setFieldType, toAddtoCollection,toUpdateDocument } from '../db';
 import style from '../style';
-import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert} from "react-native";
 
-const FormScreen = ({ collName = 'Product_Details', editMode = false, initialData = {} }) => {
+const FormScreen = ({ route }) => {
+  const { params } = route || {};
+  const { collName = 'Product_Details', editMode = false, initialData = {} } = params || {};
   const fieldTypes = setFieldType[collName];
 
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
-      setFormData((prevData) => ({
-        ...prevData,
-        ...initialData,
-      }));
+      setFormData(initialData);
     }
   }, [initialData]);
   
@@ -55,7 +54,8 @@ const FormScreen = ({ collName = 'Product_Details', editMode = false, initialDat
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={style.formContainer}>
+      <Text style={style.formTitle}>{collName}</Text>
       {Object.entries(fieldTypes).map(([fieldName, fieldType]) => (
         <View key={fieldName} style={{ marginBottom: 10 }}>
           {fieldType === 'string' ? (
