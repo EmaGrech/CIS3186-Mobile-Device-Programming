@@ -15,8 +15,9 @@ import Button from "../components/Button";
 import React, { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../FirebaseConfig";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { auth } from '../db';
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import HorizontalLineWithText from "../components/HorizontalLine";
 
 const LoginScreen = () => {
@@ -124,7 +125,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.loginContainer}>
         <Text style={{ fontSize: 16 }}>Aren't registered yet?</Text>
-        <Pressable onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: false})}>
+        <Pressable onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: false, fromLogin: true})}>
           <Text style={styles.loginTextContainer}>Sign Up</Text>
         </Pressable>
       </View>
@@ -198,3 +199,15 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
+export const createNewUser = async (email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log("New user created:", user);
+    return user;
+  } catch (error) {
+    console.error("User creation failed:", error.code, error.message);
+    throw error;
+  }
+};
