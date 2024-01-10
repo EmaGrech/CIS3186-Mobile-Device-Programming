@@ -124,7 +124,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.loginContainer}>
         <Text style={{ fontSize: 16 }}>Aren't registered yet?</Text>
-        <Pressable onPress={() => navigation.navigate("Register")}>
+        <Pressable onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: false})}>
           <Text style={styles.loginTextContainer}>Sign Up</Text>
         </Pressable>
       </View>
