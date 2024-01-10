@@ -25,6 +25,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontWeight: 'bold',
     },
+        drop: {
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 5,
+        padding: 10,
+    },
     formInput: {
         borderColor: 'gray',
         borderWidth: 1,
@@ -40,11 +46,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 25,
         width: 100,
+        alignSelf: 'center',
     },
     formContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     formTitle: {
         padding: 20,
