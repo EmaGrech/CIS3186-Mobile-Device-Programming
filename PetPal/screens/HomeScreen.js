@@ -15,43 +15,52 @@ function HomeScreen() {
     navigation.navigate('List', { category });
   };
   
+  const handleSell = () => {
+    navigation.navigate("Form", {collName: 'Product_Details', editMode: false})
+  };
+  
   return (
-    <View style={styles.root}>
-      <Text style={styles.header}>Looking for a Home</Text>
-      <Divider bold="true" style={styles.divider} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {PetCategories.map((category, index) => (
-          <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
-            <View style={styles.categoryItem}>
-              <Text style={styles.categoryText}>{category}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-      
-      <Text style={styles.header}>Supplies</Text>
-      <Divider bold="true" style={styles.divider} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {ProductCategories.map((category, index) => (
-          <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
-            <View style={styles.categoryItem}>
-              <Text style={styles.categoryText}>{category}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+    <View>
+      <View style={styles.root}>
+        <Text style={styles.header}>Looking for a Home</Text>
+        <Divider bold="true" style={styles.divider} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {PetCategories.map((category, index) => (
+            <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
+              <View style={styles.categoryItem}>
+                <Text style={styles.categoryText}>{category}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        
+        <Text style={styles.header}>Supplies</Text>
+        <Divider bold="true" style={styles.divider} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {ProductCategories.map((category, index) => (
+            <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
+              <View style={styles.categoryItem}>
+                <Text style={styles.categoryText}>{category}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
 
-      <Text style={styles.header}>Services</Text>
-      <Divider bold="true" style={styles.divider} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {ServiceCategories.map((category, index) => (
-          <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
-            <View style={styles.categoryItem}>
-              <Text style={styles.categoryText}>{category}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+        <Text style={styles.header}>Services</Text>
+        <Divider bold="true" style={styles.divider} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {ServiceCategories.map((category, index) => (
+            <TouchableOpacity key={index} onPress={() => handleCategorySelect(category)} style={styles.category}>
+              <View style={styles.categoryItem}>
+                <Text style={styles.categoryText}>{category}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+      <TouchableOpacity onPress={handleSell} style={styles.button}>
+        <Text style={styles.buttonText}>Sell</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -59,6 +68,22 @@ function HomeScreen() {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: "#A9D3FF",
+    padding: 10,
+    borderRadius: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 70,
+    width: 300,
+    alignSelf: "center",
+  },
+
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   root: {
     margin: 10,
   },
