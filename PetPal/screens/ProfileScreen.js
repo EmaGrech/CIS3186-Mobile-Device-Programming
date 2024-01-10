@@ -69,7 +69,7 @@ function ProfileScreen({ navigation, route }) {
             buttonColor="#323232"
             style={{ marginVertical: 20, marginHorizontal: 6 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => navigation.navigate("EditProfile", user)}
+            onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: true, initialData: { id }})}
           >
             Edit Details
           </Button>
