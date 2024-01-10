@@ -70,17 +70,17 @@ const FormScreen = ({ route }) => {
             />
           ) : fieldType === 'float' ? (
             <TextInput
-              style={[style.formInput, { keyboardType: 'numeric' }]}
+              style={[style.formInput]}
+              keyboardType = 'numeric' 
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
               placeholderTextColor="gray"
-              keyboardType="numeric"
               mode="outlined"
             />
           ) : fieldType === 'int' ? (
             <TextInput
-              style={[style.formInput, { keyboardType: 'numeric' }]}
+              style={[style.formInput]}
               value={formData[fieldName]}
               onChangeText={(text) => currentInputs(fieldName, text)}
               placeholder={`${fieldName}`}
