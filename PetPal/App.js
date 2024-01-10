@@ -4,7 +4,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from "expo-status-bar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 
 import HomeScreen from "./screens/HomeScreen";
@@ -15,6 +14,9 @@ import EditProfileScreen from "./screens/EditProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import ListScreen from "./screens/ListScreen";
+import InfoScreen from "./screens/InfoScreen";
+import FormScreen from "./screens/FormScreen";
 
 import store from "./store";
 
@@ -102,6 +104,9 @@ export default function App() {
             screenOptions={{
               headerStyle: { elevation: 2 },
               cardStyle: { backgroundColor: "#f2f4ff" },
+              header: ({ scene, previous, navigation }) => {
+                return <CustomAppBar navigation={navigation} />;
+              },
             }}
           >
             <Stack.Screen
@@ -124,11 +129,26 @@ export default function App() {
             />
 
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            
             <Stack.Screen
               name="EditProfile"
               component={EditProfileScreen}
               options={{ headerTitle: "Edit Details" }}
             />
+
+            <Stack.Screen name="List"
+              component={ListScreen}
+            />
+
+            <Stack.Screen name="Form"
+              component={FormScreen}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen name="Info"
+              component={InfoScreen}
+            />
+
             <Stack.Screen name="Search" component={SearchScreen} />
             <Stack.Screen name="PetItems" component={PetItemsScreen} />
 
