@@ -18,6 +18,7 @@ export const UserCategories = [
   "Pet Sitter",
   "Dog Walker",
   "Veterinary",
+  "Adoption Consultant",
 ];
 export const Activities = [
   "Pet Food Supplier",
