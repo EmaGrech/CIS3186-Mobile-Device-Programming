@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
 import PetItem from "../components/PetItem";
 import DropDown from "../components/Dropdown";
+import LottieView from 'lottie-react-native';
 
 const ListScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
@@ -206,13 +207,25 @@ const ListScreen = ({ route }) => {
         </Pressable>
         
         {/*List output*/}
-        <FlatList
-          data={filterProducts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <PetItem item={item} />
-          )}
-        />
+        {filterProducts.length === 0 ? ( 
+          <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+            <LottieView
+              source={require('../assets/notFound Light.json')}
+              autoPlay
+              loop
+              style={{ width: 200, height: 200 }}
+            />
+            <Text>No products could be found...</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={filterProducts}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <PetItem item={item} />
+            )}
+          />
+        )}
       </ScrollView>
 
       {total === 0 ? null : (
