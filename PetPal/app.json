@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PetPal",
-    "slug": "PetPal",
-    "version": "1.0.0",
+    "name": "PetPal1",
+    "slug": "PetPal1",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

@@ -12,6 +12,15 @@ const firebaseConfig = {
   appId: "1:41137584387:web:03d810aa41373ce3aad136",
 };
 
+/* 2nd version
+apiKey: "AIzaSyB7B3H_e8SZOmfdeNrxC6bX9sgETO4NVTQ",
+  authDomain: "pet-app-78d75.firebaseapp.com",
+  projectId: "pet-app-78d75",
+  storageBucket: "pet-app-78d75.appspot.com",
+  messagingSenderId: "956055289557",
+  appId: "1:956055289557:web:1cb777f5f856d5267e2c5c",
+
+*/
 /* apiKey: "AIzaSyCx4wJyVTxKfq4DAnyli_d6JzRuROUGEFs",
   authDomain: "mobile-programming-589ec.firebaseapp.com",
   projectId: "mobile-programming-589ec",
@@ -26,7 +35,7 @@ const firebaseConfig = {
   projectId: "pet-app-78d75",
   storageBucket: "pet-app-78d75.appspot.com",
   messagingSenderId: "956055289557",
-  appId: "1:956055289557:web:43553ff69fe64abc7e2c5c" */
+  appId: "1:956055289557:web:43553ff69fe64abc7e2c5c", */
 
 /*  apiKey: "AIzaSyCsgAil9Eviz-Ra4yujHnk3adAIoBpNHtA",
   authDomain: "petpal-3f19d.firebaseapp.com",

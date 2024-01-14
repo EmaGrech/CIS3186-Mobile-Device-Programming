@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { createStackNavigator } from "@react-navigation/stack";
 import { Provider } from "react-redux";
 
 import HomeScreen from "./screens/HomeScreen";
@@ -14,10 +14,12 @@ import ReceiptScreen from "./screens/ReceiptScreen";
 import PetItemsScreen from "./screens/PetItemsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CustomAppBar from "./components/CustomAppBar";
-import EditProfileScreen from "./screens/EditProfileScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import ListScreen from "./screens/ListScreen";
+import InfoScreen from "./screens/InfoScreen";
+import FormScreen from "./screens/FormScreen";
 
 import store from "./store";
 
@@ -126,18 +128,15 @@ export default function App() {
               component={BottomNavigation}
             />
             <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen
-              name="EditProfile"
-              component={EditProfileScreen}
-              options={{ headerTitle: "Edit Details" }}
-            />
+            <Stack.Screen name="List" component={ListScreen} />
+            <Stack.Screen name="Form" component={FormScreen} />
+            <Stack.Screen name="Info" component={InfoScreen} />
             <Stack.Screen name="Search" component={SearchScreen} />
-            <Stack.Screen name="PetItems" component={PetItemsScreen} />
             <Stack.Screen name="Cart" component={CartScreen} />
             <Stack.Screen name="PickUp" component={PickUpScreen} />
             <Stack.Screen name="Order" component={OrderScreen} />
             <Stack.Screen name="Receipt" component={ReceiptScreen} />
-            {/* Add all other screens here */}
+            <Stack.Screen name="PetItems" component={PetItemsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

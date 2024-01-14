@@ -1,44 +1,39 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Alert,
-  Pressable,
-  Image,
-  TextInput,
-  ScrollView,
-} from "react-native";
 import React, { useEffect, useState } from "react";
-import { Feather } from "@expo/vector-icons";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, Pressable, TextInput, ScrollView} from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import { getCollFromFirestore } from "../db";
+import { ProductCategories } from "../Categories";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-//import Services from "../components/Services";
-import PetItem from "../components/PetItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
-import { useNavigation } from "@react-navigation/native";
-import { collection, getDoc, getDocs } from "firebase/firestore";
-import { db } from "../FirebaseConfig";
+import PetItem from "../components/PetItem";
+import DropDown from "../components/Dropdown";
 
-const SearchScreen = () => {
+const ListScreen = ({ route }) => {
+  const [products, setProducts] = useState([]);
+  const navigation = useNavigation();
+
+  const [filter, setFilter] = useState(null);
+  const [filterProducts, setFilterProducts] = useState([]);
+  
   const cart = useSelector((state) => state.cart.cart);
   const [items, setItems] = useState([]);
   const total = cart
     .map((item) => item.Quantity * item.Price)
     .reduce((curr, prev) => curr + prev, 0);
-  const navigation = useNavigation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+
   console.log(cart);
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
   );
+  
   const [locationServicesEnabled, setlocationServicesEnabled] = useState(false);
   useEffect(() => {
     checkIfLocationEnabled();
     getCurrentLocation();
   }, []);
+  
   const checkIfLocationEnabled = async () => {
     let enabled = await Location.hasServicesEnabledAsync();
     if (!enabled) {
@@ -59,6 +54,7 @@ const SearchScreen = () => {
       setlocationServicesEnabled(enabled);
     }
   };
+  
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -96,8 +92,10 @@ const SearchScreen = () => {
       }
     }
   };
+
   const product = useSelector((state) => state.product.product);
   const dispatch = useDispatch();
+  
   useEffect(() => {
     if (product.length > 0) return;
 
@@ -113,99 +111,114 @@ const SearchScreen = () => {
   }, []);
   console.log(product);
 
-  const filterProducts = (query) => {
-    console.log("Search Query:", query);
-    const filtered = product.filter((item) =>
-      item.Product_Name.toLowerCase().includes(query.toLowerCase())
-    );
-    console.log("Filtered Products:", filtered);
-    setFilteredProducts(filtered);
-  };
+  useEffect(() => {  
+    const fetchData = async () => {
+      const data = await getCollFromFirestore("Product_Details");
+      setProducts(data);
+      const initialCategory = route.params?.category;
 
-  const resetSearch = () => {
-    // Check if there are filtered products before resetting
-    if (filteredProducts.length > 0) {
-      // Option 1: Clear the filtered products
-      setFilteredProducts([]);
+      if (initialCategory) {
+        setFilter(initialCategory);
+        const filtered = data.filter(item => item["Category"] === initialCategory);
+        setFilterProducts(filtered);
+      } else {
+        setFilterProducts(data);
+      }
+    };
+
+    const focusHandler = navigation.addListener("focus", fetchData);
+
+    return() => {
+      focusHandler();
+    } ;
+  }, [navigation, route.params]);
+
+  const handleFilter = (value) => {
+    setFilter(value);
+    if (value === null) {
+      setFilterProducts(products);
+    } else {
+      const filtered = products.filter(item => item["Category"] === value);
+      setFilterProducts(filtered);
     }
-    // Option 2: If you want to clear the search query as well, uncomment the line below
-    setSearchQuery("");
   };
 
   return (
     <>
-      <ScrollView
-        style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}
-      >
-        {/* Location and Profile */}
-        <View
-          style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
-        >
-          <MaterialIcons name="location-on" size={30} color="#fd5c63" />
-          <View>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
-            <Text>{displayCurrentAddress}</Text>
-          </View>
-
-          <Pressable
-            onPress={() => navigation.navigate("Profile")}
-            style={{ marginLeft: "auto", marginRight: 7 }}
-          >
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 20 }}
-              source={{
-                uri: "https://lh3.googleusercontent.com/ogw/AAEL6sh_yqHq38z35QMy5Fnb8ZIxicdxCIVM9PeBD2j-=s64-c-mo",
-              }}
-            />
-          </Pressable>
+    <DropDown data={ProductCategories} onValueChange={handleFilter} initialValue={filter} />
+      <View style={{ flexDirection: "row", alignItems: "center", padding: 5}}>
+        <MaterialIcons name="location-on" size={30} color="#fd5c63" />
+        <View>
+          <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
+          <Text>{displayCurrentAddress}</Text>
         </View>
 
-        {/* Search Bar */}
-        <View
-          style={{
-            padding: 10,
-            margin: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderWidth: 0.8,
-            borderColor: "#C0C0C0",
-            borderRadius: 7,
-          }}
+        <Pressable
+          onPress={() => navigation.navigate("Profile")}
+          style={{ marginLeft: "auto", marginRight: 7 }}
         >
-          <TextInput
-            placeholder="Search for items or More"
-            value={searchQuery}
-            onChangeText={(text) => setSearchQuery(text)}
+          <Image
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+            source={{
+              uri: "https://lh3.googleusercontent.com/ogw/AAEL6sh_yqHq38z35QMy5Fnb8ZIxicdxCIVM9PeBD2j-=s64-c-mo",
+            }}
           />
-          <Pressable
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-            onPress={() => {
-              console.log("Search Icon Pressed");
-              filterProducts(searchQuery);
-              resetSearch(); // Call the reset function after filtering
-            }}
-          >
-            <Feather name="search" size={24} color="#fd5c63" />
-          </Pressable>
-        </View>
+        </Pressable>
+      </View>
+      
+      <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>
+        {/* Button to go to Cart */}
+        <Pressable
+          style={{
+            backgroundColor: "#A9D3FF",
+            padding: 10,
+            borderRadius: 7,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+            width: 300,
+            alignSelf: "center",
+          }}
+          onPress={() => navigation.navigate("Cart")} 
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
+            Go to Cart
+          </Text>
+        </Pressable>
 
-        {/* Render filtered or all Products */}
-        {filteredProducts.length > 0
-          ? filteredProducts.map((item, index) => (
-              <PetItem item={item} key={index} />
-            ))
-          : product.map((item, index) => <PetItem item={item} key={index} />)}
+        {/* Button to go to Search Screen*/}
+        <Pressable
+          style={{
+            backgroundColor: "#A9D3FF",
+            padding: 10,
+            borderRadius: 7,
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: 20,
+            width: 300,
+            alignSelf: "center",
+          }}
+          onPress={() => navigation.navigate("Search")}
+        >
+          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
+            Go to Search
+          </Text>
+        </Pressable>
+        
+        {/*List output*/}
+        <FlatList
+          data={filterProducts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <PetItem item={item} />
+          )}
+        />
       </ScrollView>
 
       {total === 0 ? null : (
         <Pressable
           style={{
-            backgroundColor: "#088F8F",
+            backgroundColor: "#A9D3FF",
             padding: 10,
             marginBottom: 40,
             margin: 15,
@@ -231,6 +244,8 @@ const SearchScreen = () => {
             </Text>
           </View>
 
+          {/* changing from PickUp to Cart2 */}
+          {/* changing from Cart2 to Cart to see what happens*/}
           <Pressable onPress={() => navigation.navigate("Cart")}>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
               Proceed to Cart
@@ -240,8 +255,6 @@ const SearchScreen = () => {
       )}
     </>
   );
-};
+}
 
-export default SearchScreen;
-
-const styles = StyleSheet.create({});
+export default ListScreen;
