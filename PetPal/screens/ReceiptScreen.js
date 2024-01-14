@@ -61,7 +61,7 @@ const ReceiptScreen = () => {
     console.log(data);
     let payment = JSON.parse(data);
     if (payment.status === "COMPLETED") {
-      alert("PAYMENT MADE SUCCESSFULLY!");
+      //alert("PAYMENT MADE SUCCESSFULLY!");
       navigation.navigate("Order");
     } else {
       alert("PAYMENT FAILED. PLEASE TRY AGAIN.");
@@ -266,7 +266,7 @@ const ReceiptScreen = () => {
                   <Text
                     style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
                   >
-                    selected Date
+                    Selected Date
                   </Text>
                   <Text
                     style={{
@@ -284,37 +284,13 @@ const ReceiptScreen = () => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
-                    No Of Days
-                  </Text>
-
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
-                    {route.params.no_Of_days}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
                     marginVertical: 10,
                   }}
                 >
                   <Text
                     style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
                   >
-                    selected Pick Up Time
+                    Selected Pick Up Time
                   </Text>
 
                   <Text

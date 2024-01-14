@@ -6,7 +6,7 @@ import {
   TextInput,
   Pressable,
   ScrollView,
-  Alert
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import HorizontalDatepicker from "@awrminkhodaei/react-native-horizontal-datepicker";
@@ -20,29 +20,6 @@ const PickUpScreen = () => {
     .map((item) => item.Quantity * item.Price)
     .reduce((curr, prev) => curr + prev, 0);
   const [selectedTime, setSelectedTime] = useState([]);
-  const [delivery, setDelivery] = useState([]);
-  const deliveryTime = [
-    {
-      id: "0",
-      name: "2-3 Days",
-    },
-    {
-      id: "1",
-      name: "3-4 Days",
-    },
-    {
-      id: "2",
-      name: "4-5 Days",
-    },
-    {
-      id: "3",
-      name: "5-6 Days",
-    },
-    {
-      id: "4",
-      name: "Tommorrow",
-    },
-  ];
 
   const times = [
     {
@@ -72,30 +49,28 @@ const PickUpScreen = () => {
   ];
   const navigation = useNavigation();
   const proceedToCart = () => {
-      if(!selectedDate || !selectedTime || !delivery){
-        Alert.alert(
-            "Empty or invalid",
-            "Please select all the fields",
-            [
-              {
-                text: "Cancel",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel"
-              },
-              { text: "OK", onPress: () => console.log("OK Pressed") }
-            ],
-            { cancelable: false }
-          );
-      }
-      if(selectedDate && selectedTime && delivery){
-        navigation.replace("Receipt",{
-            pickUpDate:selectedDate,
-            selectedTime:selectedTime,
-            no_Of_days:delivery,
-
-        })
-      }
-  }
+    if (!selectedDate || !selectedTime) {
+      Alert.alert(
+        "Empty or invalid",
+        "Please select all the fields",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ],
+        { cancelable: false }
+      );
+    }
+    if (selectedDate && selectedTime) {
+      navigation.replace("Receipt", {
+        pickUpDate: selectedDate,
+        selectedTime: selectedTime,
+      });
+    }
+  };
 
   return (
     <>
@@ -165,44 +140,13 @@ const PickUpScreen = () => {
             </Pressable>
           ))}
         </ScrollView>
-        <Text style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 10 }}>
-          Delivery Date
-        </Text>
-
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {deliveryTime.map((item, i) => (
-            <Pressable
-              style={
-                delivery.includes(item.name)
-                  ? {
-                      margin: 10,
-                      borderRadius: 7,
-                      padding: 15,
-                      borderColor: "red",
-                      borderWidth: 0.7,
-                    }
-                  : {
-                      margin: 10,
-                      borderRadius: 7,
-                      padding: 15,
-                      borderColor: "gray",
-                      borderWidth: 0.7,
-                    }
-              }
-              onPress={() => setDelivery(item.name)}
-              key={i}
-            >
-              <Text>{item.name}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
       </SafeAreaView>
 
       {total === 0 ? null : (
         <Pressable
           style={{
             backgroundColor: "#088F8F",
-            marginTop:"auto",
+            marginTop: "auto",
             padding: 10,
             marginBottom: 40,
             margin: 15,
