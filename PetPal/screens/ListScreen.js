@@ -10,6 +10,7 @@ import { getProducts } from "../ProductReducer";
 import PetItem from "../components/PetItem";
 import DropDown from "../components/Dropdown";
 import LottieView from 'lottie-react-native';
+import CustomAppBar from "../components/CustomAppBar";
 
 const ListScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
@@ -146,6 +147,7 @@ const ListScreen = ({ route }) => {
 
   return (
     <>
+    <CustomAppBar navigation={navigation} />
     <DropDown data={ProductCategories} onValueChange={handleFilter} initialValue={filter} />
       <View style={{ flexDirection: "row", alignItems: "center", padding: 5}}>
         <MaterialIcons name="location-on" size={30} color="#fd5c63" />
@@ -167,45 +169,7 @@ const ListScreen = ({ route }) => {
         </Pressable>
       </View>
       
-      <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>
-        {/* Button to go to Cart */}
-        <Pressable
-          style={{
-            backgroundColor: "#A9D3FF",
-            padding: 10,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 20,
-            width: 300,
-            alignSelf: "center",
-          }}
-          onPress={() => navigation.navigate("Cart")} 
-        >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
-            Go to Cart
-          </Text>
-        </Pressable>
-
-        {/* Button to go to Search Screen*/}
-        <Pressable
-          style={{
-            backgroundColor: "#A9D3FF",
-            padding: 10,
-            borderRadius: 7,
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 20,
-            width: 300,
-            alignSelf: "center",
-          }}
-          onPress={() => navigation.navigate("Search")}
-        >
-          <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
-            Go to Search
-          </Text>
-        </Pressable>
-        
+      <View style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>        
         {/*List output*/}
         {filterProducts.length === 0 ? ( 
           <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
@@ -215,7 +179,7 @@ const ListScreen = ({ route }) => {
               loop
               style={{ width: 200, height: 200 }}
             />
-            <Text>No products could be found...</Text>
+            <Text>No products could be found</Text>
           </View>
         ) : (
           <FlatList
@@ -226,7 +190,7 @@ const ListScreen = ({ route }) => {
             )}
           />
         )}
-      </ScrollView>
+      </View>
 
       {total === 0 ? null : (
         <Pressable
