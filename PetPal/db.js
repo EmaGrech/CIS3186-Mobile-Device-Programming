@@ -25,17 +25,10 @@ export const getCollFromFirestore = async (collName) => {
         const coll = collection(db, collName);
         const snapshot = await getDocs(coll);
         let data = [];
+
         snapshot.docs.forEach((doc) => {
             const docData = doc.data();
-            const typeMappings = setFieldType[collName];
-
-            const converted = Object.entries(docData).reduce((result, [key, value]) => {
-                const expected = typeMappings[key]; 
-                result[key] = typeConversion(value, expected);
-            return result;
-            }, {});
-
-            data.push({ ...converted, id: doc.id });
+            data.push({ ...docData, id: doc.id });
         });
         return data;
     }
@@ -46,88 +39,19 @@ export const getCollFromFirestore = async (collName) => {
     }
 };
 
-//CONVERTING FIELD TYPES// 
-//defining field types
-export const setFieldType = {
-    'Users': 
-    {
-        Username: 'string',
-        Password: 'string',
-        Profile_Picture: 'image',
-        Email: 'string',
-        Description: 'string',
-        Account_Type: 'drop',
-        Actvities: 'drop[]',
-    },
-    'Purchase_History':
-    {
-        order:{
-            Date_of_Purchase: 'timestamp',
-            Items: 'string[]'
-        }   
-    },
-    'Product_Details': 
-    {
-        Product_Name: 'string',
-        Category: 'drop',
-        Description: 'string',
-        Image: 'image',
-        Price: 'float',
-        Seller_ID: 'string',
-        Stock: 'int',
-        Quantity: 'int',
-    },
-    'Cart':
-    {
-        Order_ID: 'string',
-        Product_ID: 'string[]',
-        Total: 'float',
-    },
-    'Chat':
-    {
-        Message: 'string',
-        Recipient_ID: 'string',
-        Sender_ID: 'string',
-        Timestamp: 'string',
-    },
-}
-
-//convert fetched values to appropriate types
-const typeConversion = (data, expected) => {
-    switch(expected)
-    {
-        case 'int':
-            return parseInt(data) || 0;
-        case 'float':
-            return parseFloat(data) || 0.00;
-        case 'string' || 'image' || 'drop':
-            return String(data);
-        case 'string[]' || 'drop[]':
-            return Array.isArray(data) ? data.map(String) : [];
-        case 'timestamp':
-            return data ? data.toDate() : null;
-        default:
-        console.warn('Error in typeConversion method');
-    }
-}
-
-
 //FETCHING SPECIFIC DOCUMENTS//
 //getting info from specific documents
 export const getDocument = async (collName, docID) => {
-    const docRef = doc(db, collName, docID);
-    const docSnapshot = await getDoc(docRef);
-    
-    const docData = docSnapshot.data();
-    const typeMappings = setFieldType[collName];
-
-    const converted = Object.entries(docData).reduce((result, [key, value]) => {
-        const expected = typeMappings[key]; 
-        result[key] = typeConversion(value, expected);
-    return result;
-    }, {});
-
-    return { ...converted, id: docSnapshot.id };
+    try{
+        const docRef = doc(db, collName, docID);
+        const docSnapshot = await getDoc(docRef);
+        
+        const docData = docSnapshot.data();
+        return { ...docData, id: docSnapshot.id };
+    } catch (error) {
+        console.error("Error in getDocument:", error);
+        throw error;
+    }
 };
 
 export const getProductDetails = async (productID) => {
@@ -153,21 +77,31 @@ export const getProductDetails = async (productID) => {
 
 //CREATING NEW DATABASE ENTRIES//
 //collecting information according to collection
-export const toAddtoCollection = async (collName, data) => {
+export const toAddtoCollection = async (collName, data, docID) => {
     const coll = collection(db, collName);
     const docRef = await addDoc(coll, data);
-    
-    //redirecting to the correct collection
-    const collFields = {
-        'Cart': ['Order_ID', 'Product_ID', 'Total'],
-        'Chat': ['Message', 'Recipient_ID', 'Sender_ID', 'Timestamp'],
-        'Product_Details': ['Category', 'Description', 'Image', 'Price', 'Product_Name', 'Seller_ID', 'Stock'],
-        'Purchase_History': ['Date_of_Purchase', 'Order_ID'],
-        'Users': ['Account_Type', 'Email', 'Password', 'Profile_Picture', 'Username'],
-    };
+
+    if(docID)
+    {
+        const docRef = doc(coll, docID);
+        await setDoc(docRef, data);
+    }
+    else
+    {
+        const docRef = await addDoc(coll, data);
+    }
 
     const fields = collFields[collName];
     setNewDocument(docRef, data, fields);
+};
+
+//setting fields
+const collFields = {
+    'Cart': ['Order_ID', 'Product_ID', 'Total'],
+    'Chat': ['Message', 'Recipient_ID', 'Sender_ID', 'Timestamp'],
+    'Product_Details': ['Category', 'Description', 'Image', 'Price', 'Product_Name', 'Seller_ID', 'Stock'],
+    'Purchase_History': ['Date_of_Purchase', 'Order_ID'],
+    'Users': ['Account_Type', 'Email', 'Password', 'Profile_Picture', 'Username'],
 };
 
 //adding a new document to a collection
