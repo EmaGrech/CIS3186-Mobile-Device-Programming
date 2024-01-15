@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 import React from "react";
 import LottieView from "lottie-react-native";
 
+//separate order screen
 const OrderScreen = () => {
   return (
     <SafeAreaView>
@@ -9,7 +10,7 @@ const OrderScreen = () => {
         source={require("../assets/thumbs.json")}
         style={{
           height: 360,
-          width:300,
+          width: 300,
           alignSelf: "center",
           marginTop: 40,
           justifyContent: "center",
