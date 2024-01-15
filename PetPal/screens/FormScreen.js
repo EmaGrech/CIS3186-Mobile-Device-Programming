@@ -6,8 +6,11 @@ import * as ImagePicker from 'expo-image-picker';
 import DropDown from "../components/Dropdown";
 import { ProductCategories, ServiceCategories, UserCategories, Activities} from "../Categories";
 import { useNavigation } from '@react-navigation/native';
-import { createNewUser } from './LoginScreen'; 
+import { createNewUser, passwordValidation } from './LoginScreen';
+import { ref, uploadString, getDownloadURL } from 'firebase/storage';
 
+
+//generates a form corresponding to a particular collection
 const FormScreen = ({ route }) => {
   const { params } = route || {};
   const { collName = 'Product_Details', editMode = false, initialData = {}, fromLogin = false } = params || {};
@@ -35,28 +38,60 @@ const FormScreen = ({ route }) => {
     });
   };
 
-  const validation = () => {
+  //makes sure that data is correct
+  const validation = async () => {
     const empty = Object.entries(fieldTypes)
       .filter(([fieldName, fieldType]) => fieldType === 'string' && formData[fieldName] === '')
       .map(([fieldName]) => fieldName);
 
+    //redirects to password validation
+    if(fromLogin)
+    {
+      //specifies password requirements
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+      //returns true or false according to if test is passed
+      const pass = regex.test(formData.password);
+      if(!pass)
+      {
+        Alert.alert(`Invalid password`);
+        return false;
+      }
+    }
+
+    //checks no field is left empty
     if (empty.length > 0) {
       Alert.alert(`Please fill in all fields: ${empty.join(', ')}`);
       return false;
     }
-
+      
     return true;
   };
 
   const submit = async () => {
-  if (validation()) {
-    if (fromLogin) {
-      await createNewUser(formData.Email, formData.Password);
-      toAddtoCollection(collName, formData);        
+    if (validation()) {
+      if (fromLogin && !editMode) {
+        const { user, uid } = await createNewUser(formData.Email, formData.Password);
+        const image = formData['Users.Profile_Picture'];
+        
+        const storageRef = ref(storage, `images/${Users.id}/${image.name}`);
+        await uploadString(storageRef, image.uri, 'data_url');
+        const downloadURL = await getDownloadURL(storageRef);
+
+        formData['Users.Profile_Picture'] = downloadURL;
+
+        toAddtoCollection(collName, formData, uid);        
+      }
+      else if (editMode)
+      {
+        await toUpdateDocument(collName, initialData.id, formData);
+      }
+      else if (!editMode && !fromLogin)
+      {
+        await toAddtoCollection(collName, formData);
+      }
+      navigation.goBack();
     }
-    navigation.goBack();
-  }
-};
+  };
 
 
   const selectImage = async (fieldName) => {
@@ -80,6 +115,7 @@ const FormScreen = ({ route }) => {
       console.error("Image selection error:", error);
     }
   };
+  
   return (
     <View style={style.formContainer}>
       <Text style={style.formTitle}>{collName}</Text>
