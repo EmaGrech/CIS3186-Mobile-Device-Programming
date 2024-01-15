@@ -7,27 +7,23 @@ import {
   incrementQuantity,
 } from "../CartReducer";
 import { decrementQty, incrementQty } from "../ProductReducer";
-import { useNavigation } from '@react-navigation/native';
+
+
 
 
 const PetItem = ({ item }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
-  
-  const navigation = useNavigation();
-  
+
   const addItemToCart = () => {
     dispatch(addToCart(item)); // cart
     dispatch(incrementQty(item)); // product
   };
 
-  const handleSelect = (itemID, itemName) => {
-    navigation.navigate('Info', { itemID, itemName });
-  };
 
   return (
     <View>
-      <Pressable onPress={() => handleSelect(item.id)}
+      <Pressable
         style={{
           backgroundColor: "#F8F8F8",
           borderRadius: 8,
@@ -57,7 +53,7 @@ const PetItem = ({ item }) => {
             {item.Product_Name}
           </Text>
           <Text style={{ width: 60, color: "gray", fontSize: 15 }}>
-          <Text>{`€${item.Price.toFixed(2)}`}</Text>
+            ${item.Price}
           </Text>
         </View>
 
@@ -87,7 +83,7 @@ const PetItem = ({ item }) => {
               <Text
                 style={{
                   fontSize: 20,
-                  color: "#A9D3FF",
+                  color: "#088F8F",
                   paddingHorizontal: 6,
                   fontWeight: "600",
                   textAlign: "center",
@@ -128,7 +124,7 @@ const PetItem = ({ item }) => {
               <Text
                 style={{
                   fontSize: 20,
-                  color: "#A9D3FF",
+                  color: "#088F8F",
                   paddingHorizontal: 6,
                   fontWeight: "600",
                   textAlign: "center",
@@ -146,7 +142,7 @@ const PetItem = ({ item }) => {
                 borderRadius: 4,
                 borderWidth: 0.8,
                 marginVertical: 10,
-                color: "#A9D3FF",
+                color: "#088F8F",
                 textAlign: "center",
                 padding: 5,
                 fontSize: 17,
