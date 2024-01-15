@@ -38,7 +38,6 @@ const FormScreen = ({ route }) => {
     });
   };
 
-
   const submit = async () => {
     const empty = Object.entries(fieldTypes)
       .filter(([fieldName, fieldType]) => fieldType === 'string' && formData[fieldName] === '')
