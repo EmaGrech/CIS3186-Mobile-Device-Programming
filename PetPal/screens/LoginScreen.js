@@ -204,9 +204,9 @@ export default LoginScreen;
 export const createNewUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    console.log("New user created:", user);
-    return { user, uid: user.uid };
+    const { user } = userCredential;
+    const uid = user.uid;
+    return { user, uid };
   } catch (error) {
     console.error("User creation failed:", error.code, error.message);
     throw error;
