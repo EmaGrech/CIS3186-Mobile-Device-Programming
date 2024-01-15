@@ -11,10 +11,8 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   cleanCart,
@@ -55,13 +53,13 @@ const ReceiptScreen = () => {
     );
   };
 
+  //on payment message alert
   function onMessage(e) {
     let data = e.nativeEvent.data;
     setShowGateway(false);
     console.log(data);
     let payment = JSON.parse(data);
     if (payment.status === "COMPLETED") {
-      //alert("PAYMENT MADE SUCCESSFULLY!");
       navigation.navigate("Order");
     } else {
       alert("PAYMENT FAILED. PLEASE TRY AGAIN.");
@@ -70,63 +68,26 @@ const ReceiptScreen = () => {
 
   return (
     <>
-      <ScrollView style={{ marginTop: 50 }}>
+      <ScrollView style={{ backgroundColor: "white", paddingTop: 50}}>
         {total === 0 ? (
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <View style={{ justifyContent: "center", alignItems: "center", }}>
             <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
           </View>
         ) : (
           <>
-            <View
-              style={{
-                padding: 10,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Ionicons
-                onPress={() => navigation.goBack()}
-                name="arrow-back"
-                size={24}
-                color="black"
-              />
-              <Text>Your Cart</Text>
-            </View>
 
-            <Pressable
-              style={{
-                backgroundColor: "white",
-                borderRadius: 12,
-                marginLeft: 10,
-                marginRight: 10,
-                padding: 14,
-              }}
-            >
+            <View style={styles.itemCon}>
               {cart.map((item, index) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 12,
-                  }}
+                <View style={styles.incRow}
                   key={index}
                 >
-                  <Text style={{ width: 100, fontSize: 16, fontWeight: "500" }}>
+                  <Text style={{ width: 100, fontSize: 16, fontWeight: "500", color: "#2b2118" }}>
                     {item.Product_Name}
                   </Text>
 
                   {/* - + button */}
                   <Pressable
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      alignItems: "center",
-                      borderColor: "#BEBEBE",
-                      borderWidth: 0.5,
-                      borderRadius: 10,
-                    }}
+                    style={styles.incBorder}
                   >
                     <Pressable
                       onPress={() => {
@@ -134,27 +95,11 @@ const ReceiptScreen = () => {
                         dispatch(decrementQty(item)); // product
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#088F8F",
-                          paddingHorizontal: 6,
-                          fontWeight: "600",
-                        }}
-                      >
-                        -
-                      </Text>
+                      <Text style={styles.minus}> - </Text>
                     </Pressable>
 
                     <Pressable>
-                      <Text
-                        style={{
-                          fontSize: 19,
-                          color: "#088F8F",
-                          paddingHorizontal: 8,
-                          fontWeight: "600",
-                        }}
-                      >
+                      <Text style={styles.itemQuant}>
                         {item.Quantity}
                       </Text>
                     </Pressable>
@@ -165,36 +110,27 @@ const ReceiptScreen = () => {
                         dispatch(incrementQty(item)); //product
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#088F8F",
-                          paddingHorizontal: 6,
-                          fontWeight: "600",
-                        }}
-                      >
-                        +
-                      </Text>
+                      <Text style={styles.plus}> + </Text>
                     </Pressable>
                   </Pressable>
 
-                  <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                    ${item.Price * item.Quantity}
+                  <Text style={{ fontSize: 18, fontWeight: "500" }}>
+                  € {item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}
-            </Pressable>
+            </View>
 
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginHorizontal: 16, marginTop: 24, }}>
               <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 30 }}>
                 Billing Details
               </Text>
               <View
                 style={{
-                  backgroundColor: "white",
+                  backgroundColor: "#ecf0f1",
                   borderRadius: 7,
                   padding: 10,
-                  marginTop: 15,
+                  marginTop: 8,
                 }}
               >
                 <View
@@ -347,13 +283,14 @@ const ReceiptScreen = () => {
             justifyContent: "space-between",
           }}
         >
+          {/* paypal gateway */}
           {showGateway ? (
             <Modal
               visible={showGateway}
               onDismiss={() => setShowGateway(false)}
               onRequestClose={() => setShowGateway(false)}
               animationType={"fade"}
-              transparent
+              transparent={true}
             >
               <View style={styles.webViewCon}>
                 <View style={styles.wbHead}>
@@ -383,7 +320,10 @@ const ReceiptScreen = () => {
                 <WebView
                   source={{ uri: "https://payment-app-16f6d.web.app" }}
                   onMessage={onMessage}
-                  style={{ flex: 1 }}
+                  style={{ 
+                    flex: 1,
+                    top: "auto",
+                  }}
                   onLoadStart={() => {
                     setProg(true);
                     setProgClr("#000");
@@ -405,7 +345,7 @@ const ReceiptScreen = () => {
 
           <View>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | $ {total}
+              {cart.length} items | € {total}
             </Text>
             <Text
               style={{
@@ -425,7 +365,7 @@ const ReceiptScreen = () => {
                 style={styles.btn}
                 onPress={() => setShowGateway(true)}
               >
-                <Text style={styles.btnTxt}>Proceed To Payment</Text>
+                <Text style={styles.btnTxt}>Pay Now</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -440,14 +380,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
   },
   btnCon: {
-    height: 45,
+    height: 50,
     width: "70%",
     elevation: 1,
-    backgroundColor: "#00457C",
-    borderRadius: 3,
+    backgroundColor: "#8ccaaa",
+    borderRadius: 5,
   },
   btn: {
     flex: 1,
@@ -472,6 +411,46 @@ const styles = StyleSheet.create({
     zIndex: 25,
     elevation: 2,
   },
+  itemCon: {
+    backgroundColor: "#ecf0f1",
+    borderRadius: 12,
+    marginHorizontal: 16,
+    padding: 14,
+  },
+  incBorder: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: "center",
+    borderColor: "#2b2118",
+    borderWidth: 1.5,
+    borderRadius: 10,
+  },
+  incRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 12,
+    paddingHorizontal: 8,
+  },
+  minus: {
+    fontSize: 20,
+    color: "#2b2118",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+  },
+  itemQuant: {
+    fontSize: 19,
+    color: "#2b2118",
+    paddingHorizontal: 8,
+    fontWeight: "600",
+  },
+  plus: {
+    fontSize: 20,
+    color: "#2b2118",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+  }
 });
 
 export default ReceiptScreen;
