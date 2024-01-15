@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { getDocument, toDelete } from '../db';
+import { getDocument, toDelete } from "../db";
 import { decrementQty, incrementQty } from "../ProductReducer";
 import {
   addToCart,
@@ -12,39 +20,46 @@ import {
 const InfoScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
-  
+
   const { itemID } = route.params;
   const [productDetails, setProductDetails] = useState(null);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const details = await getDocument( 'Product_Details', itemID);
+        const details = await getDocument("Product_Details", itemID);
         setProductDetails(details);
-        console.log('Fetched Product Details:', details);
+        console.log("Fetched Product Details:", details);
       } catch (error) {
-        console.error('Error fetching product details:', error);
+        console.error("Error fetching product details:", error);
       }
     };
 
     fetchProductDetails();
   }, [itemID]);
-  
-  const { Product_Name: productName, Description, Image: image, Price, Stock, Quantity } = productDetails || {};
+
+  const {
+    Product_Name: productName,
+    Description,
+    Image: image,
+    Price,
+    Stock,
+    Quantity,
+  } = productDetails || {};
 
   const handleDelete = () => {
-    toDelete('Product_Details', itemID);
-    navigation.goBack(); 
+    toDelete("Product_Details", itemID);
+    navigation.goBack();
   };
 
   const handleAdd = () => {
-    dispatch(addToCart(itemID)); 
-    dispatch(incrementQty(itemID)); 
+    dispatch(addToCart(itemID));
+    dispatch(incrementQty(itemID));
   };
 
   return (
     <ScrollView style={styles.container}>
-      <View style = {{justifyContent: 'center', alignItems: 'center',}}>
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
         <Image source={{ uri: image }} style={styles.image} />
       </View>
       <Text style={styles.productName}>{productName}</Text>
@@ -59,81 +74,83 @@ const InfoScreen = ({ route, navigation }) => {
             paddingVertical: 5,
           }}
         >
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(decrementQuantity(itemID)); 
-                dispatch(decrementQty(itemID)); 
-              }}
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: 13,
-                borderColor: "#BEBEBE",
-                backgroundColor: "#E0E0E0",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
-            >
-              <Text style={{
-                fontSize: 20,
-                color: "#A9D3FF",
-                paddingHorizontal: 6,
-                fontWeight: "600",
-                textAlign: "center", 
-              }} >
-                -
-              </Text>
-            </TouchableOpacity>
-
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(decrementQuantity(itemID));
+              dispatch(decrementQty(itemID));
+            }}
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 13,
+              borderColor: "#BEBEBE",
+              backgroundColor: "#E0E0E0",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
             <Text
               style={{
-                fontSize: 19,
-                color: "#A9D3FF",
-                paddingHorizontal: 8,
-                fontWeight: "600",
-              }}
-            >
-              {Quantity}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                dispatch(incrementQuantity(itemID));
-                dispatch(incrementQty(itemID));
-              }}
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: 13,
-                borderColor: "#BEBEBE",
-                backgroundColor: "#E0E0E0",
-                justifyContent: "center",
-                alignContent: "center",
-              }} 
-              >
-              <Text style={{
                 fontSize: 20,
                 color: "#A9D3FF",
                 paddingHorizontal: 6,
                 fontWeight: "600",
-                textAlign: "center", 
-              }} >
-                +
-              </Text>
-            </TouchableOpacity>
-        </Pressable>
-        )} 
-        {productDetails && (
-          <TouchableOpacity onPress={handleAdd} style={styles.button}>
-            <Text style={styles.buttonText} >
-              Add
+                textAlign: "center",
+              }}
+            >
+              -
             </Text>
           </TouchableOpacity>
-        )}  
+
+          <Text
+            style={{
+              fontSize: 19,
+              color: "#A9D3FF",
+              paddingHorizontal: 8,
+              fontWeight: "600",
+            }}
+          >
+            {Quantity}
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(incrementQuantity(itemID));
+              dispatch(incrementQty(itemID));
+            }}
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 13,
+              borderColor: "#BEBEBE",
+              backgroundColor: "#E0E0E0",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                color: "#A9D3FF",
+                paddingHorizontal: 6,
+                fontWeight: "600",
+                textAlign: "center",
+              }}
+            >
+              +
+            </Text>
+          </TouchableOpacity>
+        </Pressable>
+      )}
+      {productDetails && (
+        <TouchableOpacity onPress={handleAdd} style={styles.button}>
+          <Text style={styles.buttonText}>Add</Text>
+        </TouchableOpacity>
+      )}
       {/*<TouchableOpacity style={styles.button} onPress={handleDelete}>
         <Text style={styles.buttonText}>Delete</Text>
-      </TouchableOpacity> */}   
-      </ScrollView>
+      </TouchableOpacity> */}
+    </ScrollView>
   );
 };
 
@@ -149,17 +166,17 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   otherText: {
     fontSize: 16,
     marginBottom: 8,
-    textAlign: 'justify',
+    textAlign: "justify",
   },
   price: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   button: {
@@ -173,11 +190,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   buttonText: {
-    color: "white", 
-    fontSize: 16, 
+    color: "white",
+    fontSize: 16,
     fontWeight: "bold",
   },
-  
 });
 
 export default InfoScreen;

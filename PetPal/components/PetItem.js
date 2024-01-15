@@ -7,27 +7,32 @@ import {
   incrementQuantity,
 } from "../CartReducer";
 import { decrementQty, incrementQty } from "../ProductReducer";
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from "@react-navigation/native";
 
 const PetItem = ({ item }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
+  const product = useSelector((state) => state.product.product);
 
   const navigation = useNavigation();
 
   const addItemToCart = () => {
+    console.log("Before dispatching addToCart. Cart state:", cart);
     dispatch(addToCart(item)); // cart
+    console.log("After dispatching addToCart. Cart state:", cart);
+    console.log("Before dispatching incrementQty. Product state:", product);
     dispatch(incrementQty(item)); // product
+    console.log("After dispatching incrementQty. Product state:", product);
   };
 
   const handleSelect = (itemID, itemName) => {
-    navigation.navigate('Info', { itemID, itemName });
+    navigation.navigate("Info", { itemID, itemName });
   };
 
   return (
     <View>
-      <Pressable onPress={() => handleSelect(item.id)}
+      <Pressable
+        onPress={() => handleSelect(item.id)}
         style={{
           backgroundColor: "#F8F8F8",
           borderRadius: 8,

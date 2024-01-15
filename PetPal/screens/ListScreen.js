@@ -22,6 +22,7 @@ import PetItem from "../components/PetItem";
 import DropDown from "../components/Dropdown";
 import LottieView from "lottie-react-native";
 import CustomAppBar from "../components/CustomAppBar";
+import { getDocs, doc } from "firebase/firestore";
 
 const ListScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
@@ -113,7 +114,8 @@ const ListScreen = ({ route }) => {
     if (product.length > 0) return;
 
     const fetchProducts = async () => {
-      const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      // const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      const colRef = await getCollFromFirestore("Product_Details");
       const docsSnap = await getDocs(colRef);
       docsSnap.forEach((doc) => {
         items.push(doc.data());
