@@ -142,7 +142,7 @@ const CartScreen = () => {
                   </Pressable>
 
                   <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                    ${item.Price * item.Quantity}
+                    €{item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}

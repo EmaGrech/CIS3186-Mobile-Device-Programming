@@ -179,7 +179,7 @@ const ReceiptScreen = () => {
                   </Pressable>
 
                   <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                    ${item.Price * item.Quantity}
+                    €{item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}
@@ -210,7 +210,7 @@ const ReceiptScreen = () => {
                     Item Total
                   </Text>
                   <Text style={{ fontSize: 18, fontWeight: "400" }}>
-                    ${total}
+                    €{total}
                   </Text>
                 </View>
 
@@ -405,7 +405,7 @@ const ReceiptScreen = () => {
 
           <View>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | $ {total}
+              {cart.length} items | € {total}
             </Text>
             <Text
               style={{
@@ -474,4 +474,3 @@ const styles = StyleSheet.create({
 });
 
 export default ReceiptScreen;
-

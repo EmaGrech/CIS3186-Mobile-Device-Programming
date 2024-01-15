@@ -62,7 +62,7 @@ const PetItem = ({ item }) => {
             {item.Product_Name}
           </Text>
           <Text style={{ width: 60, color: "gray", fontSize: 15 }}>
-            ${item.Price}
+            €{item.Price}
           </Text>
         </View>
 
