@@ -1,16 +1,15 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { getUserProfile } from "../FirebaseConfig";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { signOut } from "firebase/auth";
-import { auth } from "../FirebaseConfig";
+import { getDocument, auth } from "../db";
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState({});
 
   const signOutUser = () => {
     signOut(auth)
@@ -25,8 +24,8 @@ function ProfileScreen({ navigation, route }) {
   const getDataFromFirestore = async () => {
     try {
       console.log("Fetching data for user ID:", id);
-      //const data = await getUserProfile(JSON.stringify(id));
-      const data = await getUserProfile(id);
+      const data = await getDocument('Users', id);
+      console.log("Fetched data:", data);
       setUser(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -36,14 +35,6 @@ function ProfileScreen({ navigation, route }) {
   useEffect(() => {
     getDataFromFirestore();
   }, [id]);
-
-  if (!user) {
-    return (
-      <View style={styles.root}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.root}>
@@ -132,7 +123,6 @@ const styles = StyleSheet.create({
   img: {
     width: "100%",
     height: "100%",
-    // this will ensure that the image takes up 100% of its container
   },
   username: {
     fontSize: 18,
