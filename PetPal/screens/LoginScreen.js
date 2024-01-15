@@ -37,7 +37,7 @@ const LoginScreen = () => {
       }
       if (authUser) {
         console.log("User logged in:", authUser);
-        navigation.replace("Discover");
+        navigation.replace("Discover", { userID: authUser.uid });
       }
     });
 
@@ -200,12 +200,13 @@ const styles = StyleSheet.create({
 
 export default LoginScreen;
 
+//creates a new user id for authentication
 export const createNewUser = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
     console.log("New user created:", user);
-    return user;
+    return { user, uid: user.uid };
   } catch (error) {
     console.error("User creation failed:", error.code, error.message);
     throw error;
