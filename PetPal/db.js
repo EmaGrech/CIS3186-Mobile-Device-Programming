@@ -17,6 +17,52 @@ const auth = getAuth(app);
 
 export { auth };
 
+//CONVERSION//
+//defining field types
+export const setFieldType = {
+    'Users': 
+    {
+        Username: 'string',
+        Password: 'string',
+        Profile_Picture: 'image',
+        Email: 'string',
+        Description: 'string',
+        Account_Type: 'drop',
+        Actvities: 'drop[]',
+    },
+    'Purchase_History':
+    {
+        order:{
+            Date_of_Purchase: 'timestamp',
+            Items: 'string[]'
+        }   
+    },
+    'Product_Details': 
+    {
+        Product_Name: 'string',
+        Category: 'drop',
+        Description: 'string',
+        Image: 'image',
+        Price: 'float',
+        Seller_ID: 'string',
+        Stock: 'int',
+        Quantity: 'int',
+    },
+    'Cart':
+    {
+        Order_ID: 'string',
+        Product_ID: 'string[]',
+        Total: 'float',
+    },
+    'Chat':
+    {
+        Message: 'string',
+        Recipient_ID: 'string',
+        Sender_ID: 'string',
+        Timestamp: 'string',
+    },
+}
+
 //LOADING//
 //loading an entire specified collection 
 export const getCollFromFirestore = async (collName) => {
