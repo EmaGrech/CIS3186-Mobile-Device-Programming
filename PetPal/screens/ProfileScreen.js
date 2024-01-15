@@ -4,12 +4,19 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { signOut } from "firebase/auth";
 import { getDocument, auth } from "../db";
+import { useFocusEffect } from '@react-navigation/native';
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
   const [user, setUser] = useState({});
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      getDataFromFirestore();
+    }, [id])
+  );
 
   const signOutUser = () => {
     signOut(auth)
@@ -72,7 +79,7 @@ function ProfileScreen({ navigation, route }) {
             buttonColor="#323232"
             style={{ marginVertical: 20, marginHorizontal: 6 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: true, initialData: { id }})}
+            onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: true, initialData:  user })}
           >
             Edit Details
           </Button>
