@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "react-native-webview": "13.2.2",
     "moment-jalaali": "^0.9.6",
     "@awrminkhodaei/react-native-horizontal-datepicker": "^0.1.6",
     "@react-navigation/bottom-tabs": "^6.5.11",
