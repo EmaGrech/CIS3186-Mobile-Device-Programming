@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Appbar } from "react-native-paper";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 function CustomAppBar({ navigation }) {
+  const [uid, setUid] = useState(null);
   const handleProfilePress = async () => {
     const auth = getAuth();
     const user = auth.currentUser;
 
     if (user) {
+      setUid(user.uid);
       console.log("User UID:", user.uid);
       navigation.navigate("Profile", {
         id: user.uid,
