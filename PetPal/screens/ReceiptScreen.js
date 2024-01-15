@@ -3,10 +3,16 @@ import {
   Text,
   View,
   SafeAreaView,
+  TextInput,
   ScrollView,
   Pressable,
+  TouchableOpacity,
+  Modal,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
-import React from "react";
+
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -18,9 +24,14 @@ import {
 import { decrementQty, incrementQty } from "../ProductReducer";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig";
-//import CartScreen from './screens/CartScreen';
+import { WebView } from "react-native-webview";
+import Feather from "react-native-vector-icons/Feather";
 
 const ReceiptScreen = () => {
+  const [showGateway, setShowGateway] = useState(false);
+  const [prog, setProg] = useState(false);
+  const [progClr, setProgClr] = useState("#000");
+
   const cart = useSelector((state) => state.cart.cart);
   const route = useRoute();
   const total = cart
@@ -30,7 +41,7 @@ const ReceiptScreen = () => {
   const userUid = auth.currentUser.uid;
   const dispatch = useDispatch();
   const placeOrder = async () => {
-    navigation.navigate("Order");
+    navigation.navigate("Order"); //this needs to be the button that olesia made
     dispatch(cleanCart());
     await setDoc(
       doc(db, "Cart", `${userUid}`), //used to be Users also User now will make it Cart
@@ -43,6 +54,20 @@ const ReceiptScreen = () => {
       }
     );
   };
+
+  function onMessage(e) {
+    let data = e.nativeEvent.data;
+    setShowGateway(false);
+    console.log(data);
+    let payment = JSON.parse(data);
+    if (payment.status === "COMPLETED") {
+      //alert("PAYMENT MADE SUCCESSFULLY!");
+      navigation.navigate("Order");
+    } else {
+      alert("PAYMENT FAILED. PLEASE TRY AGAIN.");
+    }
+  }
+
   return (
     <>
       <ScrollView style={{ marginTop: 50 }}>
@@ -241,7 +266,7 @@ const ReceiptScreen = () => {
                   <Text
                     style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
                   >
-                    selected Date
+                    Selected Date
                   </Text>
                   <Text
                     style={{
@@ -259,37 +284,13 @@ const ReceiptScreen = () => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
-                    No Of Days
-                  </Text>
-
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
-                    {route.params.no_Of_days}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
                     marginVertical: 10,
                   }}
                 >
                   <Text
                     style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
                   >
-                    selected Pick Up Time
+                    Selected Pick Up Time
                   </Text>
 
                   <Text
@@ -346,6 +347,62 @@ const ReceiptScreen = () => {
             justifyContent: "space-between",
           }}
         >
+          {showGateway ? (
+            <Modal
+              visible={showGateway}
+              onDismiss={() => setShowGateway(false)}
+              onRequestClose={() => setShowGateway(false)}
+              animationType={"fade"}
+              transparent
+            >
+              <View style={styles.webViewCon}>
+                <View style={styles.wbHead}>
+                  <TouchableOpacity
+                    style={{ padding: 13 }}
+                    onPress={() => setShowGateway(false)}
+                  >
+                    <Feather name={"x"} size={24} />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      flex: 1,
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      color: "#00457C",
+                    }}
+                  >
+                    PayPal GateWay
+                  </Text>
+
+                  <View style={{ padding: 13, opacity: prog ? 1 : 0 }}>
+                    <ActivityIndicator size={24} color={progClr} />
+                  </View>
+                </View>
+
+                <WebView
+                  source={{ uri: "https://payment-app-16f6d.web.app" }}
+                  onMessage={onMessage}
+                  style={{ flex: 1 }}
+                  onLoadStart={() => {
+                    setProg(true);
+                    setProgClr("#000");
+                  }}
+                  onLoadProgress={() => {
+                    setProg(true);
+                    setProgClr("#00457C");
+                  }}
+                  onLoadEnd={() => {
+                    setProg(false);
+                  }}
+                  onLoad={() => {
+                    setProg(false);
+                  }}
+                />
+              </View>
+            </Modal>
+          ) : null}
+
           <View>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
               {cart.length} items | $ {total}
@@ -361,18 +418,60 @@ const ReceiptScreen = () => {
               extra charges might apply
             </Text>
           </View>
-
-          <Pressable onPress={placeOrder}>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              Place Order
-            </Text>
-          </Pressable>
+          <View style={styles.container}>
+            <View style={styles.btnCon}>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={() => setShowGateway(true)}
+              >
+                <Text style={styles.btnTxt}>Proceed To Payment</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </Pressable>
       )}
     </>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  btnCon: {
+    height: 45,
+    width: "70%",
+    elevation: 1,
+    backgroundColor: "#00457C",
+    borderRadius: 3,
+  },
+  btn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnTxt: {
+    color: "#fff",
+    fontSize: 18,
+  },
+  webViewCon: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  wbHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f9f9f9",
+    zIndex: 25,
+    elevation: 2,
+  },
+});
+
 export default ReceiptScreen;
 
-const styles = StyleSheet.create({});
