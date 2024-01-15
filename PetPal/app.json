@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "laundry-app",
-    "slug": "laundry-app",
-    "version": "1.0.0",
+    "name": "PetPal1",
+    "slug": "PetPal1",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,12 +11,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
