@@ -17,8 +17,7 @@ function HomeScreen() {
   
   const handleSell = () => {
     navigation.navigate("Form", {collName: 'Product_Details', editMode: false})
-  };
-  
+  }; 
   return (
     <View>
       <View style={styles.root}>

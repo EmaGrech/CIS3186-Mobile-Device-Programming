@@ -21,6 +21,8 @@ import RegisterScreen from "./screens/RegisterScreen";
 import ListScreen from "./screens/ListScreen";
 import InfoScreen from "./screens/InfoScreen";
 import FormScreen from "./screens/FormScreen";
+import Chats from "./screens/Chats";
+import IndividualChat from "./screens/IndividualChat";
 
 
 import store from "./store";
@@ -74,27 +76,24 @@ function BottomNavigation() {
           header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
         }}
       />
-      <Tab.Screen
-        name="Chats"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ focused, color, size }) =>
-            focused == true ? (
-              <MaterialCommunityIcons
-                name="chat-processing"
-                color={color}
-                size={size}
-              />
-            ) : (
-              <MaterialCommunityIcons
-                name="chat-processing-outline"
-                color={color}
-                size={size}
-              />
-            ),
-          header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
-        }}
-      />
+      <Tab.Screen name="Chats" component={Chats}
+      options={{
+        tabBarIcon: ({ focused, color, size }) =>
+          focused == true ? (
+            <MaterialCommunityIcons
+              name="chat-processing"
+              color={color}
+              size={size}
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="chat-processing-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
+      }}/>
     </Tab.Navigator>
   );
 }
@@ -159,6 +158,9 @@ export default function App() {
             <Stack.Screen name="PickUp" component={PickUpScreen} />
             <Stack.Screen name="Order" component={OrderScreen} />
             <Stack.Screen name="Receipt" component={ReceiptScreen} />
+            <Tab.Screen name="IndividualChat" component={IndividualChat}
+            options={{header: ({ navigation }) => <CustomAppBar navigation={navigation} />}}/>
+
             {/* Add all other screens here */}
           </Stack.Navigator>
         </NavigationContainer>

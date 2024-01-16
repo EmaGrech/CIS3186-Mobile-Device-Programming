@@ -37,13 +37,13 @@ function ProfileScreen({ navigation, route }) {
     getDataFromFirestore();
   }, [id]);
 
-  if (!user) {
+  /*if (!user) {
     return (
       <View style={styles.root}>
         <Text>Loading...</Text>
       </View>
     );
-  }
+  }*/
 
   return (
     <View style={styles.root}>
