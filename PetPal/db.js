@@ -1,6 +1,7 @@
 import {initializeApp} from 'firebase/app'
 import {getFirestore, collection, getDocs, getDoc, addDoc, deleteDoc, doc, updateDoc, setDoc, serverTimestamp} from 'firebase/firestore'
 import { getAuth } from "firebase/auth";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, listAll, } from 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCsgAil9Eviz-Ra4yujHnk3adAIoBpNHtA",
@@ -14,8 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 const auth = getAuth(app);
+const storage = getStorage(app);
 
-export { auth };
+export { auth, db, storage};
 
 //CONVERSION//
 //defining field types
@@ -135,10 +137,10 @@ export const toAddtoCollection = async (collName, data, docID) => {
     else
     {
         const docRef = await addDoc(coll, data);
-    }
 
-    const fields = collFields[collName];
-    setNewDocument(docRef, data, fields);
+        const fields = collFields[collName];
+        setNewDocument(docRef, data, fields);
+    }
 };
 
 //setting fields
@@ -211,3 +213,32 @@ export const moveCartToPurchaseHistory = async (userID) => {
       await setDoc(orderDocRef, purchaseTimestamp);
     }
 };
+
+//IMAGES//
+export const uploadToFirebase = async (uri, name) => {
+    const fetchResponse = await fetch(uri);
+    const theBlob = await fetchResponse.blob();
+  
+    const imageRef = ref(getStorage(), `images/${name}`);
+  
+    const uploadTask = uploadBytesResumable(imageRef, theBlob);
+  
+    return new Promise((resolve, reject) => {
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          // Handle unsuccessful uploads
+          console.log(error);
+          reject(error);
+        },
+        async () => {
+          const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve({
+            downloadUrl,
+            metadata: uploadTask.snapshot.metadata,
+          });
+        }
+      );
+    });
+  };
