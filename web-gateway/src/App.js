@@ -4,15 +4,13 @@ import "./App.css";
 
 
 const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
-//@ts-ignore
-const paypaltotal = require('paypaltotal');
 function App() {
   function _createOrder(data, actions) {
     return actions.order.create({
       purchase_units: [
         {
           amount: {
-            value: paypaltotal,
+            value: "1",
           },
         },
       ],
