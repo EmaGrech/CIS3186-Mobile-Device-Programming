@@ -152,7 +152,7 @@ const ListScreen = ({ route }) => {
     const fetchData = async () => {
       const data = await getCollFromFirestore("Product_Details");
       setProducts(data);
-      const initialCategory = route.params?.category;
+      const initialCategory = route.params;
 
       if (initialCategory) {
         setFilter(initialCategory);

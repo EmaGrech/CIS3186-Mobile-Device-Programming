@@ -4,14 +4,15 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { signOut } from "firebase/auth";
 import { getDocument, auth } from "../db";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
+import HorizontalLineWithText from "../components/HorizontalLine";
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
   const [user, setUser] = useState({});
-  
+
   useFocusEffect(
     React.useCallback(() => {
       getDataFromFirestore();
@@ -31,7 +32,7 @@ function ProfileScreen({ navigation, route }) {
   const getDataFromFirestore = async () => {
     try {
       console.log("Fetching data for user ID:", id);
-      const data = await getDocument('Users', id);
+      const data = await getDocument("Users", id);
       console.log("Fetched data:", data);
       setUser(data);
     } catch (error) {
@@ -55,9 +56,8 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
       {user.Account_Type !== "Consumer" && (
-        <>
-          <Text style={styles.header}>Activities / Services</Text>
-          {/* <HorizontalLineWithText text={"Activities / Services"} /> */}
+        <View style={{ marginTop: 20 }}>
+          <HorizontalLineWithText text={"Activities / Services"} />
           <View style={styles.activityList}>
             {user.Activities != null ? (
               user.Activities.map((activity, index) => (
@@ -69,7 +69,7 @@ function ProfileScreen({ navigation, route }) {
               <Text>No Activities have been set</Text>
             )}
           </View>
-        </>
+        </View>
       )}
 
       {personalProfile ? (
@@ -79,7 +79,13 @@ function ProfileScreen({ navigation, route }) {
             buttonColor="#323232"
             style={{ marginVertical: 20, marginHorizontal: 6 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: true, initialData:  user })}
+            onPress={() =>
+              navigation.navigate("Form", {
+                collName: "Users",
+                editMode: true,
+                initialData: user,
+              })
+            }
           >
             Edit Details
           </Button>
@@ -151,12 +157,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
-  },
-  header: {
-    fontWeight: "bold",
-    fontSize: 18,
-    marginTop: 20,
-    marginHorizontal: 20,
   },
   btnContainer: {
     flexDirection: "row",

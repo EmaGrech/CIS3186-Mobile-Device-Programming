@@ -1,11 +1,14 @@
+import { useNavigation } from "@react-navigation/native";
 import { FlatList, StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 
 function CategoriesList({ data }) {
+  const navigation = useNavigation();
+
   function renderCategoryItem(itemData) {
     function onCategorySelected() {
       console.log("Load " + itemData.item + " screen");
-      // TODO navigate to appropriate screen
+      navigation.navigate("List", itemData.item);
     }
 
     return (
