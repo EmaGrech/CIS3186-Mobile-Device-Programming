@@ -228,7 +228,6 @@ export const uploadToFirebase = async (uri, name) => {
         "state_changed",
         null,
         (error) => {
-          // Handle unsuccessful uploads
           console.log(error);
           reject(error);
         },
