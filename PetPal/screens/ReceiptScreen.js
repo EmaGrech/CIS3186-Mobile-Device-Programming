@@ -35,6 +35,8 @@ const ReceiptScreen = () => {
   const total = cart
     .map((item) => item.Quantity * item.Price)
     .reduce((curr, prev) => curr + prev, 0);
+  const tax = (total * 0.18).toFixed(2);
+  const totalWithTax = total + parseFloat(tax);
   const navigation = useNavigation();
   const userUid = auth.currentUser.uid;
   const dispatch = useDispatch();
@@ -81,7 +83,7 @@ const ReceiptScreen = () => {
                 <View style={styles.incRow}
                   key={index}
                 >
-                  <Text style={{ width: 100, fontSize: 16, fontWeight: "500", color: "#2b2118" }}>
+                  <Text style={{ width: 100, fontSize: 16, fontWeight: "500" }}>
                     {item.Product_Name}
                   </Text>
 
@@ -122,53 +124,29 @@ const ReceiptScreen = () => {
             </View>
 
             <View style={{ marginHorizontal: 16, marginTop: 24, }}>
-              <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 30 }}>
+              <Text style={styles.billingTitleTxt}>
                 Billing Details
               </Text>
-              <View
-                style={{
-                  backgroundColor: "#ecf0f1",
-                  borderRadius: 7,
-                  padding: 10,
-                  marginTop: 8,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
+              <View style={styles.billingCon}>
+                <View style={styles.billingRow}>
                   <Text
-                    style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
+                    style={styles.billingTxt}
                   >
                     Item Total
                   </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "400" }}>
-                    ${total}
+                  <Text style={styles.billingTxt}>
+                  € {total}
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 8,
-                  }}
-                >
+                <View style={styles.billingRowWithMargin}>
                   <Text
-                    style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
+                    style={styles.billingTxt}
                   >
                     Delivery Fee | 1.2KM
                   </Text>
                   <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
+                    style={styles.altTextColor}
                   >
                     FREE
                   </Text>
@@ -176,31 +154,17 @@ const ReceiptScreen = () => {
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                    style={styles.billingTxt}
                   >
                     Free Delivery on Your order
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    borderColor: "gray",
-                    height: 1,
-                    borderWidth: 0.5,
-                    marginTop: 10,
-                  }}
-                />
+                <View style={styles.border}/>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 10,
-                  }}
-                >
+                <View style={styles.billingRowWithMargin}>
                   <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                    style={styles.billingTxt}
                   >
                     Selected Date
                   </Text>
@@ -216,52 +180,38 @@ const ReceiptScreen = () => {
                 </View>
 
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 10,
-                  }}
+                  style={styles.billingRowWithMargin}
                 >
                   <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                    style={styles.billingTxt}
                   >
                     Selected Pick Up Time
                   </Text>
 
                   <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
+                    style={styles.altTextColor}
                   >
                     {route.params.selectedTime}
                   </Text>
                 </View>
                 <View
-                  style={{
-                    borderColor: "gray",
-                    height: 1,
-                    borderWidth: 0.5,
-                    marginTop: 10,
-                  }}
+                  style={styles.border}
                 />
 
                 <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 8,
-                  }}
+                  style={styles.billingRowWithMargin}
                 >
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    To Pay
+                  <Text style={styles.billingTxt}>
+                    Total tax
                   </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {total + 95}
+                  <Text style={styles.billingTxt}>
+                  € {tax}
                   </Text>
+                </View>
+
+                <View style={styles.billingRowWithMargin}>
+                  <Text style={styles.billingTotalTxt}>Total </Text>
+                  <Text style={styles.billingTotalTxt}>€ {totalWithTax}</Text>
                 </View>
               </View>
             </View>
@@ -270,19 +220,7 @@ const ReceiptScreen = () => {
       </ScrollView>
 
       {total === 0 ? null : (
-        <Pressable
-          style={{
-            backgroundColor: "#088F8F",
-            marginTop: "auto",
-            padding: 10,
-            marginBottom: 40,
-            margin: 15,
-            borderRadius: 7,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <View style={styles.paymentCon}>
           {/* paypal gateway */}
           {showGateway ? (
             <Modal
@@ -345,18 +283,9 @@ const ReceiptScreen = () => {
 
           <View>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | € {total}
+              {cart.length} items | € {totalWithTax}
             </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
-              extra charges might apply
-            </Text>
+            <Text style={styles.taxAppliedTxt}>Tax applied</Text>
           </View>
 
           <View style={styles.container}>
@@ -369,7 +298,7 @@ const ReceiptScreen = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </Pressable>
+        </View>
       )}
     </>
   );
@@ -383,10 +312,11 @@ const styles = StyleSheet.create({
   },
   btnCon: {
     height: 50,
-    width: "70%",
+    width: "50%",
     elevation: 1,
-    backgroundColor: "#8ccaaa",
+    backgroundColor: "#f2f4ff",
     borderRadius: 5,
+    marginLeft: 50,
   },
   btn: {
     flex: 1,
@@ -394,7 +324,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnTxt: {
-    color: "#fff",
+    color: "black",
     fontSize: 18,
   },
   webViewCon: {
@@ -450,6 +380,68 @@ const styles = StyleSheet.create({
     color: "#2b2118",
     paddingHorizontal: 6,
     fontWeight: "600",
+  },
+  billingCon: {
+    backgroundColor: "#ecf0f1",
+    borderRadius: 7,
+    padding: 10,
+    marginTop: 8,
+  },
+  billingRow:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginHorizontal: 5,
+  },
+  altTextColor: {
+    fontSize: 18,
+    fontWeight: "400",
+    color: "#96c5f7",
+  },
+  border: {
+    borderColor: "#2B2118",
+    height: 1,
+    borderWidth: 0.5,
+    marginTop: 10,
+  },
+  billingRowWithMargin: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 12,
+    marginHorizontal: 5,
+  },
+  billingTotalTxt: { 
+    fontSize: 24, 
+    fontWeight: "bold", 
+    color:"#96c5f7" 
+  },
+  billingTxt: { 
+    fontSize: 18, 
+    fontWeight: "500", 
+    color:"grey" 
+  },
+  billingTitleTxt: { 
+    fontSize: 16, 
+    fontWeight: "bold", 
+    marginTop: 30 
+  },
+  paymentCon: {
+    backgroundColor: "#96c5f7",
+    marginTop: "auto",
+    padding: 10,
+    marginBottom: 40,
+    margin: 15,
+    borderRadius: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  taxAppliedTxt: {
+    fontSize: 15,
+    fontWeight: "400",
+    color: "white",
+    marginVertical: 6,
   }
 });
 
