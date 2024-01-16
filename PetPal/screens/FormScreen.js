@@ -7,7 +7,7 @@ import DropDown from "../components/Dropdown";
 import { ProductCategories, ServiceCategories, UserCategories, Activities} from "../Categories";
 import { useNavigation } from '@react-navigation/native';
 import { createNewUser } from './LoginScreen';
-import { ref, uploadString, getDownloadURL } from '../db';
+import { uploadToFirebase, listFiles } from '../db';
 
 
 //generates a form corresponding to a particular collection
@@ -16,6 +16,8 @@ const FormScreen = ({ route }) => {
   const { collName = 'Product_Details', editMode = false, initialData = {}, fromLogin = false } = params || {};
   const fieldTypes = setFieldType[collName];
   const navigation = useNavigation();
+  const [permission, requestPermission] = ImagePicker.useCameraPermissions();
+  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
@@ -31,11 +33,20 @@ const FormScreen = ({ route }) => {
       return initialData;
   });
 
-  const currentInputs = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+  const currentInputs = async (field, value) => {
+    if (field === 'Profile_Picture') {
+      const uploadResult = await uploadToFirebase(value.uri, value.name);
+      const downloadUrl = uploadResult.downloadUrl;
+      setFormData({
+        ...formData,
+        Profile_Picture: { uri: downloadUrl, type: value.type, name: value.name },
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [field]: value,
+      });
+    }
   };
 
 
@@ -44,26 +55,6 @@ const FormScreen = ({ route }) => {
       .filter(([fieldName, fieldType]) => fieldType === 'string' && formData[fieldName] === '')
       .map(([fieldName]) => fieldName);
   
-      const imageField = Object.entries(fieldTypes).find(([fieldName, fieldType]) => fieldType === 'image');
-      if (imageField) {
-        const [fieldName] = imageField;
-    
-        if (formData[fieldName] && formData[fieldName].uri) {
-          const response = await fetch(imageUri);
-          const blob = await response.blob();
-          const fileName = `${fieldName}_${Date.now()}`;
-          const storageRef = ref(storage, `images/${fileName}`);
-
-          console.log('Uploading image to Firebase Storage...');
-          await uploadString(storageRef, blob, 'data_url');
-
-          console.log('Image uploaded successfully.');
-
-          const downloadURL = await getDownloadURL(storageRef);
-          currentInputs(fieldName, downloadURL);
-            }
-          }
-
     // Checks no field is left empty
     if (empty.length > 0) {
       Alert.alert(`Please fill in all fields`);
@@ -99,14 +90,11 @@ const FormScreen = ({ route }) => {
         aspect: [3, 3],
         quality: 1,
       });
-  
-      console.log("ImagePicker result:", result);
-  
+    
       if (!result.cancelled) {
-        console.log("Selected image:", result.uri);
-        currentInputs(fieldName, { uri: result.uri, type: result.type, name: result.uri.split('/').pop() });
-      } else {
-        console.log("Image selection cancelled.");
+        const uploadResult = await uploadToFirebase(result.uri, result.uri.split('/').pop());
+        const downloadUrl = uploadResult.downloadUrl;
+        currentInputs(fieldName, { uri: downloadUrl, type: result.type, name: result.uri.split('/').pop() });      
       }
     } catch (error) {
       console.error("Image selection error:", error);
