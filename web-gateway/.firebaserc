@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "payment-app-16f6d"
-  }
+    "default": "payment-app-16f6d",
+    "petpal": "petpal-3f19d",
+    "paymenttest": "payment-app-16f6d"
+  },
+  "targets": {},
+  "etags": {}
 }

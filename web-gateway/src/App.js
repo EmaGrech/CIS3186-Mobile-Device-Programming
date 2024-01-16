@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./App.css";
+
+
 const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
 function App() {
   function _createOrder(data, actions) {
