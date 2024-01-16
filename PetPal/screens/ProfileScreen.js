@@ -48,7 +48,17 @@ function ProfileScreen({ navigation, route }) {
     <View style={styles.root}>
       <View style={styles.centralisedContainer}>
         <View style={styles.imgContainer}>
-          <Image style={styles.img} source={{ uri: user.Profile_Picture }} />
+          {/* If the user did not set a profile picture,
+            show the default user icon */}
+          <Image
+            style={styles.img}
+            source={{
+              uri:
+                user.Profile_Picture != ""
+                  ? user.Profile_Picture
+                  : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e",
+            }}
+          />
         </View>
         <Text style={styles.username}>{user.Username}</Text>
         <View style={styles.listItem}>
@@ -77,7 +87,7 @@ function ProfileScreen({ navigation, route }) {
           <Button
             mode="contained"
             buttonColor="#323232"
-            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            style={{ marginVertical: 20, marginHorizontal: 10 }}
             labelStyle={{ fontSize: 16 }}
             onPress={() =>
               navigation.navigate("Form", {
@@ -92,7 +102,7 @@ function ProfileScreen({ navigation, route }) {
           <Button
             mode="contained"
             buttonColor="#323232"
-            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            style={{ marginVertical: 20, marginHorizontal: 10 }}
             labelStyle={{ fontSize: 16 }}
             onPress={signOutUser}
           >
@@ -132,13 +142,15 @@ const styles = StyleSheet.create({
     borderColor: "#A9D3FF",
     overflow: "hidden",
     marginTop: 20,
+    elevation: 3,
   },
   img: {
     width: "100%",
     height: "100%",
   },
   username: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: "bold",
     margin: 10,
   },
   listItem: {
