@@ -63,28 +63,6 @@ const FormScreen = ({ route }) => {
       )
       .map(([fieldName]) => fieldName);
 
-    const imageField = Object.entries(fieldTypes).find(
-      ([fieldName, fieldType]) => fieldType === "image"
-    );
-    if (imageField) {
-      const [fieldName] = imageField;
-
-      if (formData[fieldName] && formData[fieldName].uri) {
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-        const fileName = `${fieldName}_${Date.now()}`;
-        const storageRef = ref(storage, `images/${fileName}`);
-
-        console.log("Uploading image to Firebase Storage...");
-        await uploadString(storageRef, blob, "data_url");
-
-        console.log("Image uploaded successfully.");
-
-        const downloadURL = await getDownloadURL(storageRef);
-        currentInputs(fieldName, downloadURL);
-      }
-    }
-
     // Checks no field is left empty
     if (empty.length > 0) {
       Alert.alert(`Please fill in all fields`);
@@ -115,6 +93,25 @@ const FormScreen = ({ route }) => {
       }
     }
     navigation.goBack();
+  };
+
+  const selectImage = async (fieldName) => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [3, 3],
+        quality: 1,
+      });
+    
+      if (!result.cancelled) {
+        const uploadResult = await uploadToFirebase(result.uri, result.uri.split('/').pop());
+        const downloadUrl = uploadResult.downloadUrl;
+        currentInputs(fieldName, { uri: downloadUrl, type: result.type, name: result.uri.split('/').pop() });      
+      }
+    } catch (error) {
+      console.error("Image selection error:", error);
+    }
   };
 
   return (
@@ -161,9 +158,15 @@ const FormScreen = ({ route }) => {
               </View>
             ) : fieldType === "image" ? (
               <View style={{ alignItems: "center" }}>
-                <UploadImage src={formData[fieldName]}>
-                  {(image) => currentInputs(fieldName, image)}
-                </UploadImage>
+                 <TouchableOpacity onPress={() => selectImage(fieldName)} >
+                  <Text>Upload Image</Text>
+                </TouchableOpacity>
+                {formData[fieldName] && formData[fieldName].uri && (
+                  <Image
+                    source={{ uri: formData[fieldName].uri }}
+                    style={{ width: 200, height: 200 }}
+                  />
+                )}
               </View>
             ) : fieldType === ("drop" || "drop[]") ? (
               fieldName === "Activities" ? (
