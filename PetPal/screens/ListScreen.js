@@ -126,7 +126,7 @@ const ListScreen = ({ route }) => {
   }, []);
   console.log(product);
 
-  /*useEffect(() => {  
+  useEffect(() => {
     const fetchData = async () => {
       const data = await getCollFromFirestore("Product_Details");
       setProducts(data);
@@ -134,7 +134,9 @@ const ListScreen = ({ route }) => {
 
       if (initialCategory) {
         setFilter(initialCategory);
-        const filtered = data.filter(item => item["Category"] === initialCategory);
+        const filtered = data.filter(
+          (item) => item["Category"] === initialCategory
+        );
         setFilterProducts(filtered);
       } else {
         setFilterProducts(data);
@@ -143,12 +145,12 @@ const ListScreen = ({ route }) => {
 
     const focusHandler = navigation.addListener("focus", fetchData);
 
-    return() => {
+    return () => {
       focusHandler();
-    } ;
-  }, [navigation, route.params]); */
+    };
+  }, [navigation, route.params]);
 
-  useEffect(() => {
+  /*useEffect(() => { new way but it is having issues
     const fetchData = async () => {
       const data = await getCollFromFirestore("Product_Details");
       setProducts(data);
@@ -173,7 +175,7 @@ const ListScreen = ({ route }) => {
     return () => {
       focusHandler();
     };
-  }, [navigation, route.params, product]);
+  }, [navigation, route.params, product]); */
 
   const handleFilter = (value) => {
     setFilter(value);
