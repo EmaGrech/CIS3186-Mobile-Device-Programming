@@ -143,7 +143,7 @@ export const toAddtoCollection = async (collName, data, docID) => {
     }
 };
 
-//setting fields
+
 const collFields = {
     'Cart': ['Order_ID', 'Product_ID', 'Total'],
     'Chat': ['Message', 'Recipient_ID', 'Sender_ID', 'Timestamp'],
@@ -151,6 +151,7 @@ const collFields = {
     'Purchase_History': ['Date_of_Purchase', 'Order_ID'],
     'Users': ['Account_Type', 'Email', 'Password', 'Profile_Picture', 'Username'],
 };
+
 
 //adding a new document to a collection
 const setNewDocument = async (docRef, data, fields) => {

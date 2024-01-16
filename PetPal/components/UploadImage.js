@@ -3,7 +3,7 @@ import { Image, View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-function UploadImage({ src }) {
+function UploadImage({ src, children }) {
   const [image, setImage] = useState(null);
 
   const checkForCameraRollPermission = async () => {
@@ -41,6 +41,7 @@ function UploadImage({ src }) {
     ) {
       // only update image state, if an image was chosen successfully
       setImage(selectedImage.assets[0].uri);
+      return children(image);
     }
   };
 

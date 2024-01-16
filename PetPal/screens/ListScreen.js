@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert, Pressable, TextInput, ScrollView} from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Pressable,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { getCollFromFirestore } from "../db";
 import { ProductCategories } from "../Categories";
 import * as Location from "expo-location";
@@ -9,8 +20,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
 import PetItem from "../components/PetItem";
 import DropDown from "../components/Dropdown";
-import LottieView from 'lottie-react-native';
+import LottieView from "lottie-react-native";
 import CustomAppBar from "../components/CustomAppBar";
+import { getDocs, doc } from "firebase/firestore";
 
 const ListScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
@@ -18,7 +30,7 @@ const ListScreen = ({ route }) => {
 
   const [filter, setFilter] = useState(null);
   const [filterProducts, setFilterProducts] = useState([]);
-  
+
   const cart = useSelector((state) => state.cart.cart);
   const [items, setItems] = useState([]);
   const total = cart
@@ -29,13 +41,13 @@ const ListScreen = ({ route }) => {
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
   );
-  
+
   const [locationServicesEnabled, setlocationServicesEnabled] = useState(false);
   useEffect(() => {
     checkIfLocationEnabled();
     getCurrentLocation();
   }, []);
-  
+
   const checkIfLocationEnabled = async () => {
     let enabled = await Location.hasServicesEnabledAsync();
     if (!enabled) {
@@ -56,7 +68,7 @@ const ListScreen = ({ route }) => {
       setlocationServicesEnabled(enabled);
     }
   };
-  
+
   const getCurrentLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -97,12 +109,13 @@ const ListScreen = ({ route }) => {
 
   const product = useSelector((state) => state.product.product);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (product.length > 0) return;
 
     const fetchProducts = async () => {
-      const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      // const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      const colRef = await getCollFromFirestore("Product_Details");
       const docsSnap = await getDocs(colRef);
       docsSnap.forEach((doc) => {
         items.push(doc.data());
@@ -113,7 +126,7 @@ const ListScreen = ({ route }) => {
   }, []);
   console.log(product);
 
-  useEffect(() => {  
+  /*useEffect(() => {  
     const fetchData = async () => {
       const data = await getCollFromFirestore("Product_Details");
       setProducts(data);
@@ -133,23 +146,54 @@ const ListScreen = ({ route }) => {
     return() => {
       focusHandler();
     } ;
-  }, [navigation, route.params]);
+  }, [navigation, route.params]); */
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getCollFromFirestore("Product_Details");
+      setProducts(data);
+      const initialCategory = route.params;
+
+      if (initialCategory) {
+        setFilter(initialCategory);
+        const filtered = data.filter(
+          (item) => item["Category"] === initialCategory
+        );
+        setFilterProducts(filtered);
+      } else {
+        setFilterProducts(data);
+      }
+
+      // Dispatch the getProducts action here
+      data.forEach((item) => dispatch(getProducts(item)));
+    };
+
+    const focusHandler = navigation.addListener("focus", fetchData);
+
+    return () => {
+      focusHandler();
+    };
+  }, [navigation, route.params, product]);
 
   const handleFilter = (value) => {
     setFilter(value);
     if (value === null) {
       setFilterProducts(products);
     } else {
-      const filtered = products.filter(item => item["Category"] === value);
+      const filtered = products.filter((item) => item["Category"] === value);
       setFilterProducts(filtered);
     }
   };
 
   return (
     <>
-    <CustomAppBar navigation={navigation} />
-    <DropDown data={ProductCategories} onValueChange={handleFilter} initialValue={filter} />
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 5}}>
+      <CustomAppBar navigation={navigation} />
+      <DropDown
+        data={ProductCategories}
+        onValueChange={handleFilter}
+        initialValue={filter}
+      />
+      <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
         <MaterialIcons name="location-on" size={30} color="#fd5c63" />
         <View>
           <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
@@ -168,13 +212,15 @@ const ListScreen = ({ route }) => {
           />
         </Pressable>
       </View>
-      
-      <View style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>        
+
+      <View style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>
         {/*List output*/}
-        {filterProducts.length === 0 ? ( 
-          <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        {filterProducts.length === 0 ? (
+          <View
+            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
+          >
             <LottieView
-              source={require('../assets/notFound Light.json')}
+              source={require("../assets/notFound Light.json")}
               autoPlay
               loop
               style={{ width: 200, height: 200 }}
@@ -185,9 +231,7 @@ const ListScreen = ({ route }) => {
           <FlatList
             data={filterProducts}
             keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <PetItem item={item} />
-            )}
+            renderItem={({ item }) => <PetItem item={item} />}
           />
         )}
       </View>
@@ -207,7 +251,7 @@ const ListScreen = ({ route }) => {
         >
           <View>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | $ {total}
+              {cart.length} items | € {total}
             </Text>
             <Text
               style={{
@@ -232,6 +276,6 @@ const ListScreen = ({ route }) => {
       )}
     </>
   );
-}
+};
 
 export default ListScreen;

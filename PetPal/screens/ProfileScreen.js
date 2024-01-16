@@ -4,14 +4,15 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import { Button } from "react-native-paper";
 import { signOut } from "firebase/auth";
 import { getDocument, auth } from "../db";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
+import HorizontalLineWithText from "../components/HorizontalLine";
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
   // viewing their own profile or someone else's
   const { id, personalProfile } = route.params;
   const [user, setUser] = useState({});
-  
+
   useFocusEffect(
     React.useCallback(() => {
       getDataFromFirestore();
@@ -31,7 +32,7 @@ function ProfileScreen({ navigation, route }) {
   const getDataFromFirestore = async () => {
     try {
       console.log("Fetching data for user ID:", id);
-      const data = await getDocument('Users', id);
+      const data = await getDocument("Users", id);
       console.log("Fetched data:", data);
       setUser(data);
     } catch (error) {
@@ -50,6 +51,15 @@ function ProfileScreen({ navigation, route }) {
           {user.Profile_Picture && user.Profile_Picture.uri && (  
             <Image style={styles.img} source={{ uri: user.Profile_Picture.uri }} />
           )}        
+          <Image
+            style={styles.img}
+            source={{
+              uri:
+                user.Profile_Picture != ""
+                  ? user.Profile_Picture
+                  : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e",
+            }}
+          />
         </View>
         <Text style={styles.username}>{user.Username}</Text>
         <View style={styles.listItem}>
@@ -57,9 +67,8 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
       {user.Account_Type !== "Consumer" && (
-        <>
-          <Text style={styles.header}>Activities / Services</Text>
-          {/* <HorizontalLineWithText text={"Activities / Services"} /> */}
+        <View style={{ marginTop: 20 }}>
+          <HorizontalLineWithText text={"Activities / Services"} />
           <View style={styles.activityList}>
             {user.Activities != null ? (
               user.Activities.map((activity, index) => (
@@ -71,7 +80,7 @@ function ProfileScreen({ navigation, route }) {
               <Text>No Activities have been set</Text>
             )}
           </View>
-        </>
+        </View>
       )}
 
       {personalProfile ? (
@@ -79,16 +88,22 @@ function ProfileScreen({ navigation, route }) {
           <Button
             mode="contained"
             buttonColor="#323232"
-            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            style={{ marginVertical: 20, marginHorizontal: 10 }}
             labelStyle={{ fontSize: 16 }}
-            onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: true, initialData:  user })}
+            onPress={() =>
+              navigation.navigate("Form", {
+                collName: "Users",
+                editMode: true,
+                initialData: user,
+              })
+            }
           >
             Edit Details
           </Button>
           <Button
             mode="contained"
             buttonColor="#323232"
-            style={{ marginVertical: 20, marginHorizontal: 6 }}
+            style={{ marginVertical: 20, marginHorizontal: 10 }}
             labelStyle={{ fontSize: 16 }}
             onPress={signOutUser}
           >
@@ -128,13 +143,15 @@ const styles = StyleSheet.create({
     borderColor: "#A9D3FF",
     overflow: "hidden",
     marginTop: 20,
+    elevation: 3,
   },
   img: {
     width: "100%",
     height: "100%",
   },
   username: {
-    fontSize: 18,
+    fontSize: 20,
+    fontWeight: "bold",
     margin: 10,
   },
   listItem: {
@@ -153,12 +170,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
-  },
-  header: {
-    fontWeight: "bold",
-    fontSize: 18,
-    marginTop: 20,
-    marginHorizontal: 20,
   },
   btnContainer: {
     flexDirection: "row",
