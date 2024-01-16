@@ -47,7 +47,9 @@ function ProfileScreen({ navigation, route }) {
     <View style={styles.root}>
       <View style={styles.centralisedContainer}>
         <View style={styles.imgContainer}>
-          <Image style={styles.img} source={{ uri: user.Profile_Picture }} />
+          {user.Profile_Picture && user.Profile_Picture.uri && (  
+            <Image style={styles.img} source={{ uri: user.Profile_Picture.uri }} />
+          )}        
         </View>
         <Text style={styles.username}>{user.Username}</Text>
         <View style={styles.listItem}>
