@@ -17,6 +17,9 @@ import ListScreen from "./screens/ListScreen";
 import InfoScreen from "./screens/InfoScreen";
 import FormScreen from "./screens/FormScreen";
 import BottomNavigation from "./components/BottomNavigation";
+import Welcome from "./screens/Welcome";
+import IndividualChatScreen from "./screens/IndividualChatScreen";
+import CustomAppBar from "./components/CustomAppBar";
 
 import store from "./store";
 
@@ -29,11 +32,19 @@ export default function App() {
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator
+          initialRouteName="Welcome"
             screenOptions={{
               headerStyle: { elevation: 2 },
               cardStyle: { backgroundColor: "#f2f4ff" },
             }}
           >
+
+              <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{ headerShown: false }}
+            />
+
             <Stack.Screen
               name="Login"
               component={LoginScreen}
@@ -69,6 +80,8 @@ export default function App() {
             <Stack.Screen name="PickUp" component={PickUpScreen} />
             <Stack.Screen name="Order" component={OrderScreen} />
             <Stack.Screen name="Receipt" component={ReceiptScreen} />
+            <Stack.Screen name="IndividualChatScreen" component={IndividualChatScreen}
+            options={{header: ({ navigation }) => <CustomAppBar navigation={navigation} />}}/>
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

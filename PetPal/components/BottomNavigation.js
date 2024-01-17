@@ -4,6 +4,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
 import CustomAppBar from "./CustomAppBar";
+import Chats from "../screens/Chats";
+import FormScreen from "../screens/FormScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -55,7 +57,7 @@ function BottomNavigation() {
       />
       <Tab.Screen
         name="Chats"
-        component={HomeScreen}
+        component={Chats}
         options={{
           tabBarIcon: ({ focused, color, size }) =>
             focused == true ? (

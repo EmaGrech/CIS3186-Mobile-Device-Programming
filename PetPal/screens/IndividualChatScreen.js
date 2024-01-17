@@ -1,11 +1,11 @@
-import { db } from "./Chats";
-import { StyleSheet } from "react-native";
+import { dbChat } from "./Chats";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm, Controller } from 'react-hook-form';
 import { collection, doc, getDoc, onSnapshot, query, orderBy, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator, StyleSheet } from 'react-native';
-
+import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
+import { Keyboard } from "react-native";
+import { formatTimestamp } from "../components/formatTimestamp";
 
 export default function IndividualChat({route, navigation}){
     const {chatId, userId, interlocutorId} = route.params;
@@ -15,12 +15,12 @@ export default function IndividualChat({route, navigation}){
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
     const [interlocutor, setInterlocutor] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
-    const [isMessageSending, setIsMessageSending] = (false)
+    const [isMessageSending, setIsMessageSending] = useState(false)
 
-    const accountImage = require("../assets/person.jpg")
+    const accountImage = require("../assets/Person.jpg")
 
-    mesgColl = collection(db, "Messages");
-    userColl = collection(db, "Users");
+    mesgColl = collection(dbChat, "Messages");
+    userColl = collection(dbChat, "Users");
 
     const GetUsersDocs = async() =>{
       const docInterRef = doc(userColl, interlocutorId)
@@ -29,12 +29,12 @@ export default function IndividualChat({route, navigation}){
       const docInterSnap = await getDoc(docInterRef)
       const docCurrentSnap = await getDoc(docCurrentRef)
 
-      setInterlocutor({ ...docInterSnap.data(), id: docInterSnap.id })
-      setCurrentUser({ ...docCurrentSnap.data(), id: docCurrentSnap.id })
+      setInterlocutor(docInterSnap.data())
+      setCurrentUser(docCurrentSnap.data())
       setAreUsersLoading(false)
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
       const keyboardDidShowListener = Keyboard.addListener(
         'keyboardDidShow',
         () => setIsKeyboardVisible(true)
@@ -48,39 +48,47 @@ export default function IndividualChat({route, navigation}){
         keyboardDidShowListener.remove();
         keyboardDidHideListener.remove();
       };
-    }, []);
+    }, []);*/
 
-      useEffect(() => {
-        GetUsersDocs()
-
-        const docRef = doc(mesgColl, chatId);
-        const messageColl = collection(docRef, "mesgArchive");
-        const q = query(messageColl, orderBy("timestamp", "asc"));
-      
-        const unsubscribeMessages = onSnapshot(q, (snapshot) => {
-          let Mesg = [];
-          snapshot.docs.forEach((doc) => {
-            Mesg.push({ ...doc.data(), id: doc.id });
+    useEffect(() => {
+        GetUsersDocs();
+         console.log("use effetc")
+          const docRef = doc(mesgColl, chatId);
+          const messageColl = collection(docRef, "mesgArchive");
+          const q = query(messageColl, orderBy("timestamp", "asc"));
+        
+          const unsubscribeMessages = onSnapshot(q, (snapshot) => {
+            let Mesg = [];
+            snapshot.docs.forEach((doc) => {
+              Mesg.push({ ...doc.data(), id: doc.id });
+            });
+            setMessages(Mesg);
+            console.log("messages")
+            console.log(isLoadingMessages)
+            setIsLoadingMessages(false);
+            console.log(isLoadingMessages)
           });
-          setMessages(Mesg);
-          setIsLoadingMessages(false);
-        });
+      
+          return () => {
+            unsubscribeMessages();
+          }
 
-        return () => {
-          unsubscribeMessages();
-        };
-      },[]);
+        },[]);
 
       const SendMessage = async (data) => {
+        console.log("entrance")
         setIsMessageSending(true)
+        console.log(isMessageSending)
         const docChatRef = doc(mesgColl, chatId);
         const messageColl = collection(docChatRef, "mesgArchive")
+        console.log("rerefences")
 
         const newMessage={
           mesg: data.Mesg,
           timestamp: serverTimestamp(),
-          userId: currentUser.id
+          userId: userId
         }
+        console.log("new message")
 
         const updatedChat={
           last_mesg: data.Mesg,
@@ -90,37 +98,16 @@ export default function IndividualChat({route, navigation}){
           from_uid: currentUser.id,
           from_name: currentUser.name
         }
-        try{
-        await addDoc(messageColl, newMessage); 
-        await setDoc(docChatRef, updatedChat, {merge:true})}
-        catch (e) {
-          control.log("Error adding documents", e)
-        }
-        setValue('Mesg', '');
-        setIsMessageSending(false)
-      };
-            
-      const isToday = (date) => {
-        const today = new Date();
-        return date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear();
-      };
-      
-      const formatTimestamp = (timestamp) => {
-        const date = timestamp.toDate()
-      
-        let formattedDate;
-        
-        if (isToday(date)) {
-          formattedDate = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        } else {
-          formattedDate = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + 
-                          ', ' + date.toLocaleDateString([], { day: '2-digit', month: 'short' });
-        }
-        return formattedDate;
-      };
+        console.log("updated chat")
 
+        await addDoc(messageColl, newMessage); 
+        await setDoc(docChatRef, updatedChat, {merge:true})
+        console.log(documents)
+        setIsMessageSending(false)
+    console.log(isMessageSending)
+        setValue('Mesg', '');
+      };        
+        
       const ConversationHeader = () => {
         return (
           <View style={styles.headerContainer}>
@@ -163,7 +150,7 @@ export default function IndividualChat({route, navigation}){
               ))
             )}
           </ScrollView>
-        );
+        )
       };
 
       const { control, handleSubmit, setValue } = useForm();
@@ -189,9 +176,9 @@ export default function IndividualChat({route, navigation}){
               name="Mesg"
               defaultValue=""
             />
-            <View style={styles.sendButtonContainer}>
-            <Button title="send" onPress={handleSubmit(SendMessage)}
-            /></View>
+            <View style={styles.sendButton}>
+            <Button title="send" onPress={handleSubmit(SendMessage)}/>
+            </View>
           </View>
         );
       };
@@ -208,27 +195,24 @@ export default function IndividualChat({route, navigation}){
             <ActivityIndicator size="auto" color="#89CFF0" />
           </View>
         ) : (
-          <View style={styles.container}>
+          <SafeAreaView style={styles.container}>
           <ConversationHeader />
           <KeyboardAwareScrollView
             ref={scrollViewRef}
-            scrollEnabled={isKeyboardVisible}
+            //scrollEnabled={isKeyboardVisible}
             onLayout={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
             keyboardShouldPersistTaps={'always'}
+            enableOnAndroid={true}
             extraScrollHeight={100}
             contentContainerStyle={{
               flexGrow: 1 
             }}>
-          <View style={styles.contentContainer}>
               <View style={styles.messagesContainer}>
                 <MessageList />
               </View>
-          </View>
-          <View style={styles.inputLayout}>
             <InputContainer />
-            </View>
           </KeyboardAwareScrollView>
-        </View>
+        </SafeAreaView>
         )
       );
 }
@@ -238,9 +222,12 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       padding: 10,
     },
+    sendButton:{
+        color:"black"
+    },
     backArrow: {
-      width: 40,
-      height: 40,
+      width: 30,
+      height: 30,
       marginRight: 10,
     },
     personImage: {
@@ -271,7 +258,7 @@ const styles = StyleSheet.create({
       },
       rightAlign: {
         alignSelf: 'flex-end',
-        backgroundColor: '#DCF8C6',
+        backgroundColor: '#D6EFF7',
         marginRight:10 
       },
       leftAlign: {
@@ -286,14 +273,13 @@ const styles = StyleSheet.create({
         flex:1
       },
       messagesContainer: {
-        maxHeight:"97%"
+       flex:1
       },
       inputContainer: {
         flexDirection: 'row',
         padding: 10,
         alignItems: 'center',
         justifyContent: 'space-between', 
-        position: 'relevant',
       },
       inputText: {
         flex: 1,
@@ -301,15 +287,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         paddingHorizontal: 10,
-        marginRight: 10,
+        marginRight:10,
         height: 50,
-        maxHeight:200
-      },
-      sendButtonContainer:{
-        height: 50,
-        width: 50,
-        resizeMode:"contain",
-        transform: [{ rotate: '-35deg' }],
+        maxHeight:200,
       },
       scrollViewStyle: {
         flex:1
@@ -324,13 +304,10 @@ const styles = StyleSheet.create({
         fontSize:20,
         color:"grey"
       },
-      contentContainer: {
-        flex: 1,
-        justifyContent: 'space-between',
-      },
       inputLayout:{
-        position:"relavant",
+        position:"absolute",
         width:"100%",
-        bottom:30
-      }
+        bottom:0
+      },
   });
+  

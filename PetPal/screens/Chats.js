@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { getFirestore,collection,or, where, query, orderBy, onSnapshot } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
-
-const [conversations, setConversations] = useState([])
-const [isLoadingChats, setIsLoadingChats] = useState(true)
-
-const app = initializeApp(firebaseConfig, "chat");
-const db = getFirestore(app);
-
-export { db};
+import { ActivityIndicator } from 'react-native';
+import { formatTimestamp } from "../components/formatTimestamp";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDrvXycbaOQE8i5oLDaGDSYfABnpjsQ1II",
@@ -20,7 +14,16 @@ const firebaseConfig = {
     appId: "1:1071173191697:web:bfe7c84a6c234f54fe89b0"
   };
 
+  const appChat = initializeApp(firebaseConfig, "chat");
+const dbChat = getFirestore(appChat);
+  export { dbChat};
+
 export default function Chats({navigation, route}){
+const [conversations, setConversations] = useState([])
+const [isLoadingChats, setIsLoadingChats] = useState(true)
+
+mesgColl = collection(dbChat, "Messages");
+userColl = collection(dbChat, "Users");
 
  const accountImage = require("../assets/Person.jpg")
  const userId = "BZNIE9P380QSIJ4D1pPF"
@@ -60,22 +63,26 @@ export default function Chats({navigation, route}){
             key={conv.id}
             style={styles.convContainer}
             onPress={() => navigation.navigate('IndividualChatScreen', {
-                chatId: conv.id,
-                UserId: userId,
-                interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
-                })}
+              chatId: conv.id,
+              userId: userId,
+              interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
+            })}
           >
             <Image source={accountImage} style={styles.avatar} />
-            <View>
+            <View style={styles.chatDetailsContainer}>
               <Text style={styles.usernameContainer}>
                 {conv.to_uid === userId ? conv.from_name : conv.to_name}
               </Text>
               <Text style={styles.mesgTextContainer}>
-                {conv.last_mesg.length > 30
-                  ? conv.last_mesg.substring(0, 30) + '...'
-                  : conv.last_mesg}
+              {conv.from_uid === userId ? "You: " : ""}
+              {conv.last_mesg.length > 30
+              ? conv.last_mesg.substring(0, 30) + '...'
+              : conv.last_mesg}
               </Text>
             </View>
+            <Text style={styles.timeText}>
+              {formatTimestamp(conv.last_time)}
+            </Text>
           </TouchableOpacity>
         ))
       );
@@ -108,10 +115,9 @@ const styles = StyleSheet.create({
       },
       convContainer: {
         flexDirection: 'row',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e0e0e0',
+        padding: 15,
         alignItems: 'center',
+        justifyContent: 'space-between', 
       },
       avatar: {
         width: 50,
@@ -126,5 +132,12 @@ const styles = StyleSheet.create({
       mesgTextContainer: {
         color: 'grey',
         marginTop: 5,
+      },
+      chatDetailsContainer: {
+        flex: 1,
+      },
+      timeText: {
+        color: 'grey',
+        fontSize: 12,
       },
 })
