@@ -1,6 +1,6 @@
 export const PetCategoriesImage = [
     { name: "Cats", image: require('./assets/Cats.jpg') },
-    { name: "Dogs", image: require('./assets/dogs.avif') },
+    { name: "Dogs", image: require('./assets/dogs.png') },
     { name: "Birds", image: require('./assets/birds.png') },
     { name: "Exotic", image: require('./assets/exotic.png') },
   ];

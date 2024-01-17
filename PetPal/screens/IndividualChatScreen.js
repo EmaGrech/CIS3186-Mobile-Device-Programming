@@ -212,7 +212,7 @@ export default function IndividualChat({route, navigation}){
             //scrollEnabled={isKeyboardVisible}
             onLayout={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
             keyboardShouldPersistTaps={'always'}
-            enableOnAndroid={true}
+            enableOnAndroid={false}
             extraScrollHeight={100}
             contentContainerStyle={{
               flexGrow: 1 
