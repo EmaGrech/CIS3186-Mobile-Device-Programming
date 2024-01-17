@@ -58,33 +58,43 @@ userColl = collection(dbChat, "Users");
       );
     
       const renderChats = () => (
-        conversations.map((conv) => (
-          <TouchableOpacity 
-            key={conv.id}
-            style={styles.convContainer}
-            onPress={() => navigation.navigate('IndividualChatScreen', {
-              chatId: conv.id,
-              userId: userId,
-              interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
-            })}
-          >
-            <Image source={accountImage} style={styles.avatar} />
-            <View style={styles.chatDetailsContainer}>
-              <Text style={styles.usernameContainer}>
-                {conv.to_uid === userId ? conv.from_name : conv.to_name}
-              </Text>
-              <Text style={styles.mesgTextContainer}>
-              {conv.from_uid === userId ? "You: " : ""}
-              {conv.last_mesg.length > 30
-              ? conv.last_mesg.substring(0, 30) + '...'
-              : conv.last_mesg}
-              </Text>
-            </View>
-            <Text style={styles.timeText}>
-              {formatTimestamp(conv.last_time)}
-            </Text>
-          </TouchableOpacity>
-        ))
+        conversations.map((conv) => {
+          if (!conv.last_time) {
+            return (
+              <View style={styles.loaderContainer} key={conv.id}>
+                <ActivityIndicator size="large" color="#0000ff" />
+              </View>
+            );
+          } else {
+            return (
+              <TouchableOpacity 
+                key={conv.id}
+                style={styles.convContainer}
+                onPress={() => navigation.navigate('IndividualChatScreen', {
+                  chatId: conv.id,
+                  userId: userId,
+                  interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
+                })}
+              >
+                <Image source={accountImage} style={styles.avatar} />
+                <View style={styles.chatDetailsContainer}>
+                  <Text style={styles.usernameContainer}>
+                    {conv.to_uid === userId ? conv.from_name : conv.to_name}
+                  </Text>
+                  <Text style={styles.mesgTextContainer}>
+                    {conv.from_uid === userId ? "You: " : ""}
+                    {conv.last_mesg.length > 30
+                    ? conv.last_mesg.substring(0, 30) + '...'
+                    : conv.last_mesg}
+                  </Text>
+                </View>
+                <Text style={styles.timeText}>
+                  {formatTimestamp(conv.last_time)}
+                </Text>
+              </TouchableOpacity>
+            );
+          }
+        })
       );
     
       return(

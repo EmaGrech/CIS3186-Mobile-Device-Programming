@@ -1,7 +1,7 @@
 import { dbChat } from "./Chats";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm, Controller } from 'react-hook-form';
-import { collection, doc, getDoc, onSnapshot, query, orderBy, addDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, query, orderBy, addDoc, setDoc, serverTimestamp, getDocs } from 'firebase/firestore';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
 import { Keyboard } from "react-native";
@@ -15,7 +15,6 @@ export default function IndividualChat({route, navigation}){
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
     const [interlocutor, setInterlocutor] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
-    const [isMessageSending, setIsMessageSending] = useState(false)
 
     const accountImage = require("../assets/Person.jpg")
 
@@ -26,12 +25,18 @@ export default function IndividualChat({route, navigation}){
       const docInterRef = doc(userColl, interlocutorId)
       const docCurrentRef = doc(userColl, userId)
 
+      try{
       const docInterSnap = await getDoc(docInterRef)
       const docCurrentSnap = await getDoc(docCurrentRef)
 
-      setInterlocutor(docInterSnap.data())
-      setCurrentUser(docCurrentSnap.data())
+      setInterlocutor({...docInterSnap.data(), id: docInterSnap.id})
+      setCurrentUser({...docCurrentSnap.data(), id: docCurrentSnap.id})
+
       setAreUsersLoading(false)
+      }
+      catch (e){
+           console.log("Error", e)}
+
     }
 
     /*useEffect(() => {
@@ -52,10 +57,10 @@ export default function IndividualChat({route, navigation}){
 
     useEffect(() => {
         GetUsersDocs();
-         console.log("use effetc")
+
           const docRef = doc(mesgColl, chatId);
           const messageColl = collection(docRef, "mesgArchive");
-          const q = query(messageColl, orderBy("timestamp", "asc"));
+          const q = query(messageColl, orderBy("timestamp", "asc"))
         
           const unsubscribeMessages = onSnapshot(q, (snapshot) => {
             let Mesg = [];
@@ -63,10 +68,7 @@ export default function IndividualChat({route, navigation}){
               Mesg.push({ ...doc.data(), id: doc.id });
             });
             setMessages(Mesg);
-            console.log("messages")
-            console.log(isLoadingMessages)
-            setIsLoadingMessages(false);
-            console.log(isLoadingMessages)
+            setIsLoadingMessages(false)
           });
       
           return () => {
@@ -76,19 +78,16 @@ export default function IndividualChat({route, navigation}){
         },[]);
 
       const SendMessage = async (data) => {
-        console.log("entrance")
-        setIsMessageSending(true)
-        console.log(isMessageSending)
+        setValue('Mesg', '')
+
         const docChatRef = doc(mesgColl, chatId);
         const messageColl = collection(docChatRef, "mesgArchive")
-        console.log("rerefences")
 
         const newMessage={
           mesg: data.Mesg,
           timestamp: serverTimestamp(),
           userId: userId
         }
-        console.log("new message")
 
         const updatedChat={
           last_mesg: data.Mesg,
@@ -98,15 +97,18 @@ export default function IndividualChat({route, navigation}){
           from_uid: currentUser.id,
           from_name: currentUser.name
         }
-        console.log("updated chat")
+
+        try{
 
         await addDoc(messageColl, newMessage); 
         await setDoc(docChatRef, updatedChat, {merge:true})
-        console.log(documents)
-        setIsMessageSending(false)
-    console.log(isMessageSending)
-        setValue('Mesg', '');
-      };        
+         
+        }
+
+        catch(e){ 
+            console.log("error", e)}
+      };  
+      
         
       const ConversationHeader = () => {
         return (
@@ -137,20 +139,28 @@ export default function IndividualChat({route, navigation}){
               </View>
             ) : (
               messages.map((message) => (
-                <View 
-                  key={message.id} 
+                <View
+                  key={message.id}
                   style={[
-                    styles.messageContainer, 
-                    message.userId === currentUser.id ? styles.rightAlign : styles.leftAlign
+                    styles.messageContainer,
+                    message.userId === currentUser.id ? styles.rightAlign : styles.leftAlign,
                   ]}
                 >
-                  <Text style={styles.messageText}>{message.mesg}</Text>
-                  <Text style={styles.timestamp}>{formatTimestamp(message.timestamp)}</Text>
+                  {message.timestamp ? (
+                    <>
+                      <Text style={styles.messageText}>{message.mesg}</Text>
+                      <Text style={styles.timestamp}>{formatTimestamp(message.timestamp)}</Text>
+                    </>
+                  ) : (
+                    <View style={styles.loaderContainer}>
+                    <ActivityIndicator size="auto" color="#89CFF0" />
+                    </View>
+                  )}
                 </View>
               ))
             )}
           </ScrollView>
-        )
+        );
       };
 
       const { control, handleSubmit, setValue } = useForm();
@@ -190,7 +200,7 @@ export default function IndividualChat({route, navigation}){
       };
         
       return (
-        isLoadingMessages || AreUsersLoading || isMessageSending ?(
+        isLoadingMessages || AreUsersLoading  ?(
           <View style={styles.loaderContainer}>
             <ActivityIndicator size="auto" color="#89CFF0" />
           </View>
@@ -226,8 +236,8 @@ const styles = StyleSheet.create({
         color:"black"
     },
     backArrow: {
-      width: 30,
-      height: 30,
+      width: 25,
+      height: 25,
       marginRight: 10,
     },
     personImage: {
