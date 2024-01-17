@@ -135,7 +135,7 @@ const SearchScreen = () => {
   return (
     <>
       <ScrollView
-        style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}
+        style={{ flex: 1, marginTop: 50 }}
       >
         {/* Location and Profile */}
         <View
@@ -146,26 +146,10 @@ const SearchScreen = () => {
             <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
             <Text>{displayCurrentAddress}</Text>
           </View>
-
-          <Pressable
-            onPress={() => navigation.navigate("Profile")}
-            style={{ marginLeft: "auto", marginRight: 7 }}
-          ></Pressable>
         </View>
 
         {/* Search Bar */}
-        <View
-          style={{
-            padding: 10,
-            margin: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderWidth: 0.8,
-            borderColor: "#C0C0C0",
-            borderRadius: 7,
-          }}
-        >
+        <View  style={styles.search}>
           <TextInput
             placeholder="Search for items or More"
             value={searchQuery}
@@ -183,7 +167,7 @@ const SearchScreen = () => {
               resetSearch(); // Call the reset function after filtering
             }}
           >
-            <Feather name="search" size={24} color="#fd5c63" />
+            <Feather name="search" size={24} color="#6c756b" />
           </Pressable>
         </View>
 
@@ -196,40 +180,26 @@ const SearchScreen = () => {
       </ScrollView>
 
       {total === 0 ? null : (
-        <Pressable
-          style={{
-            backgroundColor: "#088F8F",
-            padding: 10,
-            marginBottom: 40,
-            margin: 15,
-            borderRadius: 7,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | $ {total}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
-              extra charges might apply
-            </Text>
-          </View>
+        <View style={styles.paymentCon}>
+        <View>
+          <Text style={styles.paymentTxt}>
+            {cart.length} items | € {total}
+          </Text>
+          <Text style={styles.paymentChargesTxt}>
+            extra charges might apply
+          </Text>
+        </View>
 
-          <Pressable onPress={() => navigation.navigate("Cart")}>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              Proceed to Cart
-            </Text>
-          </Pressable>
-        </Pressable>
+        <View style={styles.container}>
+              <View style={styles.btnCon}>
+                <Pressable style={styles.btn}  onPress={() => navigation.navigate("Cart")}>
+                <Text style={styles.btnTxt}>
+                  Proceed to Cart
+                </Text>
+                </Pressable>
+              </View>
+            </View>
+        </View>
       )}
     </>
   );
@@ -237,4 +207,59 @@ const SearchScreen = () => {
 
 export default SearchScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  search: {
+    padding: 12,
+    margin: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#6c756b",
+    borderRadius: 25,
+  },
+  paymentCon: {
+    backgroundColor: "#96c5f7",
+    marginTop: "auto",
+    padding: 10,
+    marginBottom: 40,
+    margin: 15,
+    borderRadius: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  paymentTxt: { 
+    fontSize: 17, 
+    fontWeight: "600", 
+    color: "white" 
+  },
+  paymentChargesTxt: {
+    fontSize: 15,
+    fontWeight: "400",
+    color: "white",
+    marginVertical: 6,
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnCon: {
+    height: 50,
+    width: "80%",
+    elevation: 1,
+    backgroundColor: "#f2f4ff",
+    borderRadius: 5,
+    marginLeft: 10
+  },
+  btn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnTxt: {
+    color: "black",
+    fontSize: 18,
+  },
+});
