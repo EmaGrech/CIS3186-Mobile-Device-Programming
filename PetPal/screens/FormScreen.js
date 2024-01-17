@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { setFieldType, toAddtoCollection, toUpdateDocument } from "../db";
 import style from "../style";
-import { View, Text, TouchableOpacity, TextInput, Alert, Image, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert, Image, ScrollView, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import DropDown from "../components/Dropdown";
 import { ProductCategories, ServiceCategories, UserCategories, Activities} from "../Categories";
@@ -10,6 +10,8 @@ import { createNewUser } from './LoginScreen';
 import { uploadToFirebase, listFiles } from '../db';
 import { ref, uploadString, getDownloadURL } from "../db";
 import UploadImage from "../components/UploadImage";
+import Button from "../components/Button";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 //generates a form corresponding to a particular collection
 const FormScreen = ({ route }) => {
@@ -115,7 +117,7 @@ const FormScreen = ({ route }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={style.scrollContainer}>
+    <KeyboardAwareScrollView contentContainerStyle={style.scrollContainer}>
       <View style={style.formContainer}>
         <Text style={style.formTitle}>{collName}</Text>
         {Object.entries(fieldTypes).map(([fieldName, fieldType]) => (
@@ -189,12 +191,12 @@ const FormScreen = ({ route }) => {
           </View>
         ))}
 
-        <TouchableOpacity onPress={submit} style={style.formButton}>
-          <Text style={{ color: "white" }}>Save</Text>
-        </TouchableOpacity>
+        <Button onPress={submit} style={style.formButton}
+            title="Save"/>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
+
 
 export default FormScreen;

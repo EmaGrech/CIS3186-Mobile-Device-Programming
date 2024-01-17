@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
       },
       rightAlign: {
         alignSelf: 'flex-end',
-        backgroundColor: '#D6EFF7',
+        backgroundColor: '#DFECFF',
         marginRight:10 
       },
       leftAlign: {
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
       },
       inputText: {
         flex: 1,
-        borderColor: 'gray',
+        borderColor: 'grey',
         borderWidth: 1,
         borderRadius: 20,
         paddingHorizontal: 10,

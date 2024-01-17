@@ -1,62 +1,47 @@
 import { StyleSheet } from 'react-native';
 
-const styles = StyleSheet.create({
-    listContainer: {
-        padding: 10,
-    },
-    listItemContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: 10,
-    },
-    listImage: {
-        width: 100,
-        height: 100,
-        marginRight: 10,
-    },
-    listTextContainer: {
-        flex: 1,
-    },
-    listProductName: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    listPrice: {
-        marginTop: 5,
-        fontWeight: 'bold',
-    },
-        drop: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 5,
-        padding: 10,
-    },
-    formInput: {
-        borderColor: 'gray',
-        borderWidth: 1,
-        padding: 5,
-        height: 40,
-        marginBottom: 5,
-        borderRadius: 10,
-        width: 280,
-    },
-    formButton: {
-        backgroundColor: '#70afe6',
-        padding: 10,
-        alignItems: 'center',
-        borderRadius: 25,
-        width: 100,
-        alignSelf: 'center',
+const style = StyleSheet.create({
+    scrollContainer: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
     },
     formContainer: {
-        flex: 1,
-        justifyContent: 'center',
+      width: '100%',
+      maxWidth: 400,
+      backgroundColor: '#fff',
+      padding: 20,
+      borderRadius: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
     formTitle: {
-        padding: 20,
-        fontSize: 20,
-        fontWeight: 'bold',
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: 20,
+      textAlign: 'center',
     },
-});
+    formInput: {
+      width: '100%',
+      padding: 10,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 5,
+      marginBottom: 15,
+      backgroundColor: '#f8f8f8',
+    },
+    formButton: {
+      backgroundColor: '#A9D3FF',
+      padding: 15,
+      borderRadius: 5,
+      alignItems: 'center',
+      marginTop: 20,
+    },
+  });
 
-export default styles;
+export default style;
