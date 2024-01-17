@@ -15,6 +15,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const PickUpScreen = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const currentDate = new Date();
+  const nextDay = new Date(currentDate);
+  nextDay.setDate(nextDay.getDate()+1);
+  const endDate = new Date(currentDate);
+  endDate.setDate(nextDay.getDate()+7);
+  const startDate = nextDay;
+  const initialSelectedDate = nextDay;
   const cart = useSelector((state) => state.cart.cart);
   const total = cart
     .map((item) => item.Quantity * item.Price)
@@ -35,7 +42,7 @@ const PickUpScreen = () => {
       time: "1:00 PM",
     },
     {
-      id: "2",
+      id: "3",
       time: "2:00 PM",
     },
     {
@@ -75,28 +82,21 @@ const PickUpScreen = () => {
   return (
     <>
       <SafeAreaView>
-        <Text style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 10 }}>
+        <Text style={styles.textStyle}>
           Enter Address
         </Text>
-        <TextInput
-          style={{
-            padding: 40,
-            borderColor: "gray",
-            borderWidth: 0.7,
-            paddingVertical: 80,
-            borderRadius: 9,
-            margin: 10,
-          }}
-        />
 
-        <Text style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 10 }}>
+        <TextInput style={styles.inputTxt}/>
+
+        <Text style={styles.textStyle}>
           Pick Up Date
         </Text>
+        {/* selection of 7 days ahead from the current day */}
         <HorizontalDatepicker
           mode="gregorian"
-          startDate={new Date("2023-02-21")}
-          endDate={new Date("2023-02-28")}
-          initialSelectedDate={new Date("2020-08-22")}
+          startDate={startDate}
+          endDate={endDate}
+          initialSelectedDate={initialSelectedDate}
           onSelectedDateChange={(date) => setSelectedDate(date)}
           selectedItemWidth={170}
           unselectedItemWidth={38}
@@ -104,12 +104,12 @@ const PickUpScreen = () => {
           itemRadius={10}
           selectedItemTextStyle={styles.selectedItemTextStyle}
           unselectedItemTextStyle={styles.selectedItemTextStyle}
-          selectedItemBackgroundColor="#222831"
-          unselectedItemBackgroundColor="#ececec"
+          selectedItemBackgroundColor="#6c756b"
+          unselectedItemBackgroundColor="#93acb5"
           flatListContainerStyle={styles.flatListContainerStyle}
         />
 
-        <Text style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 10 }}>
+        <Text style={styles.textStyle}>
           Select Time
         </Text>
 
@@ -119,20 +119,22 @@ const PickUpScreen = () => {
               key={index}
               onPress={() => setSelectedTime(item.time)}
               style={
-                selectedTime.includes(item.time)
+                selectedTime === item.time
                   ? {
                       margin: 10,
                       borderRadius: 7,
                       padding: 15,
-                      borderColor: "red",
-                      borderWidth: 0.7,
+                      borderColor: "#96c5f7",
+                      borderWidth: 2,
+                      backgroundColor: "#ecf0f1"
                     }
                   : {
                       margin: 10,
                       borderRadius: 7,
                       padding: 15,
-                      borderColor: "gray",
-                      borderWidth: 0.7,
+                      borderColor: "#6c756b",
+                      borderWidth: 1,
+                      backgroundColor: "#ecf0f1"
                     }
               }
             >
@@ -143,46 +145,95 @@ const PickUpScreen = () => {
       </SafeAreaView>
 
       {total === 0 ? null : (
-        <Pressable
-          style={{
-            backgroundColor: "#088F8F",
-            marginTop: "auto",
-            padding: 10,
-            marginBottom: 40,
-            margin: 15,
-            borderRadius: 7,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <View style={styles.paymentCon}>
           <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | $ {total}
+            <Text style={styles.paymentTxt}>
+              {cart.length} items | € {total}
             </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
+            <Text style={styles.paymentChargesTxt}>
               extra charges might apply
             </Text>
           </View>
 
-          <Pressable onPress={proceedToCart}>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              Proceed to Cart
-            </Text>
-          </Pressable>
-        </Pressable>
-      )}
+          
+            <View style={styles.container}>
+              <View style={styles.btnCon}>
+                <Pressable style={styles.btn} onPress={proceedToCart}>
+                <Text style={styles.btnTxt}>
+                  Proceed to Cart
+                </Text>
+                </Pressable>
+              </View>
+            </View>
+
+        </View>
+      )}  
     </>
   );
 };
 
 export default PickUpScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+textStyle: { 
+  fontSize: 18, 
+  fontWeight: "500", 
+  marginLeft: 16,
+  marginTop: 16, 
+},
+inputTxt: {
+  padding: 16,
+  borderColor: "gray",
+  borderWidth: 1,
+  paddingVertical: 24,
+  borderRadius: 9,
+  margin: 10,
+  fontSize: 16,
+  fontWeight: "500",
+  backgroundColor: "#ecf0f1",
+},
+paymentCon: {
+  backgroundColor: "#96c5f7",
+  marginTop: "auto",
+  padding: 10,
+  marginBottom: 40,
+  margin: 15,
+  borderRadius: 7,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+},
+paymentTxt: { 
+  fontSize: 17, 
+  fontWeight: "600", 
+  color: "white" 
+},
+paymentChargesTxt: {
+  fontSize: 15,
+  fontWeight: "400",
+  color: "white",
+  marginVertical: 6,
+},
+container: {
+  flex: 1,
+  alignItems: "center",
+  justifyContent: "center",
+},
+btnCon: {
+  height: 50,
+  width: "80%",
+  elevation: 1,
+  backgroundColor: "#f2f4ff",
+  borderRadius: 5,
+  marginLeft: 10
+},
+btn: {
+  flex: 1,
+  alignItems: "center",
+  justifyContent: "center",
+},
+btnTxt: {
+  color: "black",
+  fontSize: 18,
+},
+});
