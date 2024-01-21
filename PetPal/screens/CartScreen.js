@@ -18,7 +18,6 @@ import {
   incrementQuantity,
 } from "../CartReducer";
 import { decrementQty, incrementQty } from "../ProductReducer";
-import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../FirebaseConfig";
 
 const CartScreen = () => {
@@ -33,46 +32,20 @@ const CartScreen = () => {
 
   return (
     <>
-      <ScrollView style={{ marginTop: 50 }}>
+      <ScrollView style={{backgroundColor: "white", paddingTop: 25 }}>
         {total === 0 ? (
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
           </View>
         ) : (
           <>
-            <View
-              style={{
-                padding: 10,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
-            >
-              <Ionicons
-                onPress={() => navigation.goBack()}
-                name="arrow-back"
-                size={24}
-                color="black"
-              />
-              <Text>Your Cart</Text>
+            <View style={styles.titleRow}>
+              <Text style={styles.cartTitle}>Shopping Cart</Text>
             </View>
 
-            <Pressable
-              style={{
-                backgroundColor: "white",
-                borderRadius: 12,
-                marginLeft: 10,
-                marginRight: 10,
-                padding: 14,
-              }}
-            >
+            <View style={styles.itemCon}>
               {cart.map((item, index) => (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 12,
-                  }}
+                <View style={styles.incRow}
                   key={index}
                 >
                   <Text style={{ width: 100, fontSize: 16, fontWeight: "500" }}>
@@ -81,15 +54,7 @@ const CartScreen = () => {
 
                   {/* - + button */}
                   <Pressable
-                    style={{
-                      flexDirection: "row",
-                      paddingHorizontal: 10,
-                      paddingVertical: 5,
-                      alignItems: "center",
-                      borderColor: "#BEBEBE",
-                      borderWidth: 0.5,
-                      borderRadius: 10,
-                    }}
+                    style={styles.incBorder}
                   >
                     <Pressable
                       onPress={() => {
@@ -97,27 +62,11 @@ const CartScreen = () => {
                         dispatch(decrementQty(item)); // product
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#088F8F",
-                          paddingHorizontal: 6,
-                          fontWeight: "600",
-                        }}
-                      >
-                        -
-                      </Text>
+                      <Text style={styles.minus}> - </Text>
                     </Pressable>
 
                     <Pressable>
-                      <Text
-                        style={{
-                          fontSize: 19,
-                          color: "#088F8F",
-                          paddingHorizontal: 8,
-                          fontWeight: "600",
-                        }}
-                      >
+                      <Text style={styles.itemQuant}>
                         {item.Quantity}
                       </Text>
                     </Pressable>
@@ -128,31 +77,27 @@ const CartScreen = () => {
                         dispatch(incrementQty(item)); // product
                       }}
                     >
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          color: "#088F8F",
-                          paddingHorizontal: 6,
-                          fontWeight: "600",
-                        }}
-                      >
-                        +
-                      </Text>
+                      <Text style={styles.plus}> + </Text>
                     </Pressable>
                   </Pressable>
-
-                  <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                    €{item.Price * item.Quantity}
+                  <Text style={{ fontSize: 18, fontWeight: "500" }}>
+                  € {item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}
-            </Pressable>
-
-            <Pressable onPress={() => navigation.navigate("PickUp")}>
-              <Text style={{ fontSize: 17, fontWeight: "600", color: "black" }}>
-                Place Order
-              </Text>
-            </Pressable>
+            </View>
+              
+            <View style={styles.orderCon}>
+              <View style={styles.orderBtn}>
+                <View style={styles.btn}>
+                  <Pressable onPress={() => navigation.navigate("PickUp")}>
+                      <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
+                        Place Order
+                      </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
           </>
         )}
       </ScrollView>
@@ -161,4 +106,72 @@ const CartScreen = () => {
 };
 export default CartScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  titleRow:{
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  cartTitle: {
+    fontSize: 24,
+  },
+  itemCon: {
+    backgroundColor: "#ecf0f1",
+    borderRadius: 12,
+    marginHorizontal: 16,
+    padding: 14,
+  },
+  incRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 12,
+  },
+  incBorder: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    alignItems: "center",
+    borderColor: "#2b2118",
+    borderWidth: 1.5,
+    borderRadius: 10,
+  },
+  minus: {
+    fontSize: 20,
+    color: "#2b2118",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+  },
+  itemQuant: {
+    fontSize: 19,
+    color: "#2b2118",
+    paddingHorizontal: 8,
+    fontWeight: "600",
+  },
+  plus: {
+    fontSize: 20,
+    color: "#2b2118",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+  },
+  orderCon: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20
+  },
+  orderBtn: {
+    height: 50,
+    width: "auto",
+    elevation: 1,
+    backgroundColor: "#93acb5",
+    borderRadius: 7,
+    padding: 8
+  },
+  btn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

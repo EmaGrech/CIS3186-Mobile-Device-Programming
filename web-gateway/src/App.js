@@ -1,16 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./App.css";
-
+import { useEffect } from "react";
+import { useState } from "react";
 
 const PayPalButton = window.paypal.Buttons.driver("react", { React, ReactDOM });
 function App() {
+
+  const [amountToCharge, setAmountToCharge] = useState("1")
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount');
+    console.log("amount to charge: ", amount)
+
+    setAmountToCharge(amount || "2")
+  }, []);
+
+
   function _createOrder(data, actions) {
     return actions.order.create({
       purchase_units: [
         {
           amount: {
-            value: "1",
+            value: amountToCharge,
           },
         },
       ],

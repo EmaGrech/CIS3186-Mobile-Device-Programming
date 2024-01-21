@@ -33,15 +33,7 @@ const PetItem = ({ item }) => {
     <View>
       <Pressable
         onPress={() => handleSelect(item.id)}
-        style={{
-          backgroundColor: "#F8F8F8",
-          borderRadius: 8,
-          padding: 10,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          margin: 14,
-        }}
+        style={styles.searchBg}
       >
         <View>
           <Image
@@ -52,17 +44,12 @@ const PetItem = ({ item }) => {
 
         <View>
           <Text
-            style={{
-              width: 83,
-              fontSize: 17,
-              fontWeight: "500",
-              marginBottom: 7,
-            }}
+            style={styles.prodName}
           >
             {item.Product_Name}
           </Text>
           <Text style={{ width: 60, color: "gray", fontSize: 15 }}>
-            €{item.Price}
+          € {item.Price}
           </Text>
         </View>
 
@@ -79,38 +66,13 @@ const PetItem = ({ item }) => {
                 dispatch(decrementQuantity(item)); // cart
                 dispatch(decrementQty(item)); // product
               }}
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: 13,
-                borderColor: "#BEBEBE",
-                backgroundColor: "#E0E0E0",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
+              style={styles.quantityCircle}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "#088F8F",
-                  paddingHorizontal: 6,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              >
-                -
-              </Text>
+              <Text style={styles.quantitySign}>-</Text>
             </Pressable>
 
             <Pressable>
-              <Text
-                style={{
-                  fontSize: 19,
-                  color: "#088F8F",
-                  paddingHorizontal: 8,
-                  fontWeight: "600",
-                }}
-              >
+              <Text style={styles.quantityTxt}>
                 {item.Quantity}
               </Text>
             </Pressable>
@@ -120,44 +82,14 @@ const PetItem = ({ item }) => {
                 dispatch(incrementQuantity(item)); // cart
                 dispatch(incrementQty(item)); //product
               }}
-              style={{
-                width: 26,
-                height: 26,
-                borderRadius: 13,
-                borderColor: "#BEBEBE",
-                backgroundColor: "#E0E0E0",
-                justifyContent: "center",
-                alignContent: "center",
-              }}
+              style={styles.quantityCircle}
             >
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "#088F8F",
-                  paddingHorizontal: 6,
-                  fontWeight: "600",
-                  textAlign: "center",
-                }}
-              >
-                +
-              </Text>
+              <Text style={styles.quantitySign}>+</Text>
             </Pressable>
           </Pressable>
         ) : (
           <Pressable onPress={addItemToCart} style={{ width: 80 }}>
-            <Text
-              style={{
-                borderColor: "gray",
-                borderRadius: 4,
-                borderWidth: 0.8,
-                marginVertical: 10,
-                color: "#088F8F",
-                textAlign: "center",
-                padding: 5,
-                fontSize: 17,
-                fontWeight: "bold",
-              }}
-            >
+            <Text style={styles.addBtn}>
               Add
             </Text>
           </Pressable>
@@ -169,4 +101,53 @@ const PetItem = ({ item }) => {
 
 export default PetItem;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  quantityCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderColor: "#BEBEBE",
+    backgroundColor: "#a9d3ff",
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  quantityTxt: {
+    fontSize: 19,
+    color: "#6c756b",
+    paddingHorizontal: 8,
+    fontWeight: "600",
+  },
+  quantitySign: {
+    fontSize: 20,
+    color: "white",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  searchBg: {
+    backgroundColor: "#f2f4ff",
+    borderRadius: 8,
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: 14,
+  },
+  prodName: {
+    width: 83,
+    fontSize: 17,
+    fontWeight: "500",
+    marginBottom: 7,
+  },
+  addBtn: {
+    borderColor: "#6c756b",
+    borderRadius: 10,
+    borderWidth: 1,
+    marginVertical: 10,
+    color: "#6c756b",
+    textAlign: "center",
+    padding: 5,
+    fontSize: 17,
+    fontWeight: "bold",
+  }
+});
