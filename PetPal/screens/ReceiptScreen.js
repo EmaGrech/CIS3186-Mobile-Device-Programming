@@ -264,18 +264,7 @@ const ReceiptScreen = () => {
           ) : null}
 
           <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | € {total}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
-              extra charges might apply
+            <Text style={styles.taxAppliedTxt}>
               {cart.length} items | € {totalWithTax}
             </Text>
             <Text style={styles.taxAppliedTxt}>Tax applied</Text>
