@@ -43,9 +43,7 @@ export const setFieldType = {
     Description: "string",
     Image: "image",
     Price: "float",
-    Seller_ID: "string",
     Stock: "int",
-    Quantity: "int",
   },
   Cart: {
     Order_ID: "string",
