@@ -113,7 +113,7 @@ const ReceiptScreen = () => {
                   </Pressable>
 
                   <Text style={{ fontSize: 18, fontWeight: "500" }}>
-                    € {item.Price * item.Quantity}
+                    € {(item.Price * item.Quantity).toFixed(2)}
                   </Text>
                 </View>
               ))}
@@ -124,7 +124,7 @@ const ReceiptScreen = () => {
               <View style={styles.billingCon}>
                 <View style={styles.billingRow}>
                   <Text style={styles.billingTxt}>Item Total</Text>
-                  <Text style={styles.billingTxt}>€ {total}</Text>
+                  <Text style={styles.billingTxt}>€ {(total).toFixed(2)}</Text>
                 </View>
 
                 <View style={styles.billingRowWithMargin}>
@@ -169,7 +169,7 @@ const ReceiptScreen = () => {
 
                 <View style={styles.billingRowWithMargin}>
                   <Text style={styles.billingTotalTxt}>Total </Text>
-                  <Text style={styles.billingTotalTxt}>€ {totalWithTax}</Text>
+                  <Text style={styles.billingTotalTxt}>€ {(totalWithTax).toFixed(2)}</Text>
                 </View>
               </View>
             </View>
@@ -231,7 +231,7 @@ const ReceiptScreen = () => {
 
           <View>
             <Text style={styles.taxAppliedTxt}>
-              {cart.length} items | € {totalWithTax}
+              {cart.length} items | € {(totalWithTax).toFixed(2)}
             </Text>
             <Text style={styles.taxAppliedTxt}>Tax applied</Text>
           </View>
