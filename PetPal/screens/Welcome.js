@@ -40,7 +40,7 @@ const Welcome = ({ navigation }) => {
                     <View style={{marginTop:250, width:"80%", justifyContent:"center"}}>
                     <Button
                         title="Sign Up"
-                        onPress={() => navigation.navigate("Signup")}
+                        onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: false, fromLogin: true})}
                     />
 
                     <View style={{marginTop:20}}>
