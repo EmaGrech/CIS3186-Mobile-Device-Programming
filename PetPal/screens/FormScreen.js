@@ -10,6 +10,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from "expo-image-picker";
 import DropDown from "../components/Dropdown";
 import { ProductCategories, UserCategories, Activities } from "../Categories";
@@ -62,7 +63,7 @@ const FormScreen = ({ route }) => {
       setFormData({
         ...formData,
         [field]: value,
-      });
+      }); 
     }
   };
 
@@ -85,6 +86,7 @@ const FormScreen = ({ route }) => {
     } else {
       // Check if it's a new entry (not in editMode) and not from login screen
       if (!fromLogin) {
+        formData["Seller_ID"] = await AsyncStorage.getItem("userID");
         await toAddtoCollection(collName, formData);
       } else {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -109,7 +111,7 @@ const FormScreen = ({ route }) => {
   const selectImage = async (fieldName) => {
     try {
       // check for camera roll permissions
-      // await ImagePicker.requestMediaLibraryPermissionsAsync();
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
       const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         alert(
