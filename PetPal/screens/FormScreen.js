@@ -91,6 +91,7 @@ const FormScreen = ({ route }) => {
       } else {
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         const pass = regex.test(formData.Password);
+        
         if (!pass) {
           Alert.alert(
             `Password is not valid:`,
@@ -98,7 +99,8 @@ const FormScreen = ({ route }) => {
           );
           return;
         }
-        const { user, uid } = await createNewUser(
+        
+        const { uid } = await createNewUser(
           formData.Email,
           formData.Password
         );
