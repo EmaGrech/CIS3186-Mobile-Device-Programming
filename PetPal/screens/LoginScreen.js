@@ -8,8 +8,8 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Pressable,
-  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
 import React, { useEffect, useState } from "react";
@@ -48,7 +48,8 @@ const LoginScreen = () => {
     signInWithEmailAndPassword(auth, Email, Password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log("User details:", user);
+        const uID = user.uid;
+        AsyncStorage.setItem("userID", uID);
         navigation.replace("Discover");
       })
       .catch((error) => {
