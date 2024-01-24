@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { setFieldType, toAddtoCollection, toUpdateDocument } from "../db";
 import style from "../style";
-import { View, Text, TouchableOpacity, TextInput, Alert, Image, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Image,
+  StyleSheet,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import DropDown from "../components/Dropdown";
-import { ProductCategories, ServiceCategories, UserCategories, Activities} from "../Categories";
-import { useNavigation } from '@react-navigation/native';
-import { createNewUser } from './LoginScreen';
-import { uploadToFirebase, listFiles } from '../db';
-import { ref, uploadString, getDownloadURL } from "../db";
-import UploadImage from "../components/UploadImage";
+import { ProductCategories, UserCategories, Activities } from "../Categories";
+import { useNavigation } from "@react-navigation/native";
+import { createNewUser } from "./LoginScreen";
+import { uploadToFirebase } from "../db";
 import Button from "../components/Button";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 //generates a form corresponding to a particular collection
 const FormScreen = ({ route }) => {
@@ -24,8 +31,6 @@ const FormScreen = ({ route }) => {
   } = params || {};
   const fieldTypes = setFieldType[collName];
   const navigation = useNavigation();
-  const [permission, requestPermission] = ImagePicker.useCameraPermissions();
-  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
@@ -42,12 +47,16 @@ const FormScreen = ({ route }) => {
   });
 
   const currentInputs = async (field, value) => {
-    if (field === 'Profile_Picture') {
+    if (field === "Profile_Picture") {
       const uploadResult = await uploadToFirebase(value.uri, value.name);
       const downloadUrl = uploadResult.downloadUrl;
       setFormData({
         ...formData,
-        Profile_Picture: { uri: downloadUrl, type: value.type, name: value.name },
+        Profile_Picture: {
+          uri: downloadUrl,
+          type: value.type,
+          name: value.name,
+        },
       });
     } else {
       setFormData({
@@ -99,17 +108,36 @@ const FormScreen = ({ route }) => {
 
   const selectImage = async (fieldName) => {
     try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [3, 3],
-        quality: 1,
-      });
-    
-      if (!result.cancelled) {
-        const uploadResult = await uploadToFirebase(result.uri, result.uri.split('/').pop());
-        const downloadUrl = uploadResult.downloadUrl;
-        currentInputs(fieldName, { uri: downloadUrl, type: result.type, name: result.uri.split('/').pop() });      
+      // check for camera roll permissions
+      // await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert(
+          "Please grant camera roll permissions inside your system's settings"
+        );
+      } else {
+        console.log("Media Permissions are granted");
+
+        // launch image picker
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [3, 3],
+          quality: 1,
+        });
+
+        if (!result.canceled) {
+          const uploadResult = await uploadToFirebase(
+            result.uri,
+            result.uri.split("/").pop()
+          );
+          const downloadUrl = uploadResult.downloadUrl;
+          currentInputs(fieldName, {
+            uri: downloadUrl,
+            type: result.type,
+            name: result.uri.split("/").pop(),
+          });
+        }
       }
     } catch (error) {
       console.error("Image selection error:", error);
@@ -160,15 +188,32 @@ const FormScreen = ({ route }) => {
               </View>
             ) : fieldType === "image" ? (
               <View style={{ alignItems: "center" }}>
-                 <TouchableOpacity onPress={() => selectImage(fieldName)} >
-                  <Text>Upload Image</Text>
-                </TouchableOpacity>
-                {formData[fieldName] && formData[fieldName].uri && (
-                  <Image
-                    source={{ uri: formData[fieldName].uri }}
-                    style={{ width: 200, height: 200 }}
-                  />
-                )}
+                <View style={styles.container}>
+                  {formData[fieldName] && formData[fieldName].uri && (
+                    <Image
+                      source={{ uri: formData[fieldName].uri }}
+                      style={{ width: 200, height: 200 }}
+                    />
+                  )}
+                  <View style={styles.uploadBtnContainer}>
+                    <TouchableOpacity
+                      onPress={() => selectImage(fieldName)}
+                      style={styles.uploadBtn}
+                    >
+                      <Text>
+                        {formData[fieldName] && formData[fieldName].uri
+                          ? "Edit"
+                          : "Upload"}
+                        Image
+                      </Text>
+                      <MaterialCommunityIcons
+                        name="camera"
+                        size={20}
+                        color="black"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             ) : fieldType === ("drop" || "drop[]") ? (
               fieldName === "Activities" ? (
@@ -191,12 +236,41 @@ const FormScreen = ({ route }) => {
           </View>
         ))}
 
-        <Button onPress={submit} style={style.formButton}
-            title="Save"/>
+        <Button onPress={submit} style={style.formButton} title="Save" />
       </View>
     </KeyboardAwareScrollView>
   );
 };
 
-
 export default FormScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    elevation: 2,
+    height: 150,
+    width: 150,
+    borderRadius: 75,
+    backgroundColor: "#efefef",
+    position: "relative",
+    overflow: "hidden",
+    marginBottom: 8,
+  },
+  uploadBtnContainer: {
+    opacity: 0.8,
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    backgroundColor: "lightgrey",
+    width: "100%",
+    height: "35%",
+  },
+  uploadBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  img: {
+    width: "100%",
+    height: "100%",
+  },
+});
