@@ -29,7 +29,6 @@ const ReceiptScreen = () => {
   const [showGateway, setShowGateway] = useState(false);
   const [prog, setProg] = useState(false);
   const [progClr, setProgClr] = useState("#000");
-
   const cart = useSelector((state) => state.cart.cart);
   const route = useRoute();
   const total = cart
@@ -37,6 +36,10 @@ const ReceiptScreen = () => {
     .reduce((curr, prev) => curr + prev, 0);
   const tax = (total * 0.18).toFixed(2);
   const totalWithTax = total + parseFloat(tax);
+  const webAppUrl = "https://payment-app-16f6d.web.app";
+  const numTotal = parseFloat(totalWithTax);
+  const encodedAmt = encodeURIComponent(numTotal.toString());
+  const url = `${webAppUrl}/?amount=${encodedAmt}`;
   const navigation = useNavigation();
   const userUid = auth.currentUser.uid;
   const dispatch = useDispatch();
@@ -130,33 +133,25 @@ const ReceiptScreen = () => {
               </Text>
               <View style={styles.billingCon}>
                 <View style={styles.billingRow}>
-                  <Text
-                    style={styles.billingTxt}
-                  >
+                  <Text style={styles.billingTxt}>
                     Item Total
                   </Text>
                   <Text style={styles.billingTxt}>
-                  € {total}
+                    € {total}
                   </Text>
                 </View>
 
                 <View style={styles.billingRowWithMargin}>
-                  <Text
-                    style={styles.billingTxt}
-                  >
+                  <Text style={styles.billingTxt}>
                     Delivery Fee | 1.2KM
                   </Text>
-                  <Text
-                    style={styles.altTextColor}
-                  >
+                  <Text style={styles.altTextColor}>
                     FREE
                   </Text>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={styles.billingTxt}
-                  >
+                  <Text style={styles.billingTxt}>
                     Free Delivery on Your order
                   </Text>
                 </View>
@@ -183,15 +178,11 @@ const ReceiptScreen = () => {
                 <View
                   style={styles.billingRowWithMargin}
                 >
-                  <Text
-                    style={styles.billingTxt}
-                  >
+                  <Text style={styles.billingTxt}>
                     Selected Pick Up Time
                   </Text>
 
-                  <Text
-                    style={styles.altTextColor}
-                  >
+                  <Text style={styles.altTextColor}>
                     {route.params.selectedTime}
                   </Text>
                 </View>
@@ -239,17 +230,7 @@ const ReceiptScreen = () => {
                   >
                     <Feather name={"x"} size={24} />
                   </TouchableOpacity>
-                  <Text
-                    style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontSize: 16,
-                      fontWeight: "bold",
-                      color: "#00457C",
-                    }}
-                  >
-                    PayPal GateWay
-                  </Text>
+                  <Text style={styles.gatewayTxt}>PayPal GateWay</Text>
 
                   <View style={{ padding: 13, opacity: prog ? 1 : 0 }}>
                     <ActivityIndicator size={24} color={progClr} />
@@ -257,7 +238,7 @@ const ReceiptScreen = () => {
                 </View>
 
                 <WebView
-                  source={{ uri: "https://payment-app-16f6d.web.app" }}
+                  source={{ uri: url }}
                   onMessage={onMessage}
                   style={{ 
                     flex: 1,
@@ -283,18 +264,7 @@ const ReceiptScreen = () => {
           ) : null}
 
           <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-              {cart.length} items | € {total}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
-              extra charges might apply
+            <Text style={styles.taxAppliedTxt}>
               {cart.length} items | € {totalWithTax}
             </Text>
             <Text style={styles.taxAppliedTxt}>Tax applied</Text>
@@ -303,7 +273,10 @@ const ReceiptScreen = () => {
             <View style={styles.btnCon}>
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => setShowGateway(true)}
+                onPress={() => {
+                  setShowGateway(true)
+                  console.log("amount:", url)
+                }}
               >
                 <Text style={styles.btnTxt}>Pay Now</Text>
               </TouchableOpacity>
@@ -453,6 +426,13 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: "white",
     marginVertical: 6,
+  },
+  gatewayTxt: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#00457C",
   }
 });
 

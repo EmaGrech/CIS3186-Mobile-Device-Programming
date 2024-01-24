@@ -20,6 +20,7 @@ import { auth } from '../db';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import HorizontalLineWithText from "../components/HorizontalLine";
 
+
 const LoginScreen = () => {
   const [Email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
