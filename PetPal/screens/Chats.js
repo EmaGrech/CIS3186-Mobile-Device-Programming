@@ -35,10 +35,13 @@ useEffect(() => {
           const userDoc = await getDoc(userDocRef);
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            imageUrl = userData.Profile_Picture && userData.Profile_Picture !== ""
-              ? userData.Profile_Picture
-              : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e";
-          }
+            imageUrl = userData.Profile_Picture && userData.Profile_Picture.uri 
+                ? { uri: userData.Profile_Picture.uri } 
+                : { uri: userData.Profile_Picture && userData.Profile_Picture !== ""
+                    ? userData.Profile_Picture
+                    : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e"
+                  };
+        }
         }
         Convs.push({ ...convData, id: docum.id, imageUrl });
       }
@@ -79,7 +82,16 @@ useEffect(() => {
                   interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
                 })}
               >
-                <Image source={{uri: conv.imageUrl.uri}} style={styles.avatar} />
+                 {conv.Profile_Picture && conv.Profile_Picture.uri ? (
+              <Image style={styles.avatar} source={{ uri: conv.Profile_Picture.uri }} />
+            ) : (
+              <Image
+                style={styles.avatar}
+                source={
+                  conv.imageUrl
+                }
+              />
+            )}
                 <View style={styles.chatDetailsContainer}>
                   <Text style={styles.usernameContainer}>
                     {conv.to_uid === userId ? conv.from_name : conv.to_name}
