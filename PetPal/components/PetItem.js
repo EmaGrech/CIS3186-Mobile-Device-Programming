@@ -38,7 +38,7 @@ const PetItem = ({ item }) => {
         <View>
           <Image
             style={{ width: 70, height: 70 }}
-            source={{ uri: item.Image }}
+            source={{ uri: item.Image.uri }}
           />
         </View>
 
