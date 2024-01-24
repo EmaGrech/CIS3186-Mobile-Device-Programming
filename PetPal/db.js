@@ -119,13 +119,13 @@ export const getUser = async (userID) => {
 //collecting information according to collection
 export const toAddtoCollection = async (collName, data, docID) => {
   const coll = collection(db, collName);
-  const docRef = await addDoc(coll, data);
+  let docRef;
 
   if (docID) {
-    const docRef = doc(coll, docID);
+    docRef = doc(coll, docID);
     await setDoc(docRef, data);
   } else {
-    const docRef = await addDoc(coll, data);
+    docRef = await addDoc(coll, data);
   }
 
   const fields = collFields[collName];
