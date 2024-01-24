@@ -53,7 +53,7 @@ initializeAuth(app, {
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { db, auth, getApp, getAuth };
+export { db, auth};
 
 export async function getUserProfile(id) {
   const docRef = doc(db, "Users", id); //had to change this for a second
