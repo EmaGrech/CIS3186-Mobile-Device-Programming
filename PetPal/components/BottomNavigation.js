@@ -1,5 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getAuth } from "firebase/auth";
+import { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 import HomeScreen from "../screens/HomeScreen";
 import CartScreen from "../screens/CartScreen";
@@ -8,8 +12,23 @@ import Chats from "../screens/Chats";
 import FormScreen from "../screens/FormScreen";
 
 const Tab = createBottomTabNavigator();
+function BottomNavigation({ navigation }) {
 
-function BottomNavigation() {
+  const handleChatNavigation = () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+  
+    if (user) {
+      console.log("User UID:", user.uid);
+      navigation.navigate("Chats", {
+        userId: user.uid, 
+      });
+    } else {
+      console.log("User not logged in");
+      navigation.navigate("LoginScreen");
+    }
+  };
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -58,6 +77,13 @@ function BottomNavigation() {
       <Tab.Screen
         name="Chats"
         component={Chats}
+        listeners={{ 
+          tabPress: (e) => {
+            e.preventDefault();
+      
+            handleChatNavigation();
+          },
+        }}
         options={{
           tabBarIcon: ({ focused, color, size }) =>
             focused == true ? (

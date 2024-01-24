@@ -1,81 +1,131 @@
-import { dbChat } from "./Chats";
+import { db } from '../FirebaseConfig';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useForm, Controller } from 'react-hook-form';
-import { collection, doc, getDoc, onSnapshot, query, orderBy, addDoc, setDoc, serverTimestamp, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, query, orderBy, addDoc, setDoc, serverTimestamp, getDocs, where } from 'firebase/firestore';
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, ScrollView, TextInput, TouchableOpacity, Button, ActivityIndicator, StyleSheet, SafeAreaView } from 'react-native';
-import { Keyboard } from "react-native";
 import { formatTimestamp } from "../components/formatTimestamp";
 
 export default function IndividualChat({route, navigation}){
-    const {chatId, userId, interlocutorId} = route.params;
+    const { userId, interlocutorId } = route.params;
+    const [chatId, setChatId] = useState(route.params.chatId);
     const [messages, setMessages] = useState([]);
     const [isLoadingMessages, setIsLoadingMessages] = useState(true);
     const [AreUsersLoading, setAreUsersLoading] = useState(true);
-    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
     const [interlocutor, setInterlocutor] = useState(null)
     const [currentUser, setCurrentUser] = useState(null)
+    console.log(userId, interlocutorId, chatId)
 
-    const accountImage = require("../assets/Person.jpg")
-
-    mesgColl = collection(dbChat, "Messages");
-    userColl = collection(dbChat, "Users");
+    mesgColl = collection(db, "Messages");
+    userColl = collection(db, "Users");
 
     const GetUsersDocs = async() =>{
       const docInterRef = doc(userColl, interlocutorId)
       const docCurrentRef = doc(userColl, userId)
-
+      
       try{
       const docInterSnap = await getDoc(docInterRef)
       const docCurrentSnap = await getDoc(docCurrentRef)
 
       setInterlocutor({...docInterSnap.data(), id: docInterSnap.id})
       setCurrentUser({...docCurrentSnap.data(), id: docCurrentSnap.id})
-
-      setAreUsersLoading(false)
+      console.log("interlocutor"+interlocutor)
+      console.log("user"+currentUser)
+      
       }
       catch (e){
            console.log("Error", e)}
-
+    setAreUsersLoading(false)
     }
 
-    /*useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener(
-        'keyboardDidShow',
-        () => setIsKeyboardVisible(true)
-      );
-      const keyboardDidHideListener = Keyboard.addListener(
-        'keyboardDidHide',
-        () => setIsKeyboardVisible(false)
-      );
-    
-      return () => {
-        keyboardDidShowListener.remove();
-        keyboardDidHideListener.remove();
-      };
-    }, []);*/
-
     useEffect(() => {
-        GetUsersDocs();
+      GetUsersDocs()
+    }, []);
+  
+    useEffect(() => {
 
-          const docRef = doc(mesgColl, chatId);
-          const messageColl = collection(docRef, "mesgArchive");
-          const q = query(messageColl, orderBy("timestamp", "asc"))
-        
-          const unsubscribeMessages = onSnapshot(q, (snapshot) => {
-            let Mesg = [];
-            snapshot.docs.forEach((doc) => {
-              Mesg.push({ ...doc.data(), id: doc.id });
+      async function checkAndCreateDocument() {
+
+        if (!AreUsersLoading) {
+          checkAndCreateDocument();
+        }
+
+        let unsubscribeMessages;
+        let docRef;
+    
+        try {
+          if (!chatId) {
+            const query1 = query(
+              mesgColl, 
+              where('to_uid', '==', userId), 
+              where('from_uid', '==', interlocutorId)
+            );
+    
+            const query2 = query(
+              mesgColl, 
+              where('to_uid', '==', interlocutorId), 
+              where('from_uid', '==', userId)
+            );
+    
+            const querySnapshot1 = await getDocs(query1);
+            const querySnapshot2 = await getDocs(query2);
+    
+            const existingDoc = (!querySnapshot1.empty) 
+              ? querySnapshot1.docs[0]
+              : (!querySnapshot2.empty)
+                ? querySnapshot2.docs[0]
+                : null;
+    
+            if (existingDoc) {
+              setChatId(existingDoc.id);
+              docRef = doc(mesgColl, existingDoc.id);
+            } else {
+              if (AreUsersLoading === false) {
+                const newDocumentRef = await addDoc(mesgColl, { 
+                  last_mesg: "",
+                  last_time: "",
+                  to_uid: interlocutor.id,
+                  to_name: interlocutor.Username,
+                  from_uid: currentUser.id,
+                  from_name: currentUser.Username
+                });
+                setChatId(newDocumentRef.id);
+                docRef = doc(mesgColl, newDocumentRef.id);
+              }
+            }
+          } else {
+            docRef = doc(mesgColl, chatId);
+          }
+    
+         
+            const messageColl = collection(docRef, "mesgArchive");
+            const q = query(messageColl, orderBy("timestamp", "asc"));
+    
+            unsubscribeMessages = onSnapshot(q, (snapshot) => {
+              let Mesg = [];
+              snapshot.docs.forEach((doc) => {
+                Mesg.push({ ...doc.data(), id: doc.id });
+              });
+              setMessages(Mesg);
             });
-            setMessages(Mesg);
-            setIsLoadingMessages(false)
-          });
-      
-          return () => {
+          
+        } catch (error) {
+          console.error("Error in document creation or fetching messages: ", error);
+        } finally {
+          setIsLoadingMessages(false);
+        }
+    
+        return () => {
+          if (unsubscribeMessages) {
             unsubscribeMessages();
           }
-
-        },[]);
+        };
+      }
+    
+      if (!AreUsersLoading) {
+        checkAndCreateDocument();
+      }
+    }, [AreUsersLoading]);
 
       const SendMessage = async (data) => {
         setValue('Mesg', '')
@@ -93,15 +143,15 @@ export default function IndividualChat({route, navigation}){
           last_mesg: data.Mesg,
           last_time: serverTimestamp(),
           to_uid: interlocutor.id,
-          to_name: interlocutor.name,
+          to_name: interlocutor.Username,
           from_uid: currentUser.id,
-          from_name: currentUser.name
+          from_name: currentUser.Username
         }
 
         try{
 
         await addDoc(messageColl, newMessage); 
-        await setDoc(docChatRef, updatedChat, {merge:true})
+        await setDoc(docChatRef, updatedChat)
          
         }
 
@@ -111,6 +161,7 @@ export default function IndividualChat({route, navigation}){
       
         
       const ConversationHeader = () => {
+        
         return (
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -119,12 +170,20 @@ export default function IndividualChat({route, navigation}){
                 style={styles.backArrow}
               />
             </TouchableOpacity>
-            <Image 
-              source={accountImage} 
-              style={styles.personImage}
-            />
+            {interlocutor.Profile_Picture && interlocutor.Profile_Picture.uri ? (
+              <Image style={styles.personImage} source={{ uri: interlocutor.Profile_Picture.uri }} />
+            ) : (
+              <Image
+                style={styles.personImage}
+                source={{
+                  uri: interlocutor.Profile_Picture != ""
+                    ? interlocutor.Profile_Picture
+                    : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e",
+                }}
+              />
+            )}
             <Text style={styles.personName}>
-            {interlocutor.name}
+            {interlocutor.Username}
             </Text>
           </View>
         );

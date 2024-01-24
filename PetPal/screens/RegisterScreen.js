@@ -32,10 +32,12 @@ const RegisterScreen = () => {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   //const [phone,setPhone] = useState("");
   const navigation = useNavigation();
 
   const register = () => {
+    setIsRegistering(true)
     if (Email === "" || Password === "") {
       Alert.alert(
         "Invalid Details",
@@ -54,10 +56,10 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, Email, Password).then(
       (userCredential) => {
         console.log("user credential", userCredential);
-        const user = userCredential._tokenResponse.Email;
-        const myUserUid = auth.currentUser.uid;
+        const user = userCredential.user.email
+        const myUserUid = userCredential.user.uid
 
-        setDoc(doc(db, "Users", `${myUserUid}`), {
+        setDoc(doc(db, "Users", myUserUid), {
           //changing from users to User
           Email: user,
         });
