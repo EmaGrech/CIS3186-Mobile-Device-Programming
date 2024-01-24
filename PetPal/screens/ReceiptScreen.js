@@ -44,10 +44,10 @@ const ReceiptScreen = () => {
   const userUid = auth.currentUser.uid;
   const dispatch = useDispatch();
   const placeOrder = async () => {
-    navigation.navigate("Order"); //this needs to be the button that olesia made
+    navigation.navigate("Order");
     dispatch(cleanCart());
     await setDoc(
-      doc(db, "Cart", `${userUid}`), //used to be Users also User now will make it Cart
+      doc(db, "Cart", `${userUid}`),
       {
         orders: { ...cart },
         pickUpDetails: route.params,
@@ -73,27 +73,22 @@ const ReceiptScreen = () => {
 
   return (
     <>
-      <ScrollView style={{ backgroundColor: "white", paddingTop: 50}}>
+      <ScrollView style={{ backgroundColor: "white", paddingTop: 50 }}>
         {total === 0 ? (
-          <View style={{ justifyContent: "center", alignItems: "center", }}>
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
           </View>
         ) : (
           <>
-
             <View style={styles.itemCon}>
               {cart.map((item, index) => (
-                <View style={styles.incRow}
-                  key={index}
-                >
+                <View style={styles.incRow} key={index}>
                   <Text style={{ width: 100, fontSize: 16, fontWeight: "500" }}>
                     {item.Product_Name}
                   </Text>
 
                   {/* - + button */}
-                  <Pressable
-                    style={styles.incBorder}
-                  >
+                  <Pressable style={styles.incBorder}>
                     <Pressable
                       onPress={() => {
                         dispatch(decrementQuantity(item)); // cart
@@ -104,9 +99,7 @@ const ReceiptScreen = () => {
                     </Pressable>
 
                     <Pressable>
-                      <Text style={styles.itemQuant}>
-                        {item.Quantity}
-                      </Text>
+                      <Text style={styles.itemQuant}>{item.Quantity}</Text>
                     </Pressable>
 
                     <Pressable
@@ -120,34 +113,23 @@ const ReceiptScreen = () => {
                   </Pressable>
 
                   <Text style={{ fontSize: 18, fontWeight: "500" }}>
-                  € {item.Price * item.Quantity}
-
+                    € {item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}
             </View>
 
-            <View style={{ marginHorizontal: 16, marginTop: 24, }}>
-              <Text style={styles.billingTitleTxt}>
-                Billing Details
-              </Text>
+            <View style={{ marginHorizontal: 16, marginTop: 24 }}>
+              <Text style={styles.billingTitleTxt}>Billing Details</Text>
               <View style={styles.billingCon}>
                 <View style={styles.billingRow}>
-                  <Text style={styles.billingTxt}>
-                    Item Total
-                  </Text>
-                  <Text style={styles.billingTxt}>
-                    € {total}
-                  </Text>
+                  <Text style={styles.billingTxt}>Item Total</Text>
+                  <Text style={styles.billingTxt}>€ {total}</Text>
                 </View>
 
                 <View style={styles.billingRowWithMargin}>
-                  <Text style={styles.billingTxt}>
-                    Delivery Fee | 1.2KM
-                  </Text>
-                  <Text style={styles.altTextColor}>
-                    FREE
-                  </Text>
+                  <Text style={styles.billingTxt}>Delivery Fee | 1.2KM</Text>
+                  <Text style={styles.altTextColor}>FREE</Text>
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -156,14 +138,10 @@ const ReceiptScreen = () => {
                   </Text>
                 </View>
 
-                <View style={styles.border}/>
+                <View style={styles.border} />
 
                 <View style={styles.billingRowWithMargin}>
-                  <Text
-                    style={styles.billingTxt}
-                  >
-                    Selected Date
-                  </Text>
+                  <Text style={styles.billingTxt}>Selected Date</Text>
                   <Text
                     style={{
                       fontSize: 18,
@@ -175,30 +153,18 @@ const ReceiptScreen = () => {
                   </Text>
                 </View>
 
-                <View
-                  style={styles.billingRowWithMargin}
-                >
-                  <Text style={styles.billingTxt}>
-                    Selected Pick Up Time
-                  </Text>
+                <View style={styles.billingRowWithMargin}>
+                  <Text style={styles.billingTxt}>Selected Pick Up Time</Text>
 
                   <Text style={styles.altTextColor}>
                     {route.params.selectedTime}
                   </Text>
                 </View>
-                <View
-                  style={styles.border}
-                />
+                <View style={styles.border} />
 
-                <View
-                  style={styles.billingRowWithMargin}
-                >
-                  <Text style={styles.billingTxt}>
-                    Total tax
-                  </Text>
-                  <Text style={styles.billingTxt}>
-                  € {tax}
-                  </Text>
+                <View style={styles.billingRowWithMargin}>
+                  <Text style={styles.billingTxt}>Total tax</Text>
+                  <Text style={styles.billingTxt}>€ {tax}</Text>
                 </View>
 
                 <View style={styles.billingRowWithMargin}>
@@ -240,7 +206,7 @@ const ReceiptScreen = () => {
                 <WebView
                   source={{ uri: url }}
                   onMessage={onMessage}
-                  style={{ 
+                  style={{
                     flex: 1,
                     top: "auto",
                   }}
@@ -274,8 +240,8 @@ const ReceiptScreen = () => {
               <TouchableOpacity
                 style={styles.btn}
                 onPress={() => {
-                  setShowGateway(true)
-                  console.log("amount:", url)
+                  setShowGateway(true);
+                  console.log("amount:", url);
                 }}
               >
                 <Text style={styles.btnTxt}>Pay Now</Text>
@@ -371,7 +337,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 8,
   },
-  billingRow:{
+  billingRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -395,20 +361,20 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     marginHorizontal: 5,
   },
-  billingTotalTxt: { 
-    fontSize: 24, 
-    fontWeight: "bold", 
-    color:"#96c5f7" 
+  billingTotalTxt: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#96c5f7",
   },
-  billingTxt: { 
-    fontSize: 18, 
-    fontWeight: "500", 
-    color:"grey" 
+  billingTxt: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "grey",
   },
-  billingTitleTxt: { 
-    fontSize: 16, 
-    fontWeight: "bold", 
-    marginTop: 30 
+  billingTitleTxt: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 30,
   },
   paymentCon: {
     backgroundColor: "#96c5f7",
@@ -433,7 +399,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#00457C",
-  }
+  },
 });
 
 export default ReceiptScreen;

@@ -23,21 +23,15 @@ import { doc, setDoc } from "firebase/firestore";
 import HorizontalLineWithText from "../components/HorizontalLine";
 import Button from "../components/Button";
 
-/*
-const Signup = ({ navigation }) => {
-  const [isPasswordShown, setIsPasswordShown] = useState(false);
-//Activate the i for password. I CAN ADD THIS LATER*/
-
 const RegisterScreen = () => {
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  //const [phone,setPhone] = useState("");
   const navigation = useNavigation();
 
   const register = () => {
-    setIsRegistering(true)
+    setIsRegistering(true);
     if (Email === "" || Password === "") {
       Alert.alert(
         "Invalid Details",
@@ -56,11 +50,10 @@ const RegisterScreen = () => {
     createUserWithEmailAndPassword(auth, Email, Password).then(
       (userCredential) => {
         console.log("user credential", userCredential);
-        const user = userCredential.user.email
-        const myUserUid = userCredential.user.uid
+        const user = userCredential.user.email;
+        const myUserUid = userCredential.user.uid;
 
         setDoc(doc(db, "Users", myUserUid), {
-          //changing from users to User
           Email: user,
         });
       }
@@ -91,11 +84,8 @@ const RegisterScreen = () => {
         <View style={styles.inputTextContainer}>
           <TextInput
             placeholder="Enter your email"
-            //adding these from my logic
             value={Email}
             onChangeText={(text) => setEmail(text)}
-            //end
-
             placeholderTextColor="black"
             style={{
               width: "100%",
@@ -105,10 +95,8 @@ const RegisterScreen = () => {
 
         <View style={styles.inputTextContainer}>
           <TextInput
-            //adding these from my logic
             value={Password}
             onChangeText={(text) => setPassword(text)}
-            //end
             placeholder="Enter your password"
             placeholderTextColor="black"
             secureTextEntry={isPasswordShown}
