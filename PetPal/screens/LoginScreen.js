@@ -53,7 +53,19 @@ const LoginScreen = () => {
         navigation.replace("Discover");
       })
       .catch((error) => {
-        console.error("Login failed:", error.code, error.message);
+        switch (error.code) {
+          case "auth/invalid-email":
+            alert("Invalid Email");
+            break;
+          case "auth/invalid-password":
+            alert("Invalid password");
+            break;
+          case "auth/too-many-requests":
+            alert("Too many failed login attempts.");
+            break;
+          default:
+            alert("Login failed. Please try again.");
+        }
       });
   };
 
@@ -209,7 +221,11 @@ export const createNewUser = async (email, password) => {
     const uid = user.uid;
     return { user, uid };
   } catch (error) {
-    console.error("User creation failed:", error.code, error.message);
+    if (error.code === "auth/email-already-in-use") {
+      alert("Email is already in use.");
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
     throw error;
   }
-};
+}
