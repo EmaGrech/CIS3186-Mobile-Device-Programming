@@ -4,12 +4,8 @@ import {
   Text,
   FlatList,
   Image,
-  TouchableOpacity,
-  StyleSheet,
   Alert,
   Pressable,
-  TextInput,
-  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getCollFromFirestore } from "../db";
@@ -23,6 +19,7 @@ import DropDown from "../components/Dropdown";
 import LottieView from "lottie-react-native";
 import CustomAppBar from "../components/CustomAppBar";
 import { getDocs, doc } from "firebase/firestore";
+import { StyleSheet } from "react-native";
 
 const ListScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
@@ -190,32 +187,42 @@ const ListScreen = ({ route }) => {
   return (
     <>
       <CustomAppBar navigation={navigation} />
+      <View style={styles.dropdown}>
       <DropDown
         data={ProductCategories}
         onValueChange={handleFilter}
         initialValue={filter}
       />
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
+      </View>
+      <View style={styles.locationContainer}>
         <MaterialIcons name="location-on" size={30} color="#fd5c63" />
-        <View>
-          <Text style={{ fontSize: 18, fontWeight: "600" }}>Home</Text>
+        <View style={styles.addressView}>
+          <Text style={styles.homeText}>Home</Text>
           <Text>{displayCurrentAddress}</Text>
         </View>
 
-       
+        <Pressable
+          onPress={() => navigation.navigate("Profile")}
+          style={styles.profileImagePressable}
+        >
+          <Image
+            style={styles.profileImage}
+            source={{
+              uri: "https://lh3.googleusercontent.com/ogw/AAEL6sh_yqHq38z35QMy5Fnb8ZIxicdxCIVM9PeBD2j-=s64-c-mo",
+            }}
+          />
+        </Pressable>
       </View>
 
-      <View style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>
+      <View style={styles.listContainer}>
         {/*List output*/}
         {filterProducts.length === 0 ? (
-          <View
-            style={{ alignItems: "center", justifyContent: "center", flex: 1 }}
-          >
+          <View style={styles.emptyListContainer}>
             <LottieView
               source={require("../assets/notFound Light.json")}
               autoPlay
               loop
-              style={{ width: 200, height: 200 }}
+              style={styles.lottieView}
             />
             <Text>No products could be found</Text>
           </View>
@@ -229,38 +236,20 @@ const ListScreen = ({ route }) => {
       </View>
 
       {total === 0 ? null : (
-        <Pressable
-          style={{
-            backgroundColor: "#A9D3FF",
-            padding: 10,
-            marginBottom: 40,
-            margin: 15,
-            borderRadius: 7,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <Pressable style={styles.cartSummary}>
           <View>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
+            <Text style={styles.cartText}>
               {cart.length} items | € {total}
             </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "400",
-                color: "white",
-                marginVertical: 6,
-              }}
-            >
+            <Text style={styles.extraChargesText}>
               extra charges might apply
             </Text>
           </View>
 
-          {/* changing from PickUp to Cart2 */}
+           {/* changing from PickUp to Cart2 */}
           {/* changing from Cart2 to Cart to see what happens*/}
           <Pressable onPress={() => navigation.navigate("Cart")}>
-            <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
+            <Text style={styles.proceedToCartText}>
               Proceed to Cart
             </Text>
           </Pressable>
@@ -269,5 +258,81 @@ const ListScreen = ({ route }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0'
+  },
+  addressView: {
+    marginLeft: 10,
+    flex: 1 
+  },
+  homeText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333333'
+  },
+  profileImagePressable: {
+    padding: 5,
+    borderRadius: 25,
+    backgroundColor: '#F8F8F8'
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20
+  },
+  listContainer: {
+    backgroundColor: '#F9F9F9',
+    flex: 1,
+    paddingTop: 20
+  },
+  emptyListContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1
+  },
+  lottieView: {
+    width: 250,
+    height: 250
+  },
+  cartSummary: {
+    backgroundColor: '#4E9F3D',
+    padding: 15,
+    margin: 20,
+    borderRadius: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  cartText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF'
+  },
+  extraChargesText: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#DDDDDD'
+  },
+  proceedToCartText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FFFFFF'
+  },
+  dropdown:{
+    backgroundColor:"white"
+  }
+});
 
 export default ListScreen;

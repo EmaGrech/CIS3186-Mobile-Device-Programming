@@ -17,11 +17,13 @@ export const productSlice = createSlice({
       const itemPresent = state.product.find(
         (item) => item.id === action.payload.id
       );
+      console.log(itemPresent)
       itemPresent.Quantity++;
       console.log(
         "Inside incrementQty reducer. Product state after:",
         state.product
       );
+      console.log("im here")
     },
     decrementQty: (state, action) => {
       const itemPresent = state.product.find(

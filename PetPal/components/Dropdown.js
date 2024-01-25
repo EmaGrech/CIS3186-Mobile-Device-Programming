@@ -15,7 +15,7 @@ function DropDown({ data, onValueChange, initialValue }) {
 
   const renderLabel = () => {
     return (
-      <Text style={[styles.label, isFocus && { color: "blue" }]}>
+      <Text style={[styles.label, isFocus && styles.labelFocused]}>
         Select a Category
       </Text>
     );
@@ -25,7 +25,7 @@ function DropDown({ data, onValueChange, initialValue }) {
     <View style={styles.container}>
       {renderLabel()}
       <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+        style={[styles.dropdown, isFocus && styles.dropdownFocused]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
@@ -53,33 +53,42 @@ export default DropDown;
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
-    padding: 16,
+    margin: 16,
+    padding: 16, 
+    borderRadius: 12,
+    shadowColor: '#000',
+    elevation: 2,
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "#D1D5DB",
+    borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 8,
+    backgroundColor: '#F9FAFB', // Soft background for the dropdown
+  },
+  dropdownFocused: {
+    borderColor: "#A9D3FF", // Your primary color when focused
   },
   label: {
-    position: "absolute",
-    backgroundColor: "#f2f4ff",
-    left: 22,
-    top: 8,
-    zIndex: 999,
-    paddingHorizontal: 8,
+    color: "#4B5563",
     fontSize: 14,
+    marginBottom: 8,
+  },
+  labelFocused: {
+    color: "#A9D3FF", // Your primary color for label when focused
   },
   placeholderStyle: {
     fontSize: 16,
+    color: "#9CA3AF",
   },
   selectedTextStyle: {
     fontSize: 16,
+    color: "#1F2937",
   },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    backgroundColor: '#F9FAFB', // Consistent with the dropdown background
   },
 });

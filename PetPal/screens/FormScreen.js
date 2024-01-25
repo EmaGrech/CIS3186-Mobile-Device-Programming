@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { setFieldType, toAddtoCollection, toUpdateDocument } from "../db";
-import style from "../style";
 import { View, Text, TouchableOpacity, TextInput, Alert, Image, ScrollView, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import DropDown from "../components/Dropdown";
@@ -73,17 +72,31 @@ const FormScreen = ({ route }) => {
 
     if (editMode) {
       await toUpdateDocument(collName, initialData.id, formData);
-    } else {
+    } 
+    /*else {
       // Check if it's a new entry (not in editMode) and not from login screen
       if (!fromLogin) {
         await toAddtoCollection(collName, formData);
-      } else {
+      } */
+
+      //since i change logic in the login screen a bit, now user cant register fully only with form,
+      //so we dont need to create a new document, because it always creates during auth
+      //update password only in auth
+      else {
+        await toAddtoCollection(collName, formData);
+        /*
         const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
         const pass = regex.test(formData.Password);
         if (!pass) {
           Alert.alert(
-            `Password is not valid:`,
-            `Password must have \n 1 Uppercase Letter \n 1 Lowercase Letter \n 1 Number \n At least 8 characters`
+            "Invalid Password",
+            "Your password must include:\n\n" + 
+            "- At least 8 characters\n" +
+            "- 1 Uppercase letter (A-Z)\n" +
+            "- 1 Lowercase letter (a-z)\n" +
+            "- 1 Number (0-9)",
+            [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            { cancelable: true }
           );
           return;
         }
@@ -92,8 +105,8 @@ const FormScreen = ({ route }) => {
           formData.Password
         );
         await toAddtoCollection(collName, formData, uid);
+        */
       }
-    }
     navigation.goBack();
   };
 
@@ -117,10 +130,10 @@ const FormScreen = ({ route }) => {
   };
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={style.scrollContainer}>
-      <View style={style.formContainer}>
-        <Text style={style.formTitle}>{collName}</Text>
-        {Object.entries(fieldTypes).map(([fieldName, fieldType]) => (
+    <View style={style.formContainer}>
+      <KeyboardAwareScrollView contentContainerstyle={style.scrollContainer}>
+      <Text style={style.formTitle}>{collName}</Text>
+        {Object.entries(fieldTypes).map(([fieldName, fieldType]) => (       
           <View key={fieldName} style={{ marginBottom: 10 }}>
             {fieldType === "string" ? (
               <View style={{ alignItems: "center" }}>
@@ -160,7 +173,8 @@ const FormScreen = ({ route }) => {
               </View>
             ) : fieldType === "image" ? (
               <View style={{ alignItems: "center" }}>
-                 <TouchableOpacity onPress={() => selectImage(fieldName)} >
+                 <TouchableOpacity onPress={() => selectImage(fieldName)} style={style.uploadButton}>
+                  <Image source={require("../assets/uploadImage.png")} style={style.uploadImage}/>
                   <Text>Upload Image</Text>
                 </TouchableOpacity>
                 {formData[fieldName] && formData[fieldName].uri && (
@@ -193,10 +207,64 @@ const FormScreen = ({ route }) => {
 
         <Button onPress={submit} style={style.formButton}
             title="Save"/>
-      </View>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </View>
   );
-};
+}
 
+  const style = StyleSheet.create({
+    formContainer: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: 'white',
+    },
+    scrollContainer: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      backgroundColor: 'white',
+    },
+    formTitle: {
+      fontSize: 22,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      color: '#333',
+      textAlign: 'center',
+    },
+    formInput: {
+      borderWidth: 1,
+      borderColor: '#ddd',
+      padding: 10,
+      borderRadius: 10,
+      width: '100%',
+      marginBottom: 10,
+      backgroundColor:"white",
+      height:50,
+      justifyContent:"center",
+      alignContent:"center"
+    },
+    formButton: {
+      backgroundColor: '#007bff',
+      padding: 15,
+      borderRadius: 5,
+      marginTop: 20,
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 10,
+      
+    },
+    uploadImage:{
+      width:40,
+      height:30,
+      resizeMode:"contain"
+    }
+  });
 
 export default FormScreen;
