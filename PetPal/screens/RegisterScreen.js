@@ -90,7 +90,7 @@ const RegisterScreen = () => {
             Password:pasw,
             id:myUserUid
           };
-          navigation.replace("Form", { collName: 'Users', editMode: true, initialData: initialData });
+          navigation.replace("Form", { collName: 'Users', editMode: true, initialData: initialData, fromLogin:true });
         });
       })
       .catch((error) => {

@@ -107,8 +107,8 @@ const FormScreen = ({ route }) => {
         await toAddtoCollection(collName, formData, uid);
         */
       }
-    navigation.goBack();
-  };
+    navigation.navigate("Discover");}
+  
 
   const selectImage = async (fieldName) => {
     try {
