@@ -70,7 +70,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
         
         {user.Account_Type !== "Consumer" && (
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop:80}}>
             <HorizontalLineWithText text={"Activities / Services"} />
             <View style={styles.activityList}>
               {user.Activities != null ? (

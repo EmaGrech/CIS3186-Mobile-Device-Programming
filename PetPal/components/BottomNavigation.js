@@ -31,6 +31,7 @@ function BottomNavigation({ navigation }) {
 
   return (
     <Tab.Navigator
+    initialRouteName="Home"
       screenOptions={{
         tabBarStyle: {
           backgroundColor: '#A9D3FF',
@@ -41,6 +42,23 @@ function BottomNavigation({ navigation }) {
     }}
     >
       <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          tabBarIcon: ({ focused, color, size }) =>
+            focused == true ? (
+              <MaterialCommunityIcons name="cart" color={color} size={size} />
+            ) : (
+              <MaterialCommunityIcons
+                name="cart-variant"
+                color={color}
+                size={size}
+              />
+            ),
+          header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
+        }}
+      />
+       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
@@ -54,23 +72,6 @@ function BottomNavigation({ navigation }) {
             ) : (
               <MaterialCommunityIcons
                 name="home-outline"
-                color={color}
-                size={size}
-              />
-            ),
-          header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
-        }}
-      />
-      <Tab.Screen
-        name="Cart"
-        component={CartScreen}
-        options={{
-          tabBarIcon: ({ focused, color, size }) =>
-            focused == true ? (
-              <MaterialCommunityIcons name="cart" color={color} size={size} />
-            ) : (
-              <MaterialCommunityIcons
-                name="cart-variant"
                 color={color}
                 size={size}
               />

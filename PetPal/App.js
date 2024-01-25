@@ -74,7 +74,7 @@ export default function App() {
             <Stack.Screen name="Profile" component={ProfileScreen} options={{title:"",}}/>
             <Stack.Screen name="Form" component={FormScreen} options={{title:"",}}/>
             <Stack.Screen name="Info" component={InfoScreen} />
-            <Stack.Screen name="Search" component={SearchScreen} />
+            <Stack.Screen name="Search" component={SearchScreen} options={{title:"",}} />
             <Stack.Screen name="PetItems" component={PetItemsScreen} />
             <Stack.Screen name="Cart" component={CartScreen} />
             <Stack.Screen name="PickUp" component={PickUpScreen} />

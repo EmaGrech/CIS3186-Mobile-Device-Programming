@@ -118,8 +118,8 @@ useEffect(() => {
            <ActivityIndicator size="auto" color="#89CFF0" />
         </View>
         ):( 
-        <View style={{ maxHeight: "90%" }}>
-          <ScrollView>
+        <View style={{ maxHeight: "90%", }}>
+          <ScrollView >
             {conversations.length === 0 ? renderNoChats() : renderChats()}
           </ScrollView>
         </View>
@@ -127,11 +127,8 @@ useEffect(() => {
 }
 
 const styles = StyleSheet.create({
-    noChatsContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 60,
+    noChatsContainer: {       
+        flex:1,    
       },
       loaderContainer: {
         flex: 1,
