@@ -86,10 +86,6 @@ export const getCart = async (cartID) => {
   return getDocument("Cart", cartID);
 };
 
-export const getChat = async (chatID) => {
-  return getDocument("Chat", chatID);
-};
-
 export const getPurchaseHistory = async (purchaseID) => {
   return getDocument("Purchase_History", purchaseID);
 };
@@ -168,9 +164,10 @@ export const moveCartToPurchaseHistory = async (userID) => {
 
   if (cartData) {
     const purchaseHistoryColl = collection(db, "Purchase_History");
-    const orderID = cartData.Order_ID;
+    const orderID = `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
     const orderDocRef = doc(purchaseHistoryColl, orderID);
+
     const purchaseTimestamp = {
       Date_of_Purchase: serverTimestamp(),
       Items: {},
@@ -190,6 +187,7 @@ export const moveCartToPurchaseHistory = async (userID) => {
         });
       }
     }
+    await setDoc(orderDocRef, purchaseTimestamp);
   }  
 };
 
