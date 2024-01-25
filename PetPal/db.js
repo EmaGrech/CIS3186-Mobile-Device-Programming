@@ -31,12 +31,6 @@ export const setFieldType = {
     Account_Type: "drop",
     Actvities: "drop[]",
   },
-  Purchase_History: {
-    order: {
-      Date_of_Purchase: "timestamp",
-      Items: "string[]",
-    },
-  },
   Product_Details: {
     Product_Name: "string",
     Category: "drop",
@@ -44,17 +38,6 @@ export const setFieldType = {
     Image: "image",
     Price: "float",
     Stock: "int",
-  },
-  Cart: {
-    Order_ID: "string",
-    Product_ID: "string[]",
-    Total: "float",
-  },
-  Chat: {
-    Message: "string",
-    Recipient_ID: "string",
-    Sender_ID: "string",
-    Timestamp: "string",
   },
 };
 
