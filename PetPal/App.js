@@ -71,7 +71,7 @@ export default function App() {
               options={{ headerShown: false }} // this screen makes use of the custom header
             />
 
-            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} options={{title:"",}}/>
             <Stack.Screen name="Form" component={FormScreen} />
             <Stack.Screen name="Info" component={InfoScreen} />
             <Stack.Screen name="Search" component={SearchScreen} />

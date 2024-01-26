@@ -13,7 +13,6 @@ import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-//import Services from "../components/Services";
 import PetItem from "../components/PetItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
@@ -88,8 +87,6 @@ const SearchScreen = () => {
         longitude,
       });
 
-      // console.log(response)
-
       for (let item of response) {
         let address = `${item.name} ${item.city} ${item.postalCode}`;
         setdisplayCurrentAddress(address);
@@ -102,7 +99,7 @@ const SearchScreen = () => {
     if (product.length > 0) return;
 
     const fetchProducts = async () => {
-      const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      const colRef = collection(db, "Product_Details");
       const docsSnap = await getDocs(colRef);
       docsSnap.forEach((doc) => {
         items.push(doc.data());
@@ -125,18 +122,14 @@ const SearchScreen = () => {
   const resetSearch = () => {
     // Check if there are filtered products before resetting
     if (filteredProducts.length > 0) {
-      // Option 1: Clear the filtered products
       setFilteredProducts([]);
     }
-    // Option 2: If you want to clear the search query as well, uncomment the line below
     setSearchQuery("");
   };
 
   return (
     <>
-      <ScrollView
-        style={{ flex: 1, marginTop: 50 }}
-      >
+      <ScrollView style={{ flex: 1, marginTop: 50 }}>
         {/* Location and Profile */}
         <View
           style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
@@ -150,12 +143,11 @@ const SearchScreen = () => {
           <Pressable
             onPress={() => navigation.navigate("Profile")}
             style={{ marginLeft: "auto", marginRight: 7 }}
-
           ></Pressable>
         </View>
 
         {/* Search Bar */}
-        <View  style={styles.search}>
+        <View style={styles.search}>
           <TextInput
             placeholder="Search for items or More"
             value={searchQuery}
@@ -187,24 +179,25 @@ const SearchScreen = () => {
 
       {total === 0 ? null : (
         <View style={styles.paymentCon}>
-        <View>
-          <Text style={styles.paymentTxt}>
-            {cart.length} items | € {total}
-          </Text>
-          <Text style={styles.paymentChargesTxt}>
-            extra charges might apply
-          </Text>
-        </View>
+          <View>
+            <Text style={styles.paymentTxt}>
+              {cart.length} items | € {total}
+            </Text>
+            <Text style={styles.paymentChargesTxt}>
+              extra charges might apply
+            </Text>
+          </View>
 
-        <View style={styles.container}>
-              <View style={styles.btnCon}>
-                <Pressable style={styles.btn}  onPress={() => navigation.navigate("Cart")}>
-                <Text style={styles.btnTxt}>
-                  Proceed to Cart
-                </Text>
-                </Pressable>
-              </View>
+          <View style={styles.container}>
+            <View style={styles.btnCon}>
+              <Pressable
+                style={styles.btn}
+                onPress={() => navigation.navigate("Cart")}
+              >
+                <Text style={styles.btnTxt}>Proceed to Cart</Text>
+              </Pressable>
             </View>
+          </View>
         </View>
       )}
     </>
@@ -235,10 +228,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  paymentTxt: { 
-    fontSize: 17, 
-    fontWeight: "600", 
-    color: "white" 
+  paymentTxt: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "white",
   },
   paymentChargesTxt: {
     fontSize: 15,
@@ -257,7 +250,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     backgroundColor: "#f2f4ff",
     borderRadius: 5,
-    marginLeft: 10
+    marginLeft: 10,
   },
   btn: {
     flex: 1,

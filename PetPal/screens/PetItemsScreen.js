@@ -13,7 +13,6 @@ import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
-//import Services from "../components/Services";
 import PetItem from "../components/PetItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
@@ -100,7 +99,7 @@ const PetItemsScreen = () => {
     if (product.length > 0) return;
 
     const fetchProducts = async () => {
-      const colRef = collection(db, "Product_Details"); //change from products to Product_Details
+      const colRef = collection(db, "Product_Details");
       const docsSnap = await getDocs(colRef);
       docsSnap.forEach((doc) => {
         items.push(doc.data());
@@ -111,10 +110,9 @@ const PetItemsScreen = () => {
   }, []);
   console.log(product);
   const services = [
-    // https:/drive.google.com/file/d/1TrdyJ07jDGXfEvg22sz_VVALRu2i1wJA/view?usp=drive_link
     {
-      id: "0", //check if id is supposed to be a string or num because in the new database it is a number. In mobile prog database, they r strings
-      Seller_ID: "9bWfTkhlHBt3WhGo95pe", //they all used to be 1
+      id: "0",
+      Seller_ID: "9bWfTkhlHBt3WhGo95pe",
       Category: "Pet Essentials",
       Description:
         "Features: gently removes Loose Hair, and eliminates Tangles, Knots, Dander and trapped Dirt. Doing massage for your pet is good for preventing skin disease,Massaging particles won't scratch your pet,and increasing blood circulation. This slicker brush is suitable for many pets(dogs, cats, fragrance pigs, rabbit , orangutans etc), especially with Long, Medium, Short, Thick, Wiry, or Curly Hair.",
@@ -160,43 +158,6 @@ const PetItemsScreen = () => {
       Product_Name: "Pet Dog Donut Bed",
       Stock: 8,
     },
-
-    /* OLD PRODUCTS
-    {
-      id: "0",
-      SellerID: 1,
-      Category: "",
-      Description: "",
-      Image: "https://cdn-icons-png.flaticon.com/128/4643/4643574.png",
-      Price: 10,
-      Quantity: 0,
-      ProductName: "Turtle Food",
-      Stock: false 
-     
-    
-    },
-    {
-      id: "2",
-      SellerID: 1,
-      Category: "",
-      Description: "",
-      Image: "https://cdn-icons-png.flaticon.com/128/4643/4643574.png",
-      Price: 10,
-      Quantity: 0,
-      ProductName: "Dog Food",
-      Stock: true 
-    },
-    {
-      id: "3",
-      SellerID: 1,
-      Category: "",
-      Description: "",
-      Image: "https://cdn-icons-png.flaticon.com/128/4643/4643574.png",
-      Price: 9,
-      Quantity: 0,
-      ProductName: "Cat Food",
-      Stock: true 
-    }, */
   ];
 
   return (
@@ -237,7 +198,7 @@ const PetItemsScreen = () => {
             justifyContent: "center",
             marginTop: 20,
           }}
-          onPress={() => navigation.navigate("Cart")} // Replace "Cart" with your cart screen name
+          onPress={() => navigation.navigate("Cart")}
         >
           <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
             Go to Cart
@@ -296,8 +257,6 @@ const PetItemsScreen = () => {
             </Text>
           </View>
 
-          {/* changing from PickUp to Cart2 */}
-          {/* changing from Cart2 to Cart to see what happens*/}
           <Pressable onPress={() => navigation.navigate("Cart")}>
             <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
               Proceed to Cart

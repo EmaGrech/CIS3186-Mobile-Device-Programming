@@ -6,6 +6,7 @@ import { signOut } from "firebase/auth";
 import { getDocument, auth } from "../db";
 import { useFocusEffect } from "@react-navigation/native";
 import HorizontalLineWithText from "../components/HorizontalLine";
+import { ScrollView } from "react-native-gesture-handler";
 
 function ProfileScreen({ navigation, route }) {
   // personalProfile is used to determine whether the user is
@@ -46,42 +47,44 @@ function ProfileScreen({ navigation, route }) {
 
   return (
     <View style={styles.root}>
-      <View style={styles.centralisedContainer}>
-        <View style={styles.imgContainer}>
-          {user.Profile_Picture && user.Profile_Picture.uri && (  
-            <Image style={styles.img} source={{ uri: user.Profile_Picture.uri }} />
-          )}        
-          <Image
-            style={styles.img}
-            source={{
-              uri:
-                user.Profile_Picture != ""
-                  ? user.Profile_Picture
-                  : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e",
-            }}
-          />
-        </View>
-        <Text style={styles.username}>{user.Username}</Text>
-        <View style={styles.listItem}>
-          <Text style={styles.itemText}>{user.Description}</Text>
-        </View>
-      </View>
-      {user.Account_Type !== "Consumer" && (
-        <View style={{ marginTop: 20 }}>
-          <HorizontalLineWithText text={"Activities / Services"} />
-          <View style={styles.activityList}>
-            {user.Activities != null ? (
-              user.Activities.map((activity, index) => (
-                <View key={index} style={styles.listItem}>
-                  <Text>{activity}</Text>
-                </View>
-              ))
+      <ScrollView>
+        <View style={styles.centralisedContainer}>
+          <View style={styles.imgContainer}>
+            {user.Profile_Picture && user.Profile_Picture.uri ? (
+              <Image style={styles.img} source={{ uri: user.Profile_Picture.uri }} />
             ) : (
-              <Text>No Activities have been set</Text>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: user.Profile_Picture != ""
+                    ? user.Profile_Picture
+                    : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e",
+                }}
+              />
             )}
           </View>
+          <Text style={styles.username}>{user.Username}</Text>
+          <View style={styles.listItem}>
+            <Text style={styles.itemText}>{user.Description}</Text>
+          </View>
         </View>
-      )}
+        
+        {user.Account_Type !== "Consumer" && (
+          <View style={{ marginTop: 20 }}>
+            <HorizontalLineWithText text={"Activities / Services"} />
+            <View style={styles.activityList}>
+              {user.Activities != null ? (
+                user.Activities.map((activity, index) => (
+                  <View key={index} style={styles.listItem}>
+                    <Text>{activity}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noActivityText}>No Activities have been set</Text>
+              )}
+            </View>
+          </View>
+        )}
 
       {personalProfile ? (
         <View style={styles.btnContainer}>
@@ -103,11 +106,11 @@ function ProfileScreen({ navigation, route }) {
           <Button
             mode="contained"
             buttonColor="#323232"
-            style={{ marginVertical: 20, marginHorizontal: 10 }}
+            style={{ marginVertical: 20, marginHorizontal: 10, }}
             labelStyle={{ fontSize: 16 }}
             onPress={signOutUser}
           >
-            Log Out
+              Log Out  
           </Button>
         </View>
       ) : (
@@ -123,57 +126,70 @@ function ProfileScreen({ navigation, route }) {
           </Button>
         </View>
       )}
+      </ScrollView>
     </View>
-  );
+  ); 
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    margin: 5,
+    backgroundColor: '#fff', 
   },
   centralisedContainer: {
     alignItems: "center",
+    paddingTop: 20, 
   },
   imgContainer: {
     width: 200,
     height: 200,
     borderRadius: 100,
-    borderWidth: 5,
-    borderColor: "#A9D3FF",
+    borderWidth: 1,
+    borderColor: "black",
     overflow: "hidden",
     marginTop: 20,
     elevation: 3,
+    backgroundColor: '#fff', 
   },
   img: {
     width: "100%",
     height: "100%",
+    resizeMode: 'cover', 
   },
   username: {
-    fontSize: 20,
+    fontSize: 24, 
     fontWeight: "bold",
-    margin: 10,
+    margin: 15, 
+    color: '#323232', 
   },
   listItem: {
-    borderRadius: 6,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     marginVertical: 10,
-    marginHorizontal: 18,
+    marginHorizontal: 20,
     backgroundColor: "#A9D3FF",
     elevation: 4,
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   itemText: {
     textAlign: "center",
+    fontSize: 15, 
+    color: '#ffffff',
   },
   activityList: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
+    marginVertical: 10, 
   },
   btnContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    marginVertical: 20, 
   },
 });
 

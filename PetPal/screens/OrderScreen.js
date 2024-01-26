@@ -1,9 +1,24 @@
+import React, { useEffect, useContext } from "react";
 import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-import React from "react";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { cleanCart } from "../CartReducer"; 
 
-//separate order screen
 const OrderScreen = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Set a timeout to navigate to the home screen after 3 seconds and clear cart
+    const timeoutId = setTimeout(() => {
+      dispatch(cleanCart());
+      navigation.navigate("Home");
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [dispatch, navigation]);
+
   return (
     <SafeAreaView>
       <LottieView

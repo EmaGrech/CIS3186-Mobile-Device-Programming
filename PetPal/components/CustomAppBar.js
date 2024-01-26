@@ -5,6 +5,7 @@ import { View, StyleSheet } from "react-native";
 
 function CustomAppBar({ navigation }) {
   const [uid, setUid] = useState(null);
+  
   const handleProfilePress = async () => {
     const auth = getAuth();
     const user = auth.currentUser;

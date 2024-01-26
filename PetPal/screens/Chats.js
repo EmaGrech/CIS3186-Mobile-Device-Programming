@@ -1,59 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { getFirestore,collection,or, where, query, orderBy, onSnapshot } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
+import {collection,or, where, query, orderBy, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { ActivityIndicator } from 'react-native';
 import { formatTimestamp } from "../components/formatTimestamp";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDrvXycbaOQE8i5oLDaGDSYfABnpjsQ1II",
-    authDomain: "chatapp-e00b1.firebaseapp.com",
-    projectId: "chatapp-e00b1",
-    storageBucket: "chatapp-e00b1.appspot.com",
-    messagingSenderId: "1071173191697",
-    appId: "1:1071173191697:web:bfe7c84a6c234f54fe89b0"
-  };
-
-  const appChat = initializeApp(firebaseConfig, "chat");
-const dbChat = getFirestore(appChat);
-  export { dbChat};
+import { db } from '../FirebaseConfig';
 
 export default function Chats({navigation, route}){
+
 const [conversations, setConversations] = useState([])
 const [isLoadingChats, setIsLoadingChats] = useState(true)
+//const [userId, setUserId] = useState(route.params.userId);
+const {userId} = route.params;
 
-mesgColl = collection(dbChat, "Messages");
-userColl = collection(dbChat, "Users");
+mesgColl = collection(db, "Messages");
+userColl = collection(db, "Users");
 
- const accountImage = require("../assets/Person.jpg")
- const userId = "BZNIE9P380QSIJ4D1pPF"
- //userId = "GuPJWnzJyjH2CjkzgZQR" //no chats user
+useEffect(() => {
+  const q = query(
+    mesgColl,
+    or(where('to_uid', '==', userId), where('from_uid', '==', userId)),
+    orderBy("last_time", "desc")
+  );
 
-   useEffect(() => {
-    const q = query(
-        mesgColl,
-            or(where('to_uid', '==', userId),
-            where('from_uid', '==', userId)),
-            orderBy("last_time", "desc")
-      );
+  const unsubscribeChats = onSnapshot(q, async (snapshot) => {
+    let Convs = [];
+    try {
+      for (const docum of snapshot.docs) {
+        const convData = docum.data();
+        let imageUrl;
 
-      const unsubscribeChats = onSnapshot(q, (snapshot) => {
-        let Convs = [];
-        snapshot.docs.forEach((doc) => {
-          Convs.push({ ...doc.data(), id: doc.id });
-        });
-        setConversations(Convs);
-        setIsLoadingChats(false);
-      });
+        const otherUserId = convData.to_uid === userId ? convData.from_uid : convData.to_uid;
+        if (otherUserId !== userId) {
+          const userDocRef = doc(db, "Users", otherUserId);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            imageUrl = userData.Profile_Picture && userData.Profile_Picture.uri 
+                ? { uri: userData.Profile_Picture.uri } 
+                : { uri: userData.Profile_Picture && userData.Profile_Picture !== ""
+                    ? userData.Profile_Picture
+                    : "https://firebasestorage.googleapis.com/v0/b/petpal-3f19d.appspot.com/o/user-icon.jpg?alt=media&token=63fd6f06-6177-4178-8307-f356f6c68a2e"
+                  };
+        }
+        }
+        Convs.push({ ...convData, id: docum.id, imageUrl });
+      }
+      setConversations(Convs);
+    } catch (error) {
+      console.error("Error fetching user data: ", error);
+    }
+    setIsLoadingChats(false);
+  });
 
-      return () => {
-        unsubscribeChats();
-      };
-    },[])
+  return () => {
+    unsubscribeChats();
+  };
+}, [userId]);
 
     const renderNoChats = () => (
         <View style={styles.noChatsContainer}>
-          <Image source={require("../assets/noChatsYet.png")} />
+          <Image source={require("../assets/noChatsYet.png")} style={styles.imageContainer} />
         </View>
       );
     
@@ -76,7 +82,16 @@ userColl = collection(dbChat, "Users");
                   interlocutorId: conv.to_uid === userId ? conv.from_uid : conv.to_uid
                 })}
               >
-                <Image source={accountImage} style={styles.avatar} />
+                 {conv.Profile_Picture && conv.Profile_Picture.uri ? (
+              <Image style={styles.avatar} source={{ uri: conv.Profile_Picture.uri }} />
+            ) : (
+              <Image
+                style={styles.avatar}
+                source={
+                  conv.imageUrl
+                }
+              />
+            )}
                 <View style={styles.chatDetailsContainer}>
                   <Text style={styles.usernameContainer}>
                     {conv.to_uid === userId ? conv.from_name : conv.to_name}
@@ -98,7 +113,7 @@ userColl = collection(dbChat, "Users");
       );
     
       return(
-      isLoadingChats? (
+      isLoadingChats ? (
         <View style={styles.loaderContainer}>
            <ActivityIndicator size="auto" color="#89CFF0" />
         </View>
@@ -116,7 +131,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        padding: 60,
       },
       loaderContainer: {
         flex: 1,
@@ -150,4 +165,8 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 12,
       },
+      imageContainer:{
+        width:350,
+        height:350,
+      }
 })

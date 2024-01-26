@@ -202,17 +202,7 @@ const ListScreen = ({ route }) => {
           <Text>{displayCurrentAddress}</Text>
         </View>
 
-        <Pressable
-          onPress={() => navigation.navigate("Profile")}
-          style={{ marginLeft: "auto", marginRight: 7 }}
-        >
-          <Image
-            style={{ width: 40, height: 40, borderRadius: 20 }}
-            source={{
-              uri: "https://lh3.googleusercontent.com/ogw/AAEL6sh_yqHq38z35QMy5Fnb8ZIxicdxCIVM9PeBD2j-=s64-c-mo",
-            }}
-          />
-        </Pressable>
+       
       </View>
 
       <View style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>

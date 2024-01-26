@@ -16,6 +16,9 @@ import {
   decrementQuantity,
   incrementQuantity,
 } from "../CartReducer";
+import Button from "../components/Button";
+import { ActivityIndicator } from "react-native-paper";
+import { getAuth } from "firebase/auth";
 
 const InfoScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -45,6 +48,7 @@ const InfoScreen = ({ route, navigation }) => {
     Price,
     Stock,
     Quantity,
+    Seller_ID : Seller_ID
   } = productDetails || {};
 
   const handleDelete = () => {
@@ -57,142 +61,152 @@ const InfoScreen = ({ route, navigation }) => {
     dispatch(incrementQty(itemID));
   };
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <Image source={{ uri: image }} style={styles.image} />
+  const contactOwner = async(Seller_Id) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    console.log(Seller_Id)
+    if (user) {
+      navigation.navigate("IndividualChatScreen", {userId:user.uid, interlocutorId: Seller_ID})
+    } else {
+      console.log("User not logged in");
+      navigation.navigate("LoginScreen")
+    }
+  }
+
+  const isSpecialCategory = ['Cats', 'Dogs', 'Birds', 'Exotic'].includes(productDetails?.Category);
+
+  if (!productDetails) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
-      <Text style={styles.productName}>{productName}</Text>
-      <Text style={styles.otherText}>{`Description: ${Description}`}</Text>
-      <Text style={styles.price}>{`Price: €${Number(Price).toFixed(2)}`}</Text>
-      <Text style={styles.otherText}>{`Stock: ${Stock}`}</Text>
-      {productDetails && productDetails.Quantity !== undefined && (
-        <Pressable
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              dispatch(decrementQuantity(itemID));
-              dispatch(decrementQty(itemID));
-            }}
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 13,
-              borderColor: "#BEBEBE",
-              backgroundColor: "#E0E0E0",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: "#A9D3FF",
-                paddingHorizontal: 6,
-                fontWeight: "600",
-                textAlign: "center",
-              }}
-            >
-              -
-            </Text>
-          </TouchableOpacity>
-
-          <Text
-            style={{
-              fontSize: 19,
-              color: "#A9D3FF",
-              paddingHorizontal: 8,
-              fontWeight: "600",
-            }}
-          >
-            {Quantity}
+    );
+  } else {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.centeredView}>
+          <Image source={{ uri: image }} style={styles.image} />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.productName}>{productName}</Text>
+          <Text style={styles.otherText}>{Description}</Text>
+          <Text style={styles.price}>
+            {isSpecialCategory ? `Price: ${productDetails.Price}` : `Price: €${Number(Price).toFixed(2)}`}
           </Text>
+          <Text style={styles.otherText}>
+            {isSpecialCategory ? "" : `Stock: ${Stock}`}
+          </Text>
+          {productDetails && productDetails.Quantity !== undefined && (
+            <Pressable style={styles.quantityContainer}>
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(decrementQuantity(itemID));
+                  dispatch(decrementQty(itemID));
+                }}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.quantityText}>-</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => {
-              dispatch(incrementQuantity(itemID));
-              dispatch(incrementQty(itemID));
-            }}
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 13,
-              borderColor: "#BEBEBE",
-              backgroundColor: "#E0E0E0",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: "#A9D3FF",
-                paddingHorizontal: 6,
-                fontWeight: "600",
-                textAlign: "center",
-              }}
-            >
-              +
-            </Text>
+              <Text style={styles.quantityText}>{Quantity}</Text>
+
+              <TouchableOpacity
+                onPress={() => {
+                  dispatch(incrementQuantity(itemID));
+                  dispatch(incrementQty(itemID));
+                }}
+                style={styles.quantityButton}
+              >
+                <Text style={styles.quantityText}>+</Text>
+              </TouchableOpacity>
+            </Pressable>
+          )}
+          {productDetails && (
+            isSpecialCategory ?
+            <View>
+              <Button title="Contact Owner" onPress={() => contactOwner(Seller_ID)}/></View>
+            :
+              <>
+              <View style={styles.buttonRow}>
+                <Button title="      Add to cart      " onPress={handleAdd} style={ styles.flexButton}/>
+                <Button title="   Contact Seller   " onPress={() => contactOwner(Seller_ID)} style={ styles.flexButton}/>
+              </View>
+              </>
+          )}
+          {/* 
+          <TouchableOpacity style={styles.button} onPress={handleDelete}>
+            <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
-        </Pressable>
-      )}
-      {productDetails && (
-        <TouchableOpacity onPress={handleAdd} style={styles.button}>
-          <Text style={styles.buttonText}>Add</Text>
-        </TouchableOpacity>
-      )}
-      {/*<TouchableOpacity style={styles.button} onPress={handleDelete}>
-        <Text style={styles.buttonText}>Delete</Text>
-      </TouchableOpacity> */}
-    </ScrollView>
-  );
+          */}
+        </View>
+      </ScrollView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  centeredView: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 16,
-    borderRadius: 8,
+    width: '100%',
+    height: 300,
+    marginBottom: 20,
+  },
+  textContainer: {
+    padding: 15,
   },
   productName: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 8,
   },
   otherText: {
     fontSize: 16,
     marginBottom: 8,
-    textAlign: "justify",
+    textAlign: 'justify',
   },
   price: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 8,
   },
-  button: {
-    backgroundColor: "#A9D3FF",
-    padding: 10,
-    borderRadius: 7,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    width: 300,
-    alignSelf: "center",
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 15,
+    marginBottom: 15,
   },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+  quantityButton: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5,
+    borderColor: '#BEBEBE',
+    backgroundColor: '#E0E0E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 10,
+  },
+  quantityText: {
+    fontSize: 20,
+    color: '#333',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: "space-around",
+    alignItems: 'center',
+    padding: 20,
   },
 });
 

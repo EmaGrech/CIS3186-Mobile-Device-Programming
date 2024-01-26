@@ -1,5 +1,3 @@
-// I am doing this to test just a normal cart with the button 'Proceed to Payment'
-
 import {
   StyleSheet,
   Text,
@@ -32,7 +30,7 @@ const CartScreen = () => {
 
   return (
     <>
-      <ScrollView style={{backgroundColor: "white", paddingTop: 25 }}>
+      <ScrollView style={{ backgroundColor: "white", paddingTop: 25 }}>
         {total === 0 ? (
           <View style={{ justifyContent: "center", alignItems: "center" }}>
             <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
@@ -45,17 +43,13 @@ const CartScreen = () => {
 
             <View style={styles.itemCon}>
               {cart.map((item, index) => (
-                <View style={styles.incRow}
-                  key={index}
-                >
+                <View style={styles.incRow} key={index}>
                   <Text style={{ width: 100, fontSize: 16, fontWeight: "500" }}>
                     {item.Product_Name}
                   </Text>
 
                   {/* - + button */}
-                  <Pressable
-                    style={styles.incBorder}
-                  >
+                  <Pressable style={styles.incBorder}>
                     <Pressable
                       onPress={() => {
                         dispatch(decrementQuantity(item)); // cart
@@ -66,9 +60,7 @@ const CartScreen = () => {
                     </Pressable>
 
                     <Pressable>
-                      <Text style={styles.itemQuant}>
-                        {item.Quantity}
-                      </Text>
+                      <Text style={styles.itemQuant}>{item.Quantity}</Text>
                     </Pressable>
 
                     <Pressable
@@ -81,19 +73,25 @@ const CartScreen = () => {
                     </Pressable>
                   </Pressable>
                   <Text style={{ fontSize: 18, fontWeight: "500" }}>
-                  € {item.Price * item.Quantity}
+                    € {item.Price * item.Quantity}
                   </Text>
                 </View>
               ))}
             </View>
-              
+
             <View style={styles.orderCon}>
               <View style={styles.orderBtn}>
                 <View style={styles.btn}>
                   <Pressable onPress={() => navigation.navigate("PickUp")}>
-                      <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-                        Place Order
-                      </Text>
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        fontWeight: "600",
+                        color: "white",
+                      }}
+                    >
+                      Place Order
+                    </Text>
                   </Pressable>
                 </View>
               </View>
@@ -107,11 +105,11 @@ const CartScreen = () => {
 export default CartScreen;
 
 const styles = StyleSheet.create({
-  titleRow:{
+  titleRow: {
     padding: 10,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   cartTitle: {
     fontSize: 24,
@@ -159,7 +157,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20
+    marginTop: 20,
   },
   orderBtn: {
     height: 50,
@@ -167,7 +165,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     backgroundColor: "#93acb5",
     borderRadius: 7,
-    padding: 8
+    padding: 8,
   },
   btn: {
     flex: 1,

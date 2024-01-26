@@ -1,7 +1,8 @@
 // firebase.js
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeApp, getApp } from "firebase/app";
+import { initializeAuth, getAuth, getReactNativePersistence } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { ReactNativeAsyncStorage } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCsgAil9Eviz-Ra4yujHnk3adAIoBpNHtA",
@@ -46,10 +47,13 @@ apiKey: "AIzaSyB7B3H_e8SZOmfdeNrxC6bX9sgETO4NVTQ",
 
 
 const app = initializeApp(firebaseConfig);
+initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+})
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { db, auth };
+export { db, auth};
 
 export async function getUserProfile(id) {
   const docRef = doc(db, "Users", id); //had to change this for a second
