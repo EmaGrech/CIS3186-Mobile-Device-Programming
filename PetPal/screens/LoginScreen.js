@@ -19,21 +19,20 @@ import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { auth } from '../db';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import HorizontalLineWithText from "../components/HorizontalLine";
+import { Alert } from "react-native";
 
 
 const LoginScreen = () => {
   const [Email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
   const [Password, setPassword] = useState("");
   //password shown added by A
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
-    setLoading(true);
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (!authUser) {
-        setLoading(false);
         console.log("User not logged in");
       }
       if (authUser) {
@@ -46,8 +45,42 @@ const LoginScreen = () => {
   }, []);
 
   const login = () => {
+    const emailRegex = /.+@gmail\.com$/;
+    const passwordRegex = /^.{6,}$/;
+ 
+
+    if (Email === "" || Password === "") {
+      Alert.alert(
+        "Invalid Data",
+        "Please fill in all the fields",
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ],
+        { cancelable: false }
+      );
+      return; 
+    }
+
+    if (!emailRegex.test(Email)) {
+      Alert.alert("Invalid Email", "Email must be a Gmail address\n (e.g., user@gmail.com)");
+      return; 
+    }
+
+    if (!passwordRegex.test(Password)) {
+      Alert.alert(
+        "Invalid Password",
+        "It must be with at least 6 characters", 
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: true }
+      );
+      return; 
+    }
+
+    setIsLoadingLogin(true); 
+
     signInWithEmailAndPassword(auth, Email, Password)
       .then((userCredential) => {
+        setIsLoadingLogin(false); 
         const user = userCredential.user;
         const uID = user.uid;
         AsyncStorage.setItem("userID", uID);
@@ -65,12 +98,17 @@ const LoginScreen = () => {
             alert("Too many failed login attempts.");
             break;
           default:
-            alert("Login failed. Please try again.");
+            alert("Opps","Invalid credencial, try again");
         }
       });
   };
 
   return (
+    isLoadingLogin? (
+      <View style ={styles.loading}>
+           <ActivityIndicator size="auto" color="#89CFF0" />
+        </View>
+    ):(
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
@@ -139,7 +177,7 @@ const LoginScreen = () => {
       </View>
       <View style={styles.loginContainer}>
         <Text style={{ fontSize: 16 }}>Aren't registered yet?</Text>
-        <Pressable onPress={() => navigation.navigate("Form", {collName: 'Users', editMode: false, fromLogin: true})}>
+        <Pressable onPress={() => navigation.navigate("Register")}>
           <Text style={styles.loginTextContainer}>Sign Up</Text>
         </Pressable>
       </View>
@@ -150,7 +188,7 @@ const LoginScreen = () => {
         <Button title="Use Single Sign On"></Button>
       </View>
     </SafeAreaView>
-  );
+  ));
 };
 
 const styles = StyleSheet.create({
@@ -158,6 +196,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor:"white"
   },
   logoContainer: {
     position: "absolute",
@@ -210,6 +249,12 @@ const styles = StyleSheet.create({
     width: "80%",
     justifyContent: "center",
   },
+  loading:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor:"white"
+  }
 });
 
 export default LoginScreen;

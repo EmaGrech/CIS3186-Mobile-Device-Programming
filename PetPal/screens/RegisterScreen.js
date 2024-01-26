@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../FirebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
+import { ActivityIndicator } from "react-native-paper";
 
 // added this from A
 import HorizontalLineWithText from "../components/HorizontalLine";
@@ -31,36 +32,100 @@ const RegisterScreen = () => {
   const navigation = useNavigation();
 
   const register = () => {
-    setIsRegistering(true);
+
+    const emailRegex = /.+@gmail\.com$/; 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/; 
+  
     if (Email === "" || Password === "") {
       Alert.alert(
-        "Invalid Details",
-        "Please fill all the details",
+        "Invalid Data",
+        "Please fill in all the fields",
         [
-          {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
+          { text: "Cancel", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
           { text: "OK", onPress: () => console.log("OK Pressed") },
         ],
         { cancelable: false }
       );
+      return; 
     }
-    createUserWithEmailAndPassword(auth, Email, Password).then(
-      (userCredential) => {
+  
+    if (!emailRegex.test(Email)) {
+      Alert.alert("Invalid Email", "Email must be a Gmail address\n (e.g., user@gmail.com)");
+      return; 
+    }
+  
+    if (!passwordRegex.test(Password)) {
+      Alert.alert(
+        "Invalid Password",
+        "Your password must include:\n\n" + 
+        "- At least 8 characters\n" +
+        "- 1 Uppercase letter (A-Z)\n" +
+        "- 1 Lowercase letter (a-z)\n" +
+        "- 1 Number (0-9)",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: true }
+      );
+      return; 
+    }
+
+    const pasw = Password;
+    setEmail("");
+    setPassword("");
+  
+    setIsRegistering(true); 
+  
+    createUserWithEmailAndPassword(auth, Email, Password)
+      .then((userCredential) => {
         console.log("user credential", userCredential);
         const user = userCredential.user.email;
         const myUserUid = userCredential.user.uid;
-
+  
         setDoc(doc(db, "Users", myUserUid), {
           Email: user,
+          Password:pasw
+        })
+        .then(() => {
+          const initialData = {
+            Email: user,
+            Password:pasw,
+            id:myUserUid
+          };
+          navigation.replace("Form", { collName: 'Users', editMode: true, initialData: initialData, fromLogin:true });
         });
-      }
-    );
-  };
+      })
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          
+          Alert.alert(
+            "Already Registered",
+            "You are already registered with us, sign in instead?",
+            [
+              { 
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel"
+              },
+              { 
+                text: "Login", 
+                onPress: () => navigation.navigate("Login") 
+              }
+            ],
+            { cancelable: false }
+          );
+        } else {
+
+          Alert.alert("Registration Error", error.message);
+        }
+        setIsRegistering(false); 
+      })
+    };
 
   return (
+    isRegistering? (
+      <View style ={styles.loading}>
+           <ActivityIndicator size="auto" color="#89CFF0" />
+        </View>
+    ):(
     <SafeAreaView style={styles.container}>
       <View style={styles.logoContainer}>
         <Image
@@ -136,7 +201,7 @@ const RegisterScreen = () => {
         <Button title="Use Single Sign On"></Button>
       </View>
     </SafeAreaView>
-  );
+  ));
 };
 
 const styles = StyleSheet.create({
@@ -144,6 +209,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor:"white"
   },
   logoContainer: {
     position: "absolute",
@@ -196,6 +262,12 @@ const styles = StyleSheet.create({
     width: "80%",
     justifyContent: "center",
   },
+  loading:{
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor:"white"
+  }
 });
 
 export default RegisterScreen;

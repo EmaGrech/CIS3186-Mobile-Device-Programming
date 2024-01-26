@@ -70,7 +70,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
         
         {user.Account_Type !== "Consumer" && (
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop:80}}>
             <HorizontalLineWithText text={"Activities / Services"} />
             <View style={styles.activityList}>
               {user.Activities != null ? (
@@ -134,32 +134,36 @@ function ProfileScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#fff', 
+    backgroundColor: 'white', 
   },
   centralisedContainer: {
     alignItems: "center",
-    paddingTop: 20, 
+    paddingTop: 20,
   },
   imgContainer: {
     width: 200,
     height: 200,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: "black", 
     overflow: "hidden",
     marginTop: 20,
-    elevation: 3,
-    backgroundColor: '#fff', 
+    elevation: 6,
+    backgroundColor: '#fff',
+    shadowColor: '#5e97d1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   img: {
     width: "100%",
     height: "100%",
-    resizeMode: 'cover', 
+    resizeMode: 'cover',
   },
   username: {
-    fontSize: 24, 
+    fontSize: 24,
     fontWeight: "bold",
-    margin: 15, 
+    margin: 15,
     color: '#323232', 
   },
   listItem: {
@@ -168,28 +172,31 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginVertical: 10,
     marginHorizontal: 20,
-    backgroundColor: "#A9D3FF",
+    backgroundColor: "#A9D3FF", 
     elevation: 4,
-    shadowColor: '#000', 
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   itemText: {
     textAlign: "center",
-    fontSize: 15, 
+    fontSize: 15,
     color: '#ffffff',
   },
   activityList: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    marginVertical: 10, 
+    marginVertical: 10,
   },
   btnContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginVertical: 20, 
+    marginVertical: 20,
+    position:"absolute",
+    left:55,
+    top:650
   },
 });
 

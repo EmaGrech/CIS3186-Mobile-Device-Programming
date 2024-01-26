@@ -129,7 +129,7 @@ const SearchScreen = () => {
 
   return (
     <>
-      <ScrollView style={{ flex: 1, marginTop: 50 }}>
+      <View style={{ flex: 1, paddingTop: 25 , backgroundColor:"white"}}>
         {/* Location and Profile */}
         <View
           style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
@@ -170,6 +170,7 @@ const SearchScreen = () => {
         </View>
 
         {/* Render filtered or all Products */}
+        <ScrollView>
         {filteredProducts.length > 0
           ? filteredProducts.map((item, index) => (
               <PetItem item={item} key={index} />
@@ -200,6 +201,7 @@ const SearchScreen = () => {
           </View>
         </View>
       )}
+      </View>
     </>
   );
 };
@@ -216,28 +218,33 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#6c756b",
     borderRadius: 25,
+    backgroundColor: "white", 
   },
   paymentCon: {
-    backgroundColor: "#96c5f7",
-    marginTop: "auto",
+    backgroundColor: "#96c5f7", // A soothing blue for the payment container
     padding: 10,
     marginBottom: 40,
-    margin: 15,
-    borderRadius: 7,
+    marginHorizontal: 15,
+    borderRadius: 10, // More rounded edges
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    shadowColor: "#000", // Adding a subtle shadow for depth
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 5,
   },
   paymentTxt: {
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: "bold", // Making text bold for better readability
     color: "white",
   },
   paymentChargesTxt: {
     fontSize: 15,
     fontWeight: "400",
     color: "white",
-    marginVertical: 6,
+    marginTop: 5, // Adjusted margin for better spacing
   },
   container: {
     flex: 1,
@@ -247,10 +254,14 @@ const styles = StyleSheet.create({
   btnCon: {
     height: 50,
     width: "80%",
-    elevation: 1,
-    backgroundColor: "#f2f4ff",
+    backgroundColor: "#f2f4ff", // Light pastel blue for button container
     borderRadius: 5,
     marginLeft: 10,
+    shadowColor: "#000", // Shadow for button container
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   btn: {
     flex: 1,
@@ -258,7 +269,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   btnTxt: {
-    color: "black",
+    color: "#333333", // Darker color for the button text
     fontSize: 18,
+    fontWeight: "600", // Slightly bold for emphasis
+  },
+  // Additional styles for other components (like Location and Profile)
+  locationAndProfile: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
+  locationIcon: {
+    fontSize: 30,
+    color: "#fd5c63",
+  },
+  locationText: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginLeft: 8, // Added margin for spacing
+  },
+  profileButton: {
+    marginLeft: "auto",
+    marginRight: 7,
   },
 });
+
+

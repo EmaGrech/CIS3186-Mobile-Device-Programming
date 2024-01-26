@@ -51,11 +51,6 @@ const InfoScreen = ({ route, navigation }) => {
     Seller_ID : Seller_ID
   } = productDetails || {};
 
-  const handleDelete = () => {
-    toDelete("Product_Details", itemID);
-    navigation.goBack();
-  };
-
   const handleAdd = () => {
     dispatch(addToCart(itemID));
     dispatch(incrementQty(itemID));
@@ -133,11 +128,6 @@ const InfoScreen = ({ route, navigation }) => {
               </View>
               </>
           )}
-          {/* 
-          <TouchableOpacity style={styles.button} onPress={handleDelete}>
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-          */}
         </View>
       </ScrollView>
     );

@@ -31,10 +31,15 @@ function BottomNavigation({ navigation }) {
 
   return (
     <Tab.Navigator
-      initialRouteName="Home"
-      sceneContainerStyle={{
-        backgroundColor: "#f2f4ff",
-      }}
+    initialRouteName="Home"
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: '#A9D3FF',
+          height:80
+      },
+      tabBarActiveTintColor: 'black',  
+        tabBarInactiveTintColor:"black"   
+    }}
     >
       <Tab.Screen
         name="Cart"
@@ -53,20 +58,20 @@ function BottomNavigation({ navigation }) {
           header: ({ navigation }) => <CustomAppBar navigation={navigation} />,
         }}
       />
-      <Tab.Screen
+       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ focused, color, size }) =>
             focused == true ? (
               <MaterialCommunityIcons
-                name="shopping"
+                name="home"
                 color={color}
                 size={size}
               />
             ) : (
               <MaterialCommunityIcons
-                name="shopping-outline"
+                name="home-outline"
                 color={color}
                 size={size}
               />
