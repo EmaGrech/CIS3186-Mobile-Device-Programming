@@ -74,6 +74,7 @@ export default function App() {
               component={ProfileScreen}
               options={{ title: "" }}
             />
+
             <Stack.Screen
               name="Form"
               component={FormScreen}
@@ -85,6 +86,7 @@ export default function App() {
               component={SearchScreen}
               options={{ title: "" }}
             />
+
             <Stack.Screen name="Cart" component={CartScreen} />
             <Stack.Screen name="PickUp" component={PickUpScreen} />
             <Stack.Screen name="Order" component={OrderScreen} />
