@@ -19,7 +19,7 @@ import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { auth } from '../db';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import HorizontalLineWithText from "../components/HorizontalLine";
-import { Alert } from "react-native";
+import { Alert, ActivityIndicator } from "react-native";
 
 
 const LoginScreen = () => {
